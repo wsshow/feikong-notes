@@ -7,6 +7,7 @@ import tempfile
 from urllib.parse import urlsplit
 
 from prepare_github_release import DEFAULT_REPOSITORY, repository_name
+from release_notes import resolve
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,6 +89,15 @@ def main(flutter_command, dart_command, build_args):
     with tempfile.TemporaryDirectory(prefix="fknotes-release-", dir="/tmp") as temporary:
         build_root = Path(temporary)
         copy_source(build_root)
+        # Resolve once against the original Git checkout: the isolated build
+        # directory deliberately has no .git metadata.
+        version = next(line.split(":", 1)[1].strip().split("+")[0]
+                       for line in (ROOT / "pubspec.yaml").read_text().splitlines()
+                       if line.startswith("version:"))
+        notes, _ = resolve(ROOT, repository, f"v{version}")
+        notes_path = build_root / "release-notes.md"
+        notes_path.write_text(notes, encoding="utf-8")
+        env["FKNOTES_RELEASE_NOTES_PATH"] = str(notes_path)
         subprocess.run([*export, "--check-notes"], cwd=build_root, env=env, check=True)
         subprocess.run(
             [dart, "pub", "get", "--enforce-lockfile"],
@@ -117,5 +127,7 @@ def main(flutter_command, dart_command, build_args):
 if __name__ == "__main__":
     try:
         main(sys.argv[1], sys.argv[2], sys.argv[3:])
+    except (ValueError, RuntimeError) as error:
+        raise SystemExit(str(error)) from error
     except subprocess.CalledProcessError as error:
         sys.exit(error.returncode)

@@ -4,7 +4,7 @@
 
 ## 环境与运行
 
-准备 Flutter 3.47.2（与发布 CI 一致）、Android Studio、Android SDK 36、JDK 17 和 Make。正式归档另外需要 Git、Python 3、`unzip` 和 `shasum`，从 Git 工作区运行发布命令。
+准备 Flutter 3.47.2（与发布 CI 一致）、Android Studio、Android SDK 36、JDK 17 和 Make。正式归档另外需要 Git、Python 3、GitHub CLI（`gh`）、`unzip` 和 `shasum`，从 Git 工作区运行发布命令。`gh` 需登录具有仓库写权限的账号，以读取 Release 草稿。
 
 ```bash
 make doctor
@@ -14,7 +14,7 @@ make run-android DEVICE=emulator-5554
 
 将示例设备 ID 换成实际值。依赖由运行目标获取。首次构建 Android 时会下载原生运行库，MNN 下载与校验方式见[本地语言模型](local-llm.md#原生运行库)。
 
-## 本地验证
+## 构建与验证
 
 在项目根目录执行。单独获取 Harness 的开发依赖，供根目录分析与核心包测试使用。
 
@@ -35,6 +35,21 @@ git diff --check
 | `make clean` | 清理构建缓存和 `dist/` |
 
 正式归档使用 [Android 发布流程](ANDROID_RELEASE.md)。签名、构建产物、数据库、备份和本地缓存应留在 Git 忽略范围内。修改数据库时同步检查旧版本迁移与恢复路径。
+
+### 更新说明
+
+更新说明维护在版本 tag 对应的 GitHub Release 草稿中，仓库不保存逐版本说明文件。人工正文使用中文，建议以 `# 非空笔记 <版本>` 开头，按实际内容分为“新增”“修复”“改进”，省略空分组；每条描述用户可感知的结果，必要时补充兼容性或升级注意事项，不以提交列表或对比链接代替说明。
+
+打 tag 前根据上一个已发布版本到目标提交的变更整理草稿。没有对应草稿或正文为空时，脚本自动提取提交记录，并标注“未经人工整理”；这是兼容路径，提交标题保持原文，不自动推测用户收益或翻译英文。Release 正文、下载附件 `notes.md` 与应用内更新说明复用同一份解析结果。
+
+可先只读解析并预览说明（不创建 Release、不打 tag、不上传）：
+
+```bash
+python3 tool/release_notes.py --tag v0.1.1 --target HEAD --output dist/release-notes.md
+python3 -m unittest discover -s tool -p 'test_*release*.py'
+```
+
+替换示例版本和目标提交；Fork 仓库加 `--repository owner/repository`。提交记录回退要求完整 Git 历史与已发布 tag；浅克隆先获取完整历史，并通过 `git fetch origin --tags` 补齐 tag。网络或权限错误会终止解析，不会静默生成备用说明。
 
 ## 覆盖安装进行真机诊断
 

@@ -52,10 +52,6 @@ jobs:
             exit 1
           fi
 
-          test -s "docs/releases/$version_name.md" || {
-            echo "::error::Missing docs/releases/$version_name.md"
-            exit 1
-          }
           python3 -m unittest discover -s tool -p 'test_*release*.py'
 
           echo "version_name=$version_name" >> "$GITHUB_OUTPUT"
@@ -339,8 +335,23 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release notes
+        id: notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 tool/release_notes.py \
+            --repository "$GITHUB_REPOSITORY" \
+            --tag "$GITHUB_REF_NAME" \
+            --target "$GITHUB_SHA" \
+            --output "$RUNNER_TEMP/release-notes.md" \
+            --github-output "$GITHUB_OUTPUT"
 
       - name: Download release artifacts
+        if: steps.notes.outputs.state != 'published'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           pattern: fknotes-${{ github.ref_name }}-input-*
@@ -348,17 +359,19 @@ jobs:
           merge-multiple: true
 
       - name: Generate update manifest and checksums
+        if: steps.notes.outputs.state != 'published'
         run: |
           python3 tool/prepare_github_release.py \
             --dist dist \
             --repository "$GITHUB_REPOSITORY" \
             --version "$VERSION_NAME" \
             --build-number "$BUILD_NUMBER" \
-            --notes "docs/releases/$VERSION_NAME.md" \
+            --notes "$RUNNER_TEMP/release-notes.md" \
             --date "${BUILD_TIME%%T*}" \
             --mandatory "$FKNOTES_UPDATE_MANDATORY"
 
       - name: Upload combined workflow artifact
+        if: steps.notes.outputs.state != 'published'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: fknotes-${{ github.ref_name }}-android
@@ -375,19 +388,28 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_STATE: ${{ steps.notes.outputs.state }}
         run: |
           set -euo pipefail
 
-          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            # Never replace public APKs: their hashes are already in installed clients.
-            is_draft=$(gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)
-            if [[ "$is_draft" == true ]]; then
-              gh release upload "$GITHUB_REF_NAME" \
-                dist/*.apk dist/*.aab dist/SHA256SUMS.txt dist/latest.json dist/notes.md \
-                --clobber --repo "$GITHUB_REPOSITORY"
-              gh release edit "$GITHUB_REF_NAME" --draft=false --repo "$GITHUB_REPOSITORY"
+          # Never replace a published release's body or assets on retries.
+          if [[ "$RELEASE_STATE" == draft ]]; then
+            # Abort if someone published the draft after notes were resolved.
+            current_draft=$(gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)
+            if [[ "$current_draft" != true ]]; then
+              echo "::error::Release was published during this run; retry to reuse its assets."
+              exit 1
             fi
-          else
+            gh release upload "$GITHUB_REF_NAME" \
+              dist/*.apk dist/*.aab dist/SHA256SUMS.txt dist/latest.json dist/notes.md \
+              --clobber --repo "$GITHUB_REPOSITORY"
+            arguments=(release edit "$GITHUB_REF_NAME" --draft=false
+              --notes-file dist/notes.md --repo "$GITHUB_REPOSITORY")
+            if [[ "$GITHUB_REF_NAME" == v0.* || "$GITHUB_REF_NAME" == *-* ]]; then
+              arguments+=(--prerelease)
+            fi
+            gh "${arguments[@]}"
+          elif [[ "$RELEASE_STATE" == missing ]]; then
             arguments=(
               release create "$GITHUB_REF_NAME"
               dist/*.apk dist/*.aab dist/SHA256SUMS.txt dist/latest.json dist/notes.md

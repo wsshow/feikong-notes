@@ -91,6 +91,6 @@ git diff --check
 - 每个完成且可独立回滚的单元，完成必要校验后主动提交。只暂存本次文件；同一文件含无关改动时仅暂存本次相关区块。检查 `git diff --check`、`git diff --cached --check` 和 staged diff，不提交半成品或无关修改。
 - 使用 Conventional Commits：`<type>(<scope>): <summary>`，scope 可省略；type/scope 用小写英文，摘要可用中文。常用类型为 `feat`、`fix`、`refactor`、`perf`、`docs`、`test`、`build`、`ci`、`style`、`chore`、`revert`。
 - 未经本次明确授权，不重写已发布历史，不 push、创建/移动标签或发布版本；修正使用新提交。
-- 打 tag 前，按上一个发布 tag 到目标提交的实际变更，在 GitHub Release 草稿中写好面向用户的中文更新说明；所有发布渠道复用该正文，仓库不保留逐版本说明文件。说明须简洁、排版规范，不以提交列表或对比链接代替。
-- 当前发布流程尚未迁移到上述草稿约定：`.github/workflows/release.yml` 仍依赖 `docs/releases/<版本>.md`。执行下一次发布任务时，需先迁移说明来源和相关校验，同步更新[开发指南](docs/development.md)与 [Android 发布指南](docs/ANDROID_RELEASE.md)，再移除仓库中的逐版本说明文件；不能只删除文件而破坏现有构建。
+- 打 tag 前，按上一个发布 tag 到目标提交的实际变更，在 GitHub Release 草稿中写好面向用户的中文更新说明；所有发布渠道复用该正文，仓库不保留逐版本说明文件。人工说明须简洁、排版规范，不以提交列表或对比链接代替。
+- 缺少对应 Release 草稿或草稿正文为空时，允许由发布脚本提取实际提交记录作为备用说明，并明确标注自动生成、未经人工整理。GitHub 查询失败不能当作缺少草稿；已发布版本重跑保留原正文和资源。具体格式与流程见[开发与构建](docs/development.md#构建与验证)和 [Android 发布指南](docs/ANDROID_RELEASE.md)。
 - 最终用中文说明完成内容、验证结果、未验证范围及提交哈希；事实与推测分开，文件引用可定位。

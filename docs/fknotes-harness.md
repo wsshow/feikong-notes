@@ -56,7 +56,7 @@ v2 模型配置通过 `serviceId` 共用凭据，读取 v1 时保留模型 ID、
 
 ## 验收
 
-通用检查见[开发指南](development.md#本地验证)。重点回归三类协议的流式调用、取消、续传和错误脱敏，以及授权隔离、并发编辑、写入去重、备份和恢复。
+通用检查见[开发指南](development.md#构建与验证)。重点回归三类协议的流式调用、取消、续传和错误脱敏，以及授权隔离、并发编辑、写入去重、备份和恢复。
 
 ```bash
 flutter test test/agent_workflow_test.dart test/agent_note_tools_test.dart test/agent_model_adapter_test.dart test/agent_mcp_test.dart

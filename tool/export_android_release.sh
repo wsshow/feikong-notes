@@ -15,7 +15,7 @@ STAGED_UNIVERSAL_APK="$STAGING_DIR/app-universal-release.apk"
 STAGED_UNIVERSAL_METADATA="$STAGING_DIR/universal-output-metadata.json"
 RELEASE_ROOT=${FKNOTES_RELEASE_ROOT:-"$PROJECT_ROOT/release/android"}
 RELEASE_DIR="$RELEASE_ROOT/$VERSION"
-NOTES_PATH="$PROJECT_ROOT/docs/releases/$VERSION.md"
+NOTES_PATH=${FKNOTES_RELEASE_NOTES_PATH:-"$RELEASE_DIR/notes.md"}
 GITHUB_REPOSITORY=${FKNOTES_GITHUB_REPOSITORY:-wsshow/feikong-notes}
 UPDATE_MANDATORY=${FKNOTES_UPDATE_MANDATORY:-false}
 RELEASE_DATE=${FKNOTES_RELEASE_DATE:-}
@@ -68,9 +68,17 @@ esac
 
 mkdir -p "$RELEASE_DIR"
 
+if [ "${1:-}" = "--check-notes" ] && [ -z "${FKNOTES_RELEASE_NOTES_PATH:-}" ]; then
+  python3 "$PROJECT_ROOT/tool/release_notes.py" \
+    --repository "$GITHUB_REPOSITORY" \
+    --tag "v$VERSION" \
+    --source-dir "$PROJECT_ROOT" \
+    --output "$NOTES_PATH"
+fi
+
 if [ ! -s "$NOTES_PATH" ]; then
   echo "Release notes are missing or empty: $NOTES_PATH" >&2
-  echo "Create docs/releases/$VERSION.md before building." >&2
+  echo "Run the complete Android release target to resolve GitHub release notes." >&2
   exit 1
 fi
 

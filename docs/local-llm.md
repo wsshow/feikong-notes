@@ -41,7 +41,7 @@ Android Gradle / CMake 与 iOS Xcode 使用 [prepare_mnn_runtime.sh](../tool/pre
 
 ## 验收
 
-通用命令见[开发指南](development.md#本地验证)。引擎路由、后端选择、加载和取消可单独回归：
+通用命令见[开发指南](development.md#构建与验证)。引擎路由、后端选择、加载和取消可单独回归：
 
 ```bash
 flutter test test/routing_local_llm_engine_test.dart test/local_assistant_backend_policy_test.dart test/local_llm_coordinator_test.dart test/litert_lm_engine_test.dart

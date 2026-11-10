@@ -13,7 +13,7 @@ Android 在线更新全部使用 GitHub：Actions 构建与验证，Releases 托
 - `ANDROID_KEY_PASSWORD`
 - `ANDROID_KEY_ALIAS`
 
-仓库和 Release 资源须公开，Actions 需要 `contents: write` 权限，并允许发布任务写入 `updates` 分支。工作流首次发布时自动创建该分支，不需要开启 GitHub Pages。客户端不需要 GitHub Token。
+仓库和 Release 资源须公开，发布任务的 Actions Token 需要 `contents: write` 权限，以读取草稿、发布资源并写入 `updates` 分支。工作流首次发布时自动创建该分支，不需要开启 GitHub Pages。客户端不需要 GitHub Token。
 
 默认清单地址：
 
@@ -26,15 +26,29 @@ Actions 根据当前仓库自动生成地址，无需设置 `FKNOTES_UPDATE_MANI
 ## 发布版本
 
 1. 更新 [pubspec.yaml](../pubspec.yaml) 的版本名和构建号，例如 `0.1.1+2`。
-2. 更新 [CHANGELOG](../CHANGELOG.md)，并提交 `docs/releases/<版本名>.md`。该文件同时作为 GitHub Release 正文和应用内 Markdown 更新说明。
-3. 提交并推送代码，再推送与版本名一致的 tag，例如：
+2. 在 GitHub Releases 中为目标 tag（例如 `v0.1.1`）保存草稿，根据上一个发布 tag 到目标提交的变更撰写面向用户的中文正文。正文格式见[开发与构建](development.md#更新说明)。仓库不再提交逐版本说明文件，`CHANGELOG.md` 仅作为 Release 入口。
+3. 完成校验并提交代码。取得本次推送、打 tag 和发布的明确授权后，再推送代码及与版本名一致的 tag，例如：
 
 ```bash
 git tag v0.1.1
 git push origin v0.1.1
 ```
 
-[tag 工作流](../.github/workflows/release.yml)校验版本、发布说明、发布脚本、格式与静态分析，执行两组分片测试，构建签名通用 APK、ARM64 / ARM32 / x86_64 APK 和 AAB。依赖从 `pub.dev` 下载，保留锁文件哈希校验。APK 和 AAB 检查 Flutter 库中的开发者主目录路径。
+[tag 工作流](../.github/workflows/release.yml)校验版本、发布脚本、格式与静态分析，执行两组分片测试，构建签名通用 APK、ARM64 / ARM32 / x86_64 APK 和 AAB。依赖从 `pub.dev` 下载，保留锁文件哈希校验。APK 和 AAB 检查 Flutter 库中的开发者主目录路径。
+
+### 说明来源与兼容路径
+
+发布任务通过 `tool/release_notes.py` 分页读取 GitHub Releases，并以 tag 精确匹配当前版本：
+
+- 对应草稿有正文：读取正文作为本次发布说明。
+- 没有对应 Release，或对应草稿正文为空：从 Git 历史生成备用说明，使用中文标题并明确标注自动生成、未经人工整理，逐条展示提交短哈希和原始标题。
+- 备用说明的起点是当前目标提交历史中最近的已发布版本 tag（包括 Pre-release），排除草稿、未发布 tag、其他分支上的版本和当前 tag。范围为该 tag 之后到目标提交；首次发布无可用起点时使用截至目标提交的完整历史；范围为空时明确说明没有新增提交。
+- 查询失败、权限不足、浅克隆或缺少已发布 tag 时终止，不把这些错误视为没有草稿。CI 获取完整历史和 tag；本地需登录具有仓库写权限的 `gh` 账号并补齐历史和 tag。
+- 当前版本已经发布：重跑保留原正文与资源，并复用线上清单；已发布正文为空则报错，不生成替代内容。
+
+解析后的正文同时用于 GitHub Release 页面、`notes.md` 附件和应用内更新说明。发布已有草稿时也会用该正文更新 Release，确保空草稿的备用说明与附件一致；说明仅落盘到临时目录或忽略的构建目录。首次创建与发布草稿均按相同规则标记 `0.x` 和带后缀版本为 Pre-release。
+
+草稿只在发布任务开始时读取一次；不要在任务运行中手动发布或修改该草稿。人工正文以该次快照为准。GitHub 的草稿访问规则见 [List releases](https://docs.github.com/en/rest/releases/releases#list-releases)。
 
 所有检查通过后，工作流生成并上传：
 
@@ -65,7 +79,9 @@ make android-release
 make android-release FKNOTES_GITHUB_REPOSITORY=owner/repository
 ```
 
-脚本在临时目录运行分析与全量测试，构建通用和 ARM64 APK，检查版本、ABI 与开发者路径，然后归档到 `release/android/<版本>/`。与 CI 共用清单生成器、GitHub URL 和产物命名；该命令不上传文件或推进在线清单。`FKNOTES_RELEASE_DATE=YYYY-MM-DD` 和 `FKNOTES_UPDATE_MANDATORY=true|false` 可覆盖本地清单字段。
+准备已登录的 GitHub CLI（`gh`）及完整 Git 历史和 tag。脚本先在原始工作区解析一次更新说明，本地备用范围截至 `HEAD`；随后把正文传入不含 `.git` 的临时构建目录，避免构建期间再次读取草稿。确保准备归档的代码已提交，否则备用说明不包含未提交的改动。
+
+脚本在临时目录运行分析与全量测试，构建通用和 ARM64 APK，检查版本、ABI 与开发者路径，然后归档到 `release/android/<版本>/`。与 CI 共用说明解析器、清单生成器、GitHub URL 和产物命名；该命令只读取 GitHub，不上传文件或推进在线清单。`FKNOTES_RELEASE_DATE=YYYY-MM-DD` 和 `FKNOTES_UPDATE_MANDATORY=true|false` 可覆盖本地清单字段。
 
 验收时确认：
 
