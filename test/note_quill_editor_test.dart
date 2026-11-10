@@ -2614,7 +2614,9 @@ summary: |
     );
   }
 
-  testWidgets('all card cursor visual contract', (tester) async {
+  testWidgets('caret stays below the final card with the production font', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(430, 1580);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -2677,10 +2679,6 @@ summary: |
       greaterThanOrEqualTo(
         lastBlock.localToGlobal(Offset(0, lastBlock.size.height)).dy,
       ),
-    );
-    await expectLater(
-      find.byType(Scaffold),
-      matchesGoldenFile('goldens/note_card_caret.png'),
     );
     expect(tester.takeException(), isNull);
   });

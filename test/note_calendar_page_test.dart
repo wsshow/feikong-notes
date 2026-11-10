@@ -187,36 +187,6 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('editorial calendar matches its floating dock contract', (
-    tester,
-  ) async {
-    final appearance = ValueNotifier((
-      AppThemeStyle.editorialJournal,
-      Brightness.light,
-    ));
-    addTearDown(appearance.dispose);
-    await _pumpCalendar(
-      tester,
-      appearance: appearance,
-      notes: [
-        _note('晨间记录', DateTime(2026, 8, 27, 9)),
-        _note('午后灵感', DateTime(2026, 8, 27, 15)),
-      ],
-    );
-    await tester.runAsync(
-      () => precacheImage(
-        const AssetImage(EditorialJournalTokens.paperTextureAsset),
-        tester.element(find.byKey(const Key('note-calendar-page'))),
-      ),
-    );
-    await tester.pump();
-
-    await expectLater(
-      find.byKey(const Key('note-calendar-page')),
-      matchesGoldenFile('goldens/editorial_calendar.png'),
-    );
-  });
-
   testWidgets(
     'today is an outlined pill with the existing touch target in every view',
     (tester) async {

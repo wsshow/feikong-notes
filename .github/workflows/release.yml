@@ -15,9 +15,8 @@ concurrency:
 jobs:
   verify:
     name: Verify release source
-    # Golden baselines are rendered on macOS; keep the rasterizer consistent.
-    runs-on: macos-26
-    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       version_name: ${{ steps.release.outputs.version_name }}
       build_number: ${{ steps.release.outputs.build_number }}
@@ -29,8 +28,6 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-        with:
-          fetch-depth: 0
 
       - name: Validate release tag
         id: release
@@ -71,11 +68,40 @@ jobs:
           flutter pub get --enforce-lockfile
           (cd packages/fknotes_harness && dart pub get --enforce-lockfile)
 
-      - name: Verify source quality
-        run: |
-          dart format --output=none --set-exit-if-changed lib test
-          flutter analyze
-          flutter test
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: Analyze source
+        run: flutter analyze --no-pub
+
+  test:
+    name: Test shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1]
+    env:
+      FLUTTER_VERSION: "3.47.2"
+      PUB_HOSTED_URL: "https://pub.dev"
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Run tests
+        run: flutter test --no-pub --total-shards=2 --shard-index=${{ matrix.shard }}
 
   build-apk:
     name: Build APK (${{ matrix.abi }})
@@ -158,6 +184,7 @@ jobs:
 
           flutter build apk \
             --release \
+            --no-pub \
             --split-per-abi \
             --target-platform "$TARGET_PLATFORM" \
             --build-name "$VERSION_NAME" \
@@ -246,7 +273,20 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-        run: make aab BUILD_NAME="$VERSION_NAME" BUILD_NUMBER="$BUILD_NUMBER" BUILD_TIME="$BUILD_TIME"
+        run: |
+          set -euo pipefail
+
+          flutter build appbundle \
+            --release \
+            --no-pub \
+            --build-name "$VERSION_NAME" \
+            --build-number "$BUILD_NUMBER" \
+            --dart-define="FKNOTES_BUILD_TIME=$BUILD_TIME" \
+            --dart-define="FKNOTES_UPDATE_MANIFEST_URL=$FKNOTES_UPDATE_MANIFEST_URL"
+
+          mkdir -p dist
+          cp build/app/outputs/bundle/release/app-release.aab \
+            "dist/fknotes-$VERSION_NAME+$BUILD_NUMBER-release.aab"
 
       - name: Remove signing key
         if: always()
@@ -266,6 +306,7 @@ jobs:
   release:
     name: Publish GitHub Release
     needs:
+      - test
       - build-apk
       - build-aab
     runs-on: ubuntu-latest

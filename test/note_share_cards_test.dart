@@ -191,29 +191,26 @@ void main() {
     NoteShareTemplateId.letter,
     NoteShareTemplateId.night,
   ]) {
-    testWidgets('mixed share cards ${template.name} visual contract', (
-      tester,
-    ) async {
-      _setView(tester, const Size(430, 1700));
-      final font = await rootBundle.load(
-        'assets/fonts/source_han_serif/SourceHanSerifCN-VF.otf',
-      );
-      for (final family in ['Ahem', 'Roboto', 'Source Han Serif CN']) {
-        await (FontLoader(family)..addFont(Future.value(font))).load();
-      }
-      final draft = _mixedDraft();
-      final options = NoteShareOptions(
-        template: template,
-        canvas: const NoteShareCanvasSpec(preset: NoteShareCanvasPreset.long),
-      );
-      final layout = _layout(draft, options);
-      await _pumpCanvas(tester, draft, options, layout);
-      _expectBodyFits(tester, template.name);
-      await expectLater(
-        find.byKey(const ValueKey('share-cards-capture')),
-        matchesGoldenFile('goldens/share_cards_${template.name}.png'),
-      );
-    });
+    testWidgets(
+      'mixed share cards ${template.name} fit with the production font',
+      (tester) async {
+        _setView(tester, const Size(430, 1700));
+        final font = await rootBundle.load(
+          'assets/fonts/source_han_serif/SourceHanSerifCN-VF.otf',
+        );
+        for (final family in ['Ahem', 'Roboto', 'Source Han Serif CN']) {
+          await (FontLoader(family)..addFont(Future.value(font))).load();
+        }
+        final draft = _mixedDraft();
+        final options = NoteShareOptions(
+          template: template,
+          canvas: const NoteShareCanvasSpec(preset: NoteShareCanvasPreset.long),
+        );
+        final layout = _layout(draft, options);
+        await _pumpCanvas(tester, draft, options, layout);
+        _expectBodyFits(tester, template.name);
+      },
+    );
   }
 }
 

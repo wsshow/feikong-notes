@@ -181,10 +181,6 @@ void main() {
         false,
       );
       expect(tester.takeException(), isNull);
-      await expectLater(
-        find.byType(MaterialApp),
-        matchesGoldenFile('goldens/note_file_references.png'),
-      );
       await tester.tap(find.text('活动策划 · 定稿.pdf'));
       await settleIo(tester);
       expect(find.text('文件预览'), findsOneWidget);

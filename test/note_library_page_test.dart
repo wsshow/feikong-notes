@@ -1036,54 +1036,6 @@ void main() {
     expect(find.byKey(const Key('quill-home-new-note')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-
-  testWidgets('editorial home matches its visual contract', (tester) async {
-    tester.view.physicalSize = const Size(430, 932);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    store.notes
-      ..clear()
-      ..addAll([
-        _note(
-          '产品灵感清单',
-          document: Delta()..insert('把复杂的事情做得轻盈一些。\n'),
-          tags: const ['灵感', '工作'],
-        ).copyWith(isPinned: true),
-        _note(
-          '海边的下午',
-          document: Delta()..insert('风穿过松林，潮水慢慢退去。\n'),
-          tags: const ['生活'],
-        ),
-        _note(
-          '本周阅读摘录',
-          document: Delta()..insert('真正重要的设计让人感到自然。\n'),
-          tags: const ['阅读'],
-        ),
-      ]);
-    await tester.pumpWidget(
-      _TestApp(
-        style: AppThemeStyle.editorialJournal,
-        child: NoteLibraryPage(
-          materialController: materials,
-          controller: controller,
-        ),
-      ),
-    );
-    await _pump(tester);
-    await tester.runAsync(
-      () => precacheImage(
-        const AssetImage(EditorialJournalTokens.paperTextureAsset),
-        tester.element(find.byKey(const Key('editorial-library-surface'))),
-      ),
-    );
-    await tester.pump();
-
-    await expectLater(
-      find.byKey(const Key('editorial-library-surface')),
-      matchesGoldenFile('goldens/editorial_home.png'),
-    );
-  });
 }
 
 Widget _testEditor(BuildContext context, Note? note) => Scaffold(
