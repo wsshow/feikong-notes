@@ -1,0 +1,5461 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get themeSettings => 'Theme';
+
+  @override
+  String get themeDescription =>
+      'Choose your colors and appearance. Your layout and notes stay the same.';
+
+  @override
+  String get themePaper => 'Quiet Margins';
+
+  @override
+  String get themePaperDescription =>
+      'Clean paper and graphite strokes leave a quiet place for every thought.';
+
+  @override
+  String get themeStarlight => 'Starlit Reverie';
+
+  @override
+  String get themeStarlightDescription =>
+      'Lavender opens into night while indigo and soft light gather wandering thoughts.';
+
+  @override
+  String get themeSunnyGrowth => 'Cloud Reverie';
+
+  @override
+  String get themeSunnyGrowthDescription =>
+      'Clear skies, soft clouds, and bright blue bring morning light to every idea.';
+
+  @override
+  String get themeSunnyGrowthLightOnly =>
+      'Cloud Reverie lives in clear, light-filled days and currently has a light appearance. Your previous brightness preference returns when you switch to another theme.';
+
+  @override
+  String get themeEditorialJournal => 'Letters Unending';
+
+  @override
+  String get themeEditorialJournalDescription =>
+      'Warm ivory carries coral and cobalt through every page of an unending letter.';
+
+  @override
+  String get themeEditorialJournalLightOnly =>
+      'Letters Unending is grounded in warm paper and daylight and currently has a light appearance. Your previous brightness preference returns when you switch themes.';
+
+  @override
+  String get editorialGreetingMorning => 'Good morning,';
+
+  @override
+  String get editorialGreetingAfternoon => 'Good afternoon,';
+
+  @override
+  String get editorialGreetingEvening => 'Good evening,';
+
+  @override
+  String get editorialGreetingQuestion => 'What would you like to remember?';
+
+  @override
+  String get editorialSearchHint => 'Search notes, tags or ideas';
+
+  @override
+  String get editorialInspiration => 'Today\'s spark';
+
+  @override
+  String get editorialInspirationQuote =>
+      'Keep a passing thought before it disappears.';
+
+  @override
+  String get editorialStartWriting => 'Start writing';
+
+  @override
+  String get editorialViewAll => 'View all';
+
+  @override
+  String get themeBrightness => 'Appearance';
+
+  @override
+  String get themeModeSystem => 'Follow system';
+
+  @override
+  String get themeModeLight => 'Light';
+
+  @override
+  String get themeModeDark => 'Dark';
+
+  @override
+  String get themeSaveFailed =>
+      'Could not save the theme. Your previous appearance has been restored. Please try again.';
+
+  @override
+  String get incomingShareTitle => 'Save shared content';
+
+  @override
+  String get incomingShareQueueFull =>
+      'Finish processing previous shares, then share again from the source app.';
+
+  @override
+  String get incomingShareDescription =>
+      'Save as a new regular note, then continue editing. Your current note will not change.';
+
+  @override
+  String get incomingShareSave => 'Save as new note';
+
+  @override
+  String get incomingShareReadFailed =>
+      'Could not read the shared content. Share again from the source app and allow access to the attachments.';
+
+  @override
+  String get incomingShareSaveFailed =>
+      'Saving did not complete. Check available storage and retry. The shared content is still on this device.';
+
+  @override
+  String get incomingShareLimit =>
+      'Share up to 20 files, 100 MB per file, 200 MB total, and 100,000 text characters at a time.';
+
+  @override
+  String get incomingShareOpenFailed =>
+      'Could not open this attachment. Make sure an app supporting this file type is installed.';
+
+  @override
+  String get setNoteReminder => 'Set reminder';
+
+  @override
+  String get editNoteReminder => 'Edit reminder';
+
+  @override
+  String get removeNoteReminder => 'Remove reminder';
+
+  @override
+  String get reminderDateTime => 'Set date and time';
+
+  @override
+  String get reminderConfirm => 'Confirm';
+
+  @override
+  String get reminderChooseFuture => 'Choose a time in the future';
+
+  @override
+  String get reminderSaved => 'Reminder set';
+
+  @override
+  String get reminderRemoved => 'Reminder removed';
+
+  @override
+  String get reminderScheduleFailed =>
+      'Could not enable the system reminder. Please set it again.';
+
+  @override
+  String get reminderNotificationsDisabled =>
+      'Notifications are disabled. Enable them in system settings and try again.';
+
+  @override
+  String get reminderExactDisabled =>
+      'Exact reminders are disabled. Allow alarms and reminders in system settings and try again.';
+
+  @override
+  String get reminderUnsupported =>
+      'System reminders are not supported on this platform yet';
+
+  @override
+  String get reminderPermissionHint =>
+      'First setup requires notifications and alarms permission. Battery saver, Do Not Disturb or force-stopping the app may affect delivery.';
+
+  @override
+  String reminderPastTime(String time) {
+    return 'Reminder: $time';
+  }
+
+  @override
+  String get reminderSoon => 'Due soon';
+
+  @override
+  String reminderInMinutes(int minutes) {
+    return 'In $minutes min';
+  }
+
+  @override
+  String reminderToday(String time) {
+    return 'Today $time';
+  }
+
+  @override
+  String reminderTomorrow(String time) {
+    return 'Tomorrow $time';
+  }
+
+  @override
+  String get appTitle => 'FKNotes';
+
+  @override
+  String get appBrandName => 'FKNotes';
+
+  @override
+  String get appTagline => 'Local first · Private by design';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get languageDescription =>
+      'Follow the device language or choose one for FKNotes';
+
+  @override
+  String get languageSystem => 'System default';
+
+  @override
+  String get languageSimplifiedChinese => '简体中文';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get chooseLanguage => 'Choose language';
+
+  @override
+  String get languageSystemDescription =>
+      'Use the language selected for FKNotes on this device';
+
+  @override
+  String get languageSimplifiedChineseDescription => '使用简体中文界面';
+
+  @override
+  String get languageEnglishDescription => 'Use the English interface';
+
+  @override
+  String get languageSaveFailed => 'Couldn\'t save the language setting';
+
+  @override
+  String get localStorageInitializationFailed =>
+      'Local storage could not be initialized';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get library => 'Library';
+
+  @override
+  String get data => 'Data';
+
+  @override
+  String get createNew => 'New';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get deletePermanently => 'Delete permanently';
+
+  @override
+  String get deletePermanentlyQuestion => 'Delete permanently?';
+
+  @override
+  String get deletePermanentlyDescription =>
+      'The note and its files cannot be recovered.';
+
+  @override
+  String deleteSelectedNotesQuestion(int count) {
+    return 'Permanently delete these $count notes?';
+  }
+
+  @override
+  String get discardNote => 'Discard note';
+
+  @override
+  String get discardNoteQuestion => 'Discard this note?';
+
+  @override
+  String get discardNoteDescription =>
+      'Unsaved content and newly added attachments will be deleted and cannot be recovered.';
+
+  @override
+  String get noteDeleteFailed => 'Couldn\'t delete the note. Try again later.';
+
+  @override
+  String get captureMoment => 'Capture';
+
+  @override
+  String get capturePrivacyHint => 'Saved offline and kept private';
+
+  @override
+  String get note => 'Note';
+
+  @override
+  String get photo => 'Camera';
+
+  @override
+  String get image => 'Image';
+
+  @override
+  String get record => 'Record';
+
+  @override
+  String get audio => 'Audio';
+
+  @override
+  String get video => 'Video';
+
+  @override
+  String get file => 'File';
+
+  @override
+  String get voiceNote => 'Voice note';
+
+  @override
+  String importFailed(String type) {
+    return 'Couldn\'t import $type';
+  }
+
+  @override
+  String get recentlyUpdated => 'Recently updated';
+
+  @override
+  String get more => 'More';
+
+  @override
+  String get startWithIdea => 'Start with an idea';
+
+  @override
+  String get createNoteEmptyHint =>
+      'Tap New. Your content stays safely on this device.';
+
+  @override
+  String get localAssistant => 'Local Assistant';
+
+  @override
+  String get searchLocalKnowledge => 'Search local knowledge';
+
+  @override
+  String get searchNotes => 'Search notes';
+
+  @override
+  String get pullToSearch => 'Pull to search';
+
+  @override
+  String get pullToOpenShelf => 'Pull further for all notes';
+
+  @override
+  String get releaseToOpenShelf => 'Release for tiled view';
+
+  @override
+  String get backToCardView => 'Back to card view';
+
+  @override
+  String get selectNotes => 'Select';
+
+  @override
+  String get selectNotesTitle => 'Select notes';
+
+  @override
+  String get savedOnlyOnDevice => 'Stored only on this device';
+
+  @override
+  String get allNotes => 'All notes';
+
+  @override
+  String noteCountShort(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String attachmentCountShort(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count attachments',
+      one: '1 attachment',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String createType(String type) {
+    return 'New $type';
+  }
+
+  @override
+  String itemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get sort => 'Sort';
+
+  @override
+  String get creationTime => 'Date created';
+
+  @override
+  String get title => 'Title';
+
+  @override
+  String get fileSize => 'File size';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get emptyActive => 'No notes yet';
+
+  @override
+  String get clear => 'Empty';
+
+  @override
+  String get allTypes => 'All types';
+
+  @override
+  String get unavailable => 'Unavailable';
+
+  @override
+  String get localData => 'Local data';
+
+  @override
+  String get localDataSubtitle =>
+      'Stored on this device by default. Sync is always your choice.';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get settingsSubtitle =>
+      'Manage data, security, preferences, and app information';
+
+  @override
+  String get calendar => 'Calendar';
+
+  @override
+  String get calendarSubtitle => 'Browse notes by their last edited date';
+
+  @override
+  String get calendarYear => 'Year';
+
+  @override
+  String get calendarMonth => 'Month';
+
+  @override
+  String get calendarWeek => 'Week';
+
+  @override
+  String get calendarDay => 'Day';
+
+  @override
+  String get calendarTodayMarker => 'Today';
+
+  @override
+  String get calendarShowYear => 'Show year';
+
+  @override
+  String get calendarChooseYear => 'Choose year';
+
+  @override
+  String get calendarBackHome => 'Back to home';
+
+  @override
+  String calendarLunarDate(String date) {
+    return 'Lunar: $date';
+  }
+
+  @override
+  String get calendarLoadFailed => 'Could not load note counts. Please retry.';
+
+  @override
+  String calendarNoteCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String calendarWeekSummary(int count, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days with notes',
+      one: '1 day with notes',
+    );
+    return 'This week: $_temp0 · $_temp1';
+  }
+
+  @override
+  String get calendarLatestFirst => 'Last updated, newest first';
+
+  @override
+  String calendarUpdatedAt(String time) {
+    return 'Updated at $time';
+  }
+
+  @override
+  String calendarViewAllNotes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+    );
+    return 'View all $_temp0 from this day';
+  }
+
+  @override
+  String get tagGroups => 'Tag groups';
+
+  @override
+  String get tagGroupsSubtitle => 'Notes are grouped automatically by tag';
+
+  @override
+  String get noNotesOnDate => 'No notes on this day';
+
+  @override
+  String get noteTimeline => 'Note timeline';
+
+  @override
+  String get untaggedNotes => 'Untagged';
+
+  @override
+  String get localFirst => 'Local first';
+
+  @override
+  String get offlineSecure => 'Stored on device';
+
+  @override
+  String get totalItems => 'Items';
+
+  @override
+  String get attachments => 'Attachments';
+
+  @override
+  String get userDataUsage => 'User data';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
+  String get unifiedStorage => 'Storage';
+
+  @override
+  String get cloudSync => 'Cloud sync';
+
+  @override
+  String get cloudSyncSubtitle => 'Manually sync user data with S3 or WebDAV';
+
+  @override
+  String get localModels => 'Local models';
+
+  @override
+  String get localModelsSubtitle =>
+      'Review active models and manage them by capability';
+
+  @override
+  String get backupAndMigration => 'Backup and migration';
+
+  @override
+  String get exportCompleteBackup => 'Export full backup';
+
+  @override
+  String get exportCompleteBackupSubtitle =>
+      'Keep multiple versions to share or save in a chosen location';
+
+  @override
+  String get restoreFromBackup => 'Restore from backup';
+
+  @override
+  String get restoreFromBackupSubtitle =>
+      'Restore from backup history or an external file after verification';
+
+  @override
+  String get backupScopeDescription =>
+      'Includes structured notes, body attachments, public and private AI chats, and chat images. Model files, model and cloud-sync keys, caches, and app lock are excluded.';
+
+  @override
+  String get createNewBackup => 'Create a new backup';
+
+  @override
+  String get backupName => 'Backup name';
+
+  @override
+  String get backupNameHint => 'Optional, for example: Before migration';
+
+  @override
+  String get backupDescription => 'Backup description';
+
+  @override
+  String get backupDescriptionHint =>
+      'Optional notes about what matters in this version';
+
+  @override
+  String get createBackup => 'Create backup';
+
+  @override
+  String get creatingBackup => 'Verifying and creating backup…';
+
+  @override
+  String get backupSavedDefault =>
+      'Saved to the default FKNotes backup location';
+
+  @override
+  String get backupHistory => 'Backup history';
+
+  @override
+  String get backupHistorySubtitle =>
+      'Keep multiple versions in the default location to share, save elsewhere, or restore';
+
+  @override
+  String get noBackupHistory => 'No local backups yet';
+
+  @override
+  String get backupStoredLocally => 'Default FKNotes location';
+
+  @override
+  String get saveBackupCopy => 'Save a copy…';
+
+  @override
+  String get backupCopySaved => 'Backup copy saved';
+
+  @override
+  String get backupDetails => 'Backup details';
+
+  @override
+  String backupDateAndSize(String date, String size) {
+    return '$date · $size';
+  }
+
+  @override
+  String get backupCreatedAt => 'Created';
+
+  @override
+  String get backupFileName => 'File name';
+
+  @override
+  String get backupFormat => 'Format version';
+
+  @override
+  String get backupVerificationCode => 'File checksum (SHA-256)';
+
+  @override
+  String get backupContentFingerprint => 'Content fingerprint';
+
+  @override
+  String get deleteBackup => 'Delete backup';
+
+  @override
+  String get deleteBackupQuestion => 'Delete this backup?';
+
+  @override
+  String get deleteBackupDescription =>
+      'Only this version in the default backup location will be removed. Current notes are not affected.';
+
+  @override
+  String get backupDeleted => 'Backup deleted';
+
+  @override
+  String get restoreWarning =>
+      'Restoring replaces current notes, chats, and attachments. Create a fresh backup first if needed.';
+
+  @override
+  String get chooseExternalBackup => 'Choose a backup from elsewhere';
+
+  @override
+  String get restoreBackupAction => 'Restore this backup';
+
+  @override
+  String get restoringBackup => 'Verifying and restoring backup…';
+
+  @override
+  String get organizationAndSecurity => 'Organization and security';
+
+  @override
+  String get appLock => 'App lock';
+
+  @override
+  String appLockEnabledSubtitle(String timeout) {
+    return 'On · Lock $timeout after leaving the app';
+  }
+
+  @override
+  String get appLockDisabledSubtitle => 'Use device biometrics or screen lock';
+
+  @override
+  String get lockImmediately => 'immediately';
+
+  @override
+  String get lockAfterOneMinute => 'after 1 minute';
+
+  @override
+  String get lockAfterFiveMinutes => 'after 5 minutes';
+
+  @override
+  String get lockAfterFifteenMinutes => 'after 15 minutes';
+
+  @override
+  String contentCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get loadingVersion => 'Loading version information…';
+
+  @override
+  String versionNumber(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String versionNumberWithBuild(String version, String build) {
+    return 'Version $version ($build)';
+  }
+
+  @override
+  String buildTime(String time) {
+    return 'Built $time';
+  }
+
+  @override
+  String get buildTimeUnrecorded => 'Build time unavailable';
+
+  @override
+  String get footerTagline => 'FKNotes · Local first, sync on your terms';
+
+  @override
+  String get backupExported => 'Backup handed off to the system';
+
+  @override
+  String exportFailed(String error) {
+    return 'Export failed: $error';
+  }
+
+  @override
+  String get restoreCompleteBackupQuestion => 'Restore full backup?';
+
+  @override
+  String get restoreCompleteBackupDescription =>
+      'Current content will be replaced by the backup. Exporting the current data first is recommended.';
+
+  @override
+  String get chooseBackup => 'Choose backup';
+
+  @override
+  String get backupRestored => 'Backup restored safely';
+
+  @override
+  String restoreFailed(String error) {
+    return 'Restore failed: $error';
+  }
+
+  @override
+  String get localModelsPageTitle => 'Local models';
+
+  @override
+  String get modelsInUse => 'In use';
+
+  @override
+  String get noModelsInUse => 'No local models are currently configured';
+
+  @override
+  String get modelConfiguration => 'Manage by category';
+
+  @override
+  String activeModelCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count models in use',
+      one: '1 model in use',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String activeModelsUsage(String size) {
+    return 'Local models use $size';
+  }
+
+  @override
+  String get installedModels => 'Installed';
+
+  @override
+  String get availableModels => 'Available';
+
+  @override
+  String installedModelsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count models installed',
+      one: '1 model installed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noInstalledModelsInCategory =>
+      'No models in this category are installed';
+
+  @override
+  String get noAvailableModelsInCategory =>
+      'No other models are currently available';
+
+  @override
+  String get speechModelsDescription =>
+      'Manage live dictation, recording transcription, speech processing, and text-to-speech separately.';
+
+  @override
+  String get visionModelsDescription =>
+      'Manage OCR and dedicated vision features. Chat image understanding is provided by image-capable language models.';
+
+  @override
+  String get liveDictationSettingsDescription =>
+      'Manage the dictation model, hotwords, refinement, and live denoising';
+
+  @override
+  String get modelDownloadsAndStorage => 'Downloads and storage';
+
+  @override
+  String get modelDownloadsAndStorageDescription =>
+      'Download sources, background tasks, and model storage';
+
+  @override
+  String get localAssistantUsage => 'Local Assistant';
+
+  @override
+  String get liveDictationUsage => 'Live dictation';
+
+  @override
+  String get audioTranscriptionUsage => 'Transcription';
+
+  @override
+  String get voiceActivityUsage => 'Voice detection';
+
+  @override
+  String get speechEnhancementUsage => 'Live denoising';
+
+  @override
+  String get textRecognitionUsage => 'Text recognition';
+
+  @override
+  String get modelPrivacyHint =>
+      'Models connect only when you download them and are excluded from note backups. User data is uploaded only during manual cloud sync.';
+
+  @override
+  String get languageModels => 'Language models';
+
+  @override
+  String get languageModelsDescription =>
+      'Download and choose the model used by Local Assistant. The default context is 4096 tokens.';
+
+  @override
+  String get discoverMnnModels => 'Discover local models';
+
+  @override
+  String get discoverMnnModelsDescription =>
+      'Browse public models synchronized from the taobao-mnn and litert-community Collections. You decide whether to verify and add them.';
+
+  @override
+  String get browseModels => 'Browse models';
+
+  @override
+  String get refreshCatalog => 'Refresh catalog';
+
+  @override
+  String get syncingModelCatalog => 'Syncing model catalog…';
+
+  @override
+  String modelCatalogSyncFailed(String error) {
+    return 'Couldn\'t refresh the model catalog: $error';
+  }
+
+  @override
+  String get modelCatalogRefreshTimeout => 'Model catalog refresh timed out';
+
+  @override
+  String get modelCatalogRefreshTimeoutDescription =>
+      'The model service did not respond in time. Retry or switch the model network source.';
+
+  @override
+  String get modelCatalogOffline => 'Couldn\'t connect to the model service';
+
+  @override
+  String get modelCatalogOfflineDescription =>
+      'Check your connection or try another model network source.';
+
+  @override
+  String get modelCatalogServiceUnavailable =>
+      'Model service is temporarily unavailable';
+
+  @override
+  String get modelCatalogServiceUnavailableDescription =>
+      'The service isn\'t responding normally. Try again later.';
+
+  @override
+  String get modelCatalogAuthorizationRequired =>
+      'Some models require access approval';
+
+  @override
+  String get modelCatalogAuthorizationRequiredDescription =>
+      'This catalog contains models whose license must be accepted on Hugging Face before use.';
+
+  @override
+  String get modelCatalogInvalidResponse =>
+      'The model catalog can\'t be read right now';
+
+  @override
+  String get modelCatalogInvalidResponseDescription =>
+      'The service returned unrecognized data. Try again later.';
+
+  @override
+  String get modelCatalogCompatibilityUnavailable =>
+      'Model compatibility can\'t be checked right now';
+
+  @override
+  String get modelNetworkSourceSettings => 'Switch network source';
+
+  @override
+  String get cachedCatalogInUse =>
+      'Showing the last successfully synchronized catalog';
+
+  @override
+  String get searchMnnModels => 'Search local models';
+
+  @override
+  String get noMnnModelsFound => 'No matching local models';
+
+  @override
+  String get officialMnnCollection => 'Official taobao-mnn Collection';
+
+  @override
+  String get officialLiteRtCollection => 'Official litert-community Collection';
+
+  @override
+  String downloadCount(int count) {
+    return '$count downloads';
+  }
+
+  @override
+  String get modelEngine => 'Inference engine';
+
+  @override
+  String get collection => 'Collection';
+
+  @override
+  String get downloads => 'Downloads';
+
+  @override
+  String get modelPackageNotVerified => 'Model package not verified';
+
+  @override
+  String get modelPackageVerificationDescription =>
+      'Verification reads repository metadata, the pinned revision, and file manifest. It does not download the full model or guarantee that this device can run it.';
+
+  @override
+  String get verifyModelPackage => 'Verify model package';
+
+  @override
+  String get verifyingModelPackage => 'Verifying model package…';
+
+  @override
+  String get reverifyModelPackage => 'Verify model package again';
+
+  @override
+  String get modelPackageUnsupported =>
+      'This repository is not a supported model package';
+
+  @override
+  String get modelPackageUnsupportedDescription =>
+      'Its format, public access status, or required files do not meet the current engine requirements.';
+
+  @override
+  String get checkingModelCompatibility => 'Checking model compatibility…';
+
+  @override
+  String get modelCompatibilityPassed =>
+      'MNN file and configuration checks passed';
+
+  @override
+  String get liteRtCompatibilityPassed =>
+      'LiteRT-LM file, pinned revision, and checksum checks passed';
+
+  @override
+  String modelCompatibilityFailed(String error) {
+    return 'This model can\'t be added: $error';
+  }
+
+  @override
+  String get pinnedCommit => 'Pinned commit';
+
+  @override
+  String get modelFileCount => 'Model files';
+
+  @override
+  String get modelFile => 'Model file';
+
+  @override
+  String fileCountValue(int count) {
+    return '$count files';
+  }
+
+  @override
+  String get modelCapabilities => 'Capabilities';
+
+  @override
+  String get textGenerationCapability => 'Text generation';
+
+  @override
+  String get imageInputCapability => 'Image input';
+
+  @override
+  String get audioInputCapability => 'Audio input';
+
+  @override
+  String get reasoningCapability => 'Reasoning';
+
+  @override
+  String get toolCallingCapability => 'Tool calling';
+
+  @override
+  String get addAndDownloadModel => 'Add and download';
+
+  @override
+  String get addToLanguageModels => 'Add to language models';
+
+  @override
+  String get modelAddedToManager => 'Model added to Local models';
+
+  @override
+  String get recommendedModelsAlreadyListed =>
+      'FKNotes recommended models are already shown on the previous page.';
+
+  @override
+  String remoteMnnModelSummary(String collection) {
+    return 'Official model from $collection';
+  }
+
+  @override
+  String get remoteMnnModelDescription =>
+      'Synchronized from taobao-mnn Collections. The repository revision and every model file are verified before installation.';
+
+  @override
+  String get liveDictationSettings => 'Live dictation settings';
+
+  @override
+  String get speechModels => 'Speech models';
+
+  @override
+  String get visionModels => 'Vision models';
+
+  @override
+  String get modelDownloadSource => 'Model download source';
+
+  @override
+  String get downloadSourceSecurityDescription =>
+      'Every mode safely falls back when its preferred endpoint is unavailable. Pinned revisions and SHA-256 checks still verify every model.';
+
+  @override
+  String get downloadSourceSaveFailed =>
+      'Couldn\'t save the download source setting';
+
+  @override
+  String get downloadSourceAutomatic => 'Automatic';
+
+  @override
+  String get downloadSourceOfficialFirst => 'Prefer official sources';
+
+  @override
+  String get downloadSourceMainlandFirst => 'Prefer regional mirrors';
+
+  @override
+  String get downloadSourceAutomaticDescription =>
+      'Use device region and successful connections to adapt';
+
+  @override
+  String get downloadSourceOfficialDescription =>
+      'Prefer official Hugging Face or GitHub endpoints';
+
+  @override
+  String get downloadSourceMainlandDescription =>
+      'Prefer regional mirrors or ModelScope endpoints';
+
+  @override
+  String downloadSourceEffective(String source) {
+    return 'Automatic · Prefer $source';
+  }
+
+  @override
+  String get officialSource => 'official sources';
+
+  @override
+  String get mainlandMirror => 'regional mirrors';
+
+  @override
+  String lastUsedSource(String source) {
+    return 'Last used: $source';
+  }
+
+  @override
+  String get continueModelDownloadQuestion => 'Continue model download?';
+
+  @override
+  String get downloadModelQuestion => 'Download model?';
+
+  @override
+  String modelDownloadDescription(String name, String size) {
+    return '$name\nAbout $size remains. Wi-Fi is recommended.\n\nYou can leave this page during the download. Progress is kept if interrupted.';
+  }
+
+  @override
+  String modelMemoryRecommendation(String memory) {
+    return 'At least $memory of device memory is recommended. The model may fail to load or be stopped by the system when memory is low.';
+  }
+
+  @override
+  String get ttsStorageRecommendation =>
+      'Keep about 600 MB of free storage available for extraction and installation.';
+
+  @override
+  String get startDownload => 'Download';
+
+  @override
+  String removeModelQuestion(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String removeModelDescription(String size) {
+    return 'This frees about $size. Content already generated by the model is not deleted.';
+  }
+
+  @override
+  String get removeModel => 'Remove model';
+
+  @override
+  String hotwordsSaved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hotwords',
+      one: '1 hotword',
+    );
+    return 'Saved $_temp0';
+  }
+
+  @override
+  String get hotwordsDisabled => 'Live dictation hotwords disabled';
+
+  @override
+  String get settingsSaveFailed =>
+      'Couldn\'t save settings. Check available storage.';
+
+  @override
+  String get purpose => 'Purpose';
+
+  @override
+  String get engine => 'Engine';
+
+  @override
+  String get supportedLanguages => 'Languages';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get recommendedMemory => 'Recommended memory';
+
+  @override
+  String memoryAndAbove(String memory) {
+    return '$memory or more';
+  }
+
+  @override
+  String get source => 'Source';
+
+  @override
+  String get license => 'License';
+
+  @override
+  String get saveFailedStorage => 'Couldn\'t save. Check available storage.';
+
+  @override
+  String get liveDictationHotwords => 'Live dictation hotwords';
+
+  @override
+  String get hotwordsDescription =>
+      'Enter one name, product, or technical term per line. Leave empty to disable. Changes apply to the next dictation session.';
+
+  @override
+  String get hotwordsHint => 'FKNotes\nSherpa ONNX\nProduct name';
+
+  @override
+  String get hotwordsList => 'Hotwords';
+
+  @override
+  String get boostStrength => 'Boost strength';
+
+  @override
+  String get hotwordsStrengthWarning =>
+      'A high value may mistake similar-sounding words for hotwords. Start with 2.0.';
+
+  @override
+  String get saving => 'Saving…';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get finalRefinement => 'Final refinement';
+
+  @override
+  String get finalRefinementDescription =>
+      'Run a second SenseVoice pass and replace text only when quality checks pass (off by default)';
+
+  @override
+  String get liveNoiseSuppression => 'Live noise suppression';
+
+  @override
+  String get liveNoiseSuppressionDescription =>
+      'Reduce background noise before streaming recognition';
+
+  @override
+  String get installDenoiserFirst =>
+      'Install the DPDFNet live denoiser below first';
+
+  @override
+  String get hotwordBoost => 'Hotword boost';
+
+  @override
+  String hotwordSummary(int count, String strength) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hotwords',
+      one: '1 hotword',
+    );
+    return '$_temp0 · Strength $strength';
+  }
+
+  @override
+  String get hotwordBoostDescription =>
+      'Prioritize names, brands, and technical terms';
+
+  @override
+  String installedModelCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count models available',
+      one: '1 model available',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String optionalModelsUsage(String size) {
+    return 'Optional models use $size';
+  }
+
+  @override
+  String get recommended => 'Recommended';
+
+  @override
+  String get modelTransfers => 'Downloads and resumable models';
+
+  @override
+  String get modelTransfersDescription =>
+      'Review models that are transferring, need attention, or have saved download progress. Completed models leave this list automatically.';
+
+  @override
+  String modelTransferSectionCount(int count) {
+    return 'Downloads and resumable models ($count)';
+  }
+
+  @override
+  String modelTransferSummary(int active, int resumable) {
+    return '$active running · $resumable ready to resume';
+  }
+
+  @override
+  String get noModelTransfers =>
+      'No models are transferring or waiting to resume';
+
+  @override
+  String get otherModels => 'Other models';
+
+  @override
+  String get currentDictation => 'Current dictation';
+
+  @override
+  String get currentAssistant => 'Current assistant';
+
+  @override
+  String get modelDetails => 'Model details';
+
+  @override
+  String memoryBadge(String memory) {
+    return '$memory+ memory';
+  }
+
+  @override
+  String get pleaseWait => 'Please wait';
+
+  @override
+  String get modelDownloadFailed => 'Model download failed';
+
+  @override
+  String get bundledWithApp => 'Bundled';
+
+  @override
+  String get comingSoon => 'Coming soon';
+
+  @override
+  String get installed => 'Installed';
+
+  @override
+  String get useForDictation => 'Use for dictation';
+
+  @override
+  String get useForAssistant => 'Use for assistant';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get importFromFile => 'Import from file';
+
+  @override
+  String get continueDownload => 'Continue';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get pauseDownload => 'Pause';
+
+  @override
+  String get cancelingDownload => 'Pausing and keeping downloaded data…';
+
+  @override
+  String downloadedResumable(String amount) {
+    return '$amount downloaded · Ready to resume';
+  }
+
+  @override
+  String get moreActions => 'More actions';
+
+  @override
+  String get discardPartialDownload => 'Delete downloaded data';
+
+  @override
+  String discardPartialDownloadQuestion(String name) {
+    return 'Delete download progress for $name?';
+  }
+
+  @override
+  String discardPartialDownloadDescription(String size) {
+    return 'This removes the downloaded $size. The next download will start from the beginning.';
+  }
+
+  @override
+  String get discardPartialDownloadFailed =>
+      'Could not delete the downloaded data. Try again later.';
+
+  @override
+  String connectingDownloadSource(String source) {
+    return 'Connecting to $source';
+  }
+
+  @override
+  String downloadedInstalling(String size) {
+    return 'Downloaded $size · Finishing installation';
+  }
+
+  @override
+  String downloadedWaitingInstall(String size) {
+    return 'Downloaded $size · Waiting to install';
+  }
+
+  @override
+  String get preparingLocalModelImport => 'Preparing local model files…';
+
+  @override
+  String estimatedRemainingCompact(String time) {
+    return '$time left';
+  }
+
+  @override
+  String get modelDownloadTransfer => 'Model download';
+
+  @override
+  String get localModelImportTransfer => 'Local file import';
+
+  @override
+  String get thirdPartyMainlandMirror => 'Third-party regional mirror';
+
+  @override
+  String get githubOfficialSource => 'Official GitHub source';
+
+  @override
+  String get modelScopeSource => 'ModelScope';
+
+  @override
+  String get backgroundTasks => 'Background tasks';
+
+  @override
+  String get tasksAndActivity => 'Tasks & activity';
+
+  @override
+  String get backgroundTasksPageDescription =>
+      'Review operations in progress and issues that need your attention.';
+
+  @override
+  String get runningTasks => 'In progress';
+
+  @override
+  String get tasksNeedingAttention => 'Needs attention';
+
+  @override
+  String get clearFailedTasks => 'Clear records';
+
+  @override
+  String get clearFailedTasksQuestion => 'Clear failed task records?';
+
+  @override
+  String get clearFailedTasksDescription =>
+      'This removes failed records and their temporary files. It will not interrupt running tasks or affect saved content.';
+
+  @override
+  String get stopTask => 'Stop';
+
+  @override
+  String get modelTask => 'Models & downloads';
+
+  @override
+  String get attachmentTask => 'Attachment import';
+
+  @override
+  String get transcriptionTask => 'Audio processing';
+
+  @override
+  String get localInferenceTask => 'Local inference';
+
+  @override
+  String backgroundTaskCount(int count) {
+    return 'Background tasks · $count';
+  }
+
+  @override
+  String get noBackgroundTasks => 'No tasks are running or need attention';
+
+  @override
+  String backgroundTaskSummary(int active, int failed) {
+    return '$active running · $failed need attention';
+  }
+
+  @override
+  String get allTasksComplete => 'All tasks are complete';
+
+  @override
+  String taskActionFailed(String error) {
+    return 'Task action failed: $error';
+  }
+
+  @override
+  String taskProgress(String title) {
+    return 'Progress for $title';
+  }
+
+  @override
+  String get audioTranscription => 'Audio transcription';
+
+  @override
+  String get liveDictation => 'Live dictation';
+
+  @override
+  String get readAloud => 'Read aloud';
+
+  @override
+  String get localInferenceInUse => 'Using local inference resources';
+
+  @override
+  String get connectingModelSource => 'Connecting to download source';
+
+  @override
+  String get downloadingModel => 'Downloading model';
+
+  @override
+  String get importingModel => 'Importing model';
+
+  @override
+  String get waitingToInstall => 'Waiting to install';
+
+  @override
+  String get verifyingAndInstalling => 'Verifying and installing';
+
+  @override
+  String get canceling => 'Canceling';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get failed => 'Failed';
+
+  @override
+  String get canceled => 'Canceled';
+
+  @override
+  String get modelTaskFailed => 'Model task failed';
+
+  @override
+  String get importingAttachment => 'Importing attachment';
+
+  @override
+  String get savingToNote => 'Saving to note';
+
+  @override
+  String get attachmentImportFailed => 'Attachment import failed';
+
+  @override
+  String get transcriptionFailed => 'Transcription failed';
+
+  @override
+  String get preparingTranscription => 'Preparing transcription';
+
+  @override
+  String get decodingAudio => 'Decoding audio';
+
+  @override
+  String get identifyingSpeakers => 'Identifying speakers';
+
+  @override
+  String get recognizingSpeech => 'Recognizing speech';
+
+  @override
+  String get savingTranscript => 'Saving transcript';
+
+  @override
+  String get systemAuthentication => 'Use system authentication';
+
+  @override
+  String get systemAuthenticationDescription =>
+      'Unlock with the biometrics or screen lock already configured on this device. FKNotes never reads or stores biometric data.';
+
+  @override
+  String get enableAppLock => 'Enable app lock';
+
+  @override
+  String get appLockEnabledDescription =>
+      'Verify your device identity when opening FKNotes';
+
+  @override
+  String get appLockDisabledDescription =>
+      'Off by default and does not change existing data';
+
+  @override
+  String get autoLockAfterLeaving => 'Lock after leaving the app';
+
+  @override
+  String get lockNow => 'Lock now';
+
+  @override
+  String get appLockLimitDescription =>
+      'App lock prevents others from viewing content on an unlocked device. It does not encrypt the database, attachments, or exported backups.';
+
+  @override
+  String get privacyProtection => 'Privacy protection';
+
+  @override
+  String get systemAuthenticationPrivacyFooter =>
+      'System authentication · Local content stays private';
+
+  @override
+  String get waitingForSystemAuthentication =>
+      'Waiting for system authentication';
+
+  @override
+  String get preparingAppLock => 'Preparing App lock';
+
+  @override
+  String get waitingForSystemVerification => 'Waiting for system verification';
+
+  @override
+  String get appLocked => 'App locked';
+
+  @override
+  String get loadingLocalSecuritySettings => 'Loading local security settings';
+
+  @override
+  String get completeSystemAuthentication =>
+      'Complete authentication in the system prompt';
+
+  @override
+  String get unlockAppDescription =>
+      'Verify your device identity to continue using FKNotes';
+
+  @override
+  String get authenticateAndUnlock => 'Authenticate and unlock';
+
+  @override
+  String get contentHidden => 'Content hidden';
+
+  @override
+  String get authenticateToContinue =>
+      'Verify your device identity to continue';
+
+  @override
+  String get authenticateToEnableAppLock =>
+      'Verify your device identity to enable App lock';
+
+  @override
+  String get authenticateToDisableAppLock =>
+      'Verify your device identity to disable App lock';
+
+  @override
+  String get useDevicePassword => 'Use device passcode';
+
+  @override
+  String get authenticationCanceled => 'Authentication canceled';
+
+  @override
+  String get authenticationFailedRetry => 'Authentication failed. Try again.';
+
+  @override
+  String get authenticationTemporarilyUnavailable =>
+      'System authentication is temporarily unavailable. Try again later.';
+
+  @override
+  String get authenticationCredentialsRequired =>
+      'Set up a screen lock, fingerprint, or face unlock in system settings first.';
+
+  @override
+  String get authenticationUnavailable =>
+      'System authentication is not available on this device.';
+
+  @override
+  String get authenticationLockedOut =>
+      'Too many attempts. Use your device passcode or try again later.';
+
+  @override
+  String get authenticationInProgress =>
+      'System authentication is already in progress.';
+
+  @override
+  String get authenticationUiUnavailable =>
+      'The system authentication prompt is temporarily unavailable.';
+
+  @override
+  String get appLockSaveFailed =>
+      'Couldn\'t save App lock settings. Check available storage.';
+
+  @override
+  String get autoLockSaveFailed =>
+      'Couldn\'t save the auto-lock timeout. Check available storage.';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get syncMethod => 'Sync method';
+
+  @override
+  String get saveConfiguration => 'Save configuration';
+
+  @override
+  String get testConnection => 'Test connection';
+
+  @override
+  String get syncing => 'Syncing…';
+
+  @override
+  String get syncNow => 'Sync now';
+
+  @override
+  String get manualSyncForegroundHint =>
+      'Keep FKNotes in the foreground while syncing. A cloud connection is made only after you tap Sync now.';
+
+  @override
+  String get serverAddress => 'Server address';
+
+  @override
+  String get username => 'Username';
+
+  @override
+  String get passwordOrAppPassword => 'Password or app password';
+
+  @override
+  String get remoteDirectory => 'Remote folder';
+
+  @override
+  String get objectPrefix => 'Object prefix';
+
+  @override
+  String get pathStyleAddress => 'Path-style addressing';
+
+  @override
+  String get pathStyleDescription =>
+      'Usually required by MinIO and many S3-compatible services';
+
+  @override
+  String get hide => 'Hide';
+
+  @override
+  String get show => 'Show';
+
+  @override
+  String get cloudConfigurationSaved =>
+      'Cloud sync configuration saved on this device';
+
+  @override
+  String get connectionSuccessful =>
+      'Connection successful with read and write access';
+
+  @override
+  String get syncConflictDetected => 'Sync conflict detected';
+
+  @override
+  String syncConflictDescription(String date) {
+    return 'Both local and cloud data may have changed.\n\nCloud version: $date\nChoose which copy to keep. The other copy will be overwritten.';
+  }
+
+  @override
+  String get notNow => 'Not now';
+
+  @override
+  String get useCloudVersion => 'Use cloud';
+
+  @override
+  String get keepLocalVersion => 'Keep local';
+
+  @override
+  String get syncedLocalToCloud => 'Local data synced to the cloud';
+
+  @override
+  String get updatedFromCloud => 'Local data updated from the cloud';
+
+  @override
+  String get cloudAlreadyUpToDate => 'Local and cloud data are already in sync';
+
+  @override
+  String get syncConflictUnresolved => 'Sync conflict remains unresolved';
+
+  @override
+  String get httpsCertificateFailed =>
+      'HTTPS certificate validation failed. Check the server certificate.';
+
+  @override
+  String get cloudConnectionFailed =>
+      'Couldn\'t connect. Check the network and server address.';
+
+  @override
+  String get cloudConnectionTimeout => 'Cloud connection timed out';
+
+  @override
+  String get manualUserDataSync => 'Manual user data sync only';
+
+  @override
+  String get syncScopeDescription =>
+      'Includes notes, chats, and attachments. Excludes models, caches, App lock, and cloud account configuration.';
+
+  @override
+  String get cloudEncryptionWarning =>
+      'Cloud archives are not additionally encrypted. Use HTTPS and a trusted storage provider.';
+
+  @override
+  String lastSyncedAt(String date) {
+    return 'Last synced: $date';
+  }
+
+  @override
+  String get cut => 'Cut';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get details => 'Details';
+
+  @override
+  String get paste => 'Paste';
+
+  @override
+  String get selectAll => 'Select all';
+
+  @override
+  String get deselectAll => 'Deselect all';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get invalidExternalLink =>
+      'This link is invalid or uses an unsupported protocol.';
+
+  @override
+  String get openExternalLinkQuestion => 'Open external link?';
+
+  @override
+  String externalLinkWarning(String destination) {
+    return '$destination\n\nThis link will be handled by another app and may take you away from FKNotes.';
+  }
+
+  @override
+  String get continueOpening => 'Continue';
+
+  @override
+  String get noExternalLinkHandler =>
+      'No app on this device can open this link.';
+
+  @override
+  String get externalLinkOpenFailed => 'Couldn\'t open this link.';
+
+  @override
+  String remoteImageBlocked(String label) {
+    return 'External image not loaded: $label';
+  }
+
+  @override
+  String mathFormulaSemantics(String formula) {
+    return 'Math formula: $formula';
+  }
+
+  @override
+  String get assistantPrivacyDescription =>
+      'Tell AI what you want to do. Note content is processed only on this device.';
+
+  @override
+  String get processingScope => 'Scope';
+
+  @override
+  String get scopeSelection => 'Selected text';
+
+  @override
+  String get scopeCurrentBlock => 'Current paragraph';
+
+  @override
+  String get scopeFullNote => 'Entire note';
+
+  @override
+  String get chatWithThisNote => 'Chat with this note';
+
+  @override
+  String get chatWithThisNoteDescription =>
+      'Use the selected scope as context for follow-up questions';
+
+  @override
+  String get linkedNote => 'Linked note';
+
+  @override
+  String get noteSources => 'Note sources';
+
+  @override
+  String openSourceNote(String title) {
+    return 'Open source note: $title';
+  }
+
+  @override
+  String get sourceNoteUnavailable => 'This source note no longer exists.';
+
+  @override
+  String get referenceNotes => 'Reference library notes';
+
+  @override
+  String get referenceNotesDescription =>
+      'Choose multiple notes as sources for your next message';
+
+  @override
+  String get recentNotes => 'Recent notes';
+
+  @override
+  String selectedNoteCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String noteReferenceLimit(int count) {
+    return 'You can reference up to $count notes at a time.';
+  }
+
+  @override
+  String get noMatchingNotes => 'No matching notes found';
+
+  @override
+  String get addSelectedNotes => 'Reference selected notes';
+
+  @override
+  String get removeNoteReference => 'Remove note reference';
+
+  @override
+  String get assistantProposedAction => 'Note action awaiting confirmation';
+
+  @override
+  String get toolCreateNote => 'Create a new note';
+
+  @override
+  String get toolAppendNote => 'Append to note';
+
+  @override
+  String get toolReplaceNote => 'Replace note body';
+
+  @override
+  String get reviewToolAction => 'Preview and confirm';
+
+  @override
+  String get toolActionCompleted => 'Completed';
+
+  @override
+  String get toolActionConfirmationNotice =>
+      'This changes a local note. Nothing is written until you confirm.';
+
+  @override
+  String get toolTargetNote => 'Target note';
+
+  @override
+  String get toolCurrentContent => 'Current content';
+
+  @override
+  String get toolProposedContent => 'Proposed content';
+
+  @override
+  String get confirmCreateNote => 'Create note';
+
+  @override
+  String get confirmAppendNote => 'Append';
+
+  @override
+  String get confirmReplaceNote => 'Replace';
+
+  @override
+  String get toolActionSucceeded => 'Note action completed';
+
+  @override
+  String get toolActionTargetMissing =>
+      'The target note was not found. It may have been deleted.';
+
+  @override
+  String toolActionFailed(String error) {
+    return 'Note action failed: $error';
+  }
+
+  @override
+  String get toolProposalFallback =>
+      'I prepared a note action. Preview and confirm it before anything is changed.';
+
+  @override
+  String toolSearchNoResults(String query) {
+    return 'No notes matched “$query”. Say that none were found and do not search again.';
+  }
+
+  @override
+  String toolSearchResultsReady(String query) {
+    return 'FKNotes returned note search results for “$query”. Answer the original question using these sources and do not search again.';
+  }
+
+  @override
+  String get toolSearchRetryBlocked =>
+      'The model did not use the search results. Try rephrasing your request.';
+
+  @override
+  String get writeReplyToNote => 'Write to note';
+
+  @override
+  String get writeReplyToNoteDescription =>
+      'Preview the reply and confirm where it should go';
+
+  @override
+  String get confirmWriteToNote => 'Write to note';
+
+  @override
+  String get replyWrittenToNote => 'Reply written to the note';
+
+  @override
+  String get replyWriteToNoteFailed =>
+      'The note changed. Return to it and try again.';
+
+  @override
+  String get assistantChatResultHeading => 'Local assistant reply';
+
+  @override
+  String get chatNoteEmpty => 'Add some note content before starting a chat.';
+
+  @override
+  String get assistantCustomHint =>
+      'For example: Turn these ideas into a concise email…';
+
+  @override
+  String get writeWithAi => 'Write with AI';
+
+  @override
+  String get inlineAssistantHint => 'Describe what you want AI to write…';
+
+  @override
+  String get inlineAssistantInsertAtCursor => 'Insert at cursor';
+
+  @override
+  String get inlineAssistantReplaceSelection => 'Replace selection';
+
+  @override
+  String get inlineAssistantEditCurrentBlock => 'Edit current paragraph';
+
+  @override
+  String get inlineAssistantEditFullNote => 'Edit entire note';
+
+  @override
+  String get inlineAssistantEditMetadata => 'Update title and tags';
+
+  @override
+  String get inlineAssistantWriting => 'Writing into your note…';
+
+  @override
+  String get inlineAssistantLoading => 'Preparing the local model…';
+
+  @override
+  String get inlineAssistantWritten => 'Note updated';
+
+  @override
+  String get inlineAssistantMetadataUpdated => 'Note details updated';
+
+  @override
+  String get inlineAssistantContinue => 'Keep creating';
+
+  @override
+  String get inlineAssistantContinueWriting => 'Continue this passage';
+
+  @override
+  String get inlineAssistantMakeList => 'Organize as a list';
+
+  @override
+  String get inlineAssistantExpandIdea => 'Expand this idea';
+
+  @override
+  String get inlineAssistantGenerateMetadata => 'Generate title and tags';
+
+  @override
+  String get inlineAssistantInvalidMetadata =>
+      'The title and tags response couldn\'t be read. Try again.';
+
+  @override
+  String get inlineAssistantNoMetadataChanges =>
+      'The model didn\'t suggest any title or tag changes.';
+
+  @override
+  String get startGenerating => 'Generate';
+
+  @override
+  String get quickActions => 'Quick actions';
+
+  @override
+  String get assistantSummarize => 'Summarize note';
+
+  @override
+  String get assistantSummarizeDescription =>
+      'Extract the main conclusion and key points';
+
+  @override
+  String get assistantExtractTodos => 'Extract tasks';
+
+  @override
+  String get assistantExtractTodosDescription => 'Find clear, actionable tasks';
+
+  @override
+  String get assistantPolish => 'Improve writing';
+
+  @override
+  String get assistantPolishDescription =>
+      'Improve clarity while preserving facts and structure';
+
+  @override
+  String get assistantCustomAction => 'Custom instruction';
+
+  @override
+  String get assistantNoOutput => 'The model didn\'t generate any content.';
+
+  @override
+  String get stopGenerating => 'Stop';
+
+  @override
+  String get regenerate => 'Generate again';
+
+  @override
+  String get chooseGeneratedContentPlacement =>
+      'Choose how to use the generated content';
+
+  @override
+  String get placementReplace => 'Replace original';
+
+  @override
+  String get placementInsertBelow => 'Insert below paragraph';
+
+  @override
+  String get placementAppend => 'Append to note';
+
+  @override
+  String get useCurrentContent => 'Use current content';
+
+  @override
+  String get useGeneratedContent => 'Use generated content';
+
+  @override
+  String get generatedContentCopied => 'Generated content copied';
+
+  @override
+  String get loadingLocalModel => 'Loading local model…';
+
+  @override
+  String get generatingOnDevice => 'Generating on device…';
+
+  @override
+  String get generationCompleted => 'Generation complete. Review before using.';
+
+  @override
+  String get generationLimitReached =>
+      'Output limit reached. Review the result.';
+
+  @override
+  String get generationStoppedUsable =>
+      'Generation stopped. You can copy or insert the current result.';
+
+  @override
+  String get generationTimedOutUsable =>
+      'Generation timed out. Retry or copy the current result.';
+
+  @override
+  String get generationIncomplete => 'Local generation didn\'t finish.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get maybeLater => 'Maybe later';
+
+  @override
+  String get readNoteAloud => 'Read note aloud';
+
+  @override
+  String get offlineReadAloudModelRequired =>
+      'Offline read-aloud model required';
+
+  @override
+  String get readAloudModelDownloadDescription =>
+      'Kokoro Chinese-English INT8 requires an initial 140.2 MB download. Afterward, note read-aloud works entirely offline.';
+
+  @override
+  String get manageModels => 'Manage models';
+
+  @override
+  String get noteReadAloudFailed => 'Couldn\'t read this note aloud.';
+
+  @override
+  String get liveDictationIncomplete => 'Live dictation didn\'t finish.';
+
+  @override
+  String get unsavedDraftFound => 'Unsaved draft found';
+
+  @override
+  String get unsavedDraftDescription =>
+      'The last editing session may have ended unexpectedly. Restore content that wasn\'t saved to the note?';
+
+  @override
+  String get discardDraft => 'Discard';
+
+  @override
+  String get restore => 'Restore';
+
+  @override
+  String get liveSpeechModelRequired => 'Live speech model required';
+
+  @override
+  String liveSpeechModelDownloadDescription(String model, String size) {
+    return 'The selected model is $model. Its first use requires about $size. After downloading, dictation works entirely offline.';
+  }
+
+  @override
+  String get placeCursorInText => 'Place the cursor in a text area first.';
+
+  @override
+  String get liveDictationStartFailed => 'Couldn\'t start live dictation.';
+
+  @override
+  String get localLanguageModelRequired => 'Local language model required';
+
+  @override
+  String localLanguageModelDownloadDescription(String model, String size) {
+    return 'The selected model is $model. Its first use requires about $size. After downloading, note content is processed only on this device.';
+  }
+
+  @override
+  String get assistantReplacedContent => 'Original content replaced';
+
+  @override
+  String get assistantInsertedBelow => 'Inserted below the current paragraph';
+
+  @override
+  String get assistantAppended => 'Appended to the end of the note';
+
+  @override
+  String get noteChangedRetryAssistant =>
+      'The note changed. Start the AI action again.';
+
+  @override
+  String assistantLaunchFailed(String error) {
+    return 'Couldn\'t start the local assistant: $error';
+  }
+
+  @override
+  String autosaveFailed(String error) {
+    return 'Autosave failed: $error';
+  }
+
+  @override
+  String get addToNote => 'Add to note';
+
+  @override
+  String get camera => 'Camera';
+
+  @override
+  String get watermarkCamera => 'Watermark camera';
+
+  @override
+  String get watermarkLocationTitle => 'Set watermark location';
+
+  @override
+  String get watermarkLocationDescription =>
+      'Use a readable name for your current location, or enter the place you want shown on the photo.';
+
+  @override
+  String get useCurrentLocation => 'Current location';
+
+  @override
+  String get enterLocationManually => 'Enter manually';
+
+  @override
+  String get detectedLocation => 'Detected location';
+
+  @override
+  String get locationNameUnavailable =>
+      'Your coordinates are available, but no place name was found. Retry or enter a location manually.';
+
+  @override
+  String get customLocationName => 'Location name';
+
+  @override
+  String get customLocationHint =>
+      'For example: Riverside Park or Meeting Room';
+
+  @override
+  String get locationNameRequired =>
+      'Enter the location name to show in the watermark.';
+
+  @override
+  String get continueToCamera => 'Continue to camera';
+
+  @override
+  String get locatingForWatermark => 'Getting your current location…';
+
+  @override
+  String get locationServiceDisabled =>
+      'Turn on location services before using the watermark camera.';
+
+  @override
+  String get locationPermissionRequired =>
+      'The watermark camera needs location access. The location is written only to the photo and stored on this device.';
+
+  @override
+  String get locationPermissionPermanentlyDenied =>
+      'Location access is disabled. Enable it in system settings and try again.';
+
+  @override
+  String get locationUnavailable =>
+      'Your current location is unavailable. Move to an open area and try again.';
+
+  @override
+  String get chooseVideo => 'Choose video';
+
+  @override
+  String get recordVideo => 'Record video';
+
+  @override
+  String get playVideo => 'Play video';
+
+  @override
+  String get videoPlaybackFailed => 'Couldn\'t play this video.';
+
+  @override
+  String attachmentImportTypeFailed(String type) {
+    return 'Couldn\'t import $type.';
+  }
+
+  @override
+  String get editNote => 'Edit note';
+
+  @override
+  String get newNote => 'New note';
+
+  @override
+  String get createNoteShort => 'New';
+
+  @override
+  String get finishEditing => 'Done';
+
+  @override
+  String get releaseToInsertImages => 'Release to insert images';
+
+  @override
+  String get onlyImagesCanBeDropped => 'Only images can be dropped here';
+
+  @override
+  String get droppedImagesRejected =>
+      'Some files were unsupported images or exceeded 20 MB';
+
+  @override
+  String get autosaveEnabled => 'Autosave is on';
+
+  @override
+  String get autosavePending => 'Autosaving shortly';
+
+  @override
+  String get autosaving => 'Autosaving…';
+
+  @override
+  String get autosavedLocally => 'Autosaved on this device';
+
+  @override
+  String get autosaveFailedShort => 'Autosave failed';
+
+  @override
+  String get savingEllipsis => 'Saving…';
+
+  @override
+  String get localDraft => 'Local draft';
+
+  @override
+  String get savedLocally => 'Saved on device';
+
+  @override
+  String characterCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count characters',
+      one: '1 character',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get stopReadAloud => 'Stop read-aloud';
+
+  @override
+  String get moreNoteActions => 'More note actions';
+
+  @override
+  String get unpin => 'Unpin';
+
+  @override
+  String get pin => 'Pin';
+
+  @override
+  String get addTags => 'Add tags';
+
+  @override
+  String get tags => 'Tags';
+
+  @override
+  String get noteContent => 'Note content';
+
+  @override
+  String attachmentItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count attachments',
+      one: '1 attachment',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noteDescriptionHint => 'Add context, ideas, or a summary…';
+
+  @override
+  String get noteStartHint => 'Start writing…';
+
+  @override
+  String get addMediaOrFile => 'Add an image, recording, or file';
+
+  @override
+  String get editTags => 'Edit tags';
+
+  @override
+  String get tagsDescription =>
+      'Separate tags with commas. Duplicates are merged automatically.';
+
+  @override
+  String get tagsHint => 'For example: Work, Ideas, Read later';
+
+  @override
+  String get stopLiveDictation => 'Stop live dictation';
+
+  @override
+  String get liveVoiceInput => 'Live voice input';
+
+  @override
+  String get redo => 'Redo';
+
+  @override
+  String get bold => 'Bold';
+
+  @override
+  String get italic => 'Italic';
+
+  @override
+  String get underline => 'Underline';
+
+  @override
+  String get addLink => 'Add link';
+
+  @override
+  String get editLink => 'Edit link';
+
+  @override
+  String get linkPrivacyDescription =>
+      'The link is saved in Markdown. FKNotes will still ask before opening it.';
+
+  @override
+  String get linkText => 'Text to display';
+
+  @override
+  String get linkTextHint => 'For example: Learn more';
+
+  @override
+  String get linkAddress => 'Link address';
+
+  @override
+  String get linkAddressHint => 'https://example.com';
+
+  @override
+  String get removeLink => 'Remove link';
+
+  @override
+  String get organizingLastSentence => 'Finishing the last sentence…';
+
+  @override
+  String get liveDictationFailed => 'Live dictation failed.';
+
+  @override
+  String get listening => 'Listening…';
+
+  @override
+  String liveDictationElapsed(String time) {
+    return 'Live dictation  $time';
+  }
+
+  @override
+  String get localVoiceInput => 'On-device voice input';
+
+  @override
+  String get cancelDictation => 'Cancel dictation';
+
+  @override
+  String get finishDictation => 'Finish dictation';
+
+  @override
+  String get paragraph => 'Paragraph';
+
+  @override
+  String get paragraphStyle => 'Paragraph style';
+
+  @override
+  String get noteOutline => 'Note outline';
+
+  @override
+  String get noteOutlineHint => 'Tap a heading to jump to its location';
+
+  @override
+  String get noteOutlineEmpty => 'No headings yet';
+
+  @override
+  String get noteOutlineEmptyHint =>
+      'Use Heading 1–6 in the bottom toolbar to add sections to this outline.';
+
+  @override
+  String get preparingReadAloud => 'Preparing read-aloud…';
+
+  @override
+  String get readAloudPlaying => 'Reading aloud';
+
+  @override
+  String headingLevel(int level) {
+    return 'Heading $level';
+  }
+
+  @override
+  String get quote => 'Quote';
+
+  @override
+  String get codeBlock => 'Code block';
+
+  @override
+  String get divider => 'Divider';
+
+  @override
+  String get listsAndIndentation => 'Lists and indentation';
+
+  @override
+  String get todoItem => 'To-do item';
+
+  @override
+  String get bulletList => 'Bulleted list';
+
+  @override
+  String get numberedList => 'Numbered list';
+
+  @override
+  String get decreaseIndent => 'Decrease indent';
+
+  @override
+  String get increaseIndent => 'Increase indent';
+
+  @override
+  String get moreFormatting => 'More formatting';
+
+  @override
+  String get strikethrough => 'Strikethrough';
+
+  @override
+  String get inlineCode => 'Inline code';
+
+  @override
+  String get generatingThumbnail => 'Generating thumbnail…';
+
+  @override
+  String importingBytes(String bytes) {
+    return 'Importing · $bytes';
+  }
+
+  @override
+  String importingPercent(int percent, String bytes) {
+    return 'Importing $percent% · $bytes';
+  }
+
+  @override
+  String get importCompleteSaving => 'Import complete. Saving to note…';
+
+  @override
+  String get importFailedRetry => 'Import failed. Try again.';
+
+  @override
+  String get importCanceled => 'Import canceled';
+
+  @override
+  String get cancelImport => 'Cancel import';
+
+  @override
+  String chooseTypeAgain(String type) {
+    return 'Choose $type again';
+  }
+
+  @override
+  String get adjustAttachment => 'Reorder attachment';
+
+  @override
+  String get moveUp => 'Move up';
+
+  @override
+  String get moveDown => 'Move down';
+
+  @override
+  String get referenceInBody => 'Reference in note';
+
+  @override
+  String importFailedDetail(String error) {
+    return 'Import failed · $error';
+  }
+
+  @override
+  String get assistantSummaryHeading => 'Local assistant summary';
+
+  @override
+  String get assistantTodosHeading => 'Local assistant tasks';
+
+  @override
+  String get assistantPolishedHeading => 'Local assistant revision';
+
+  @override
+  String get assistantGeneratedHeading => 'AI-generated content';
+
+  @override
+  String attachmentReference(String path) {
+    return 'Attachment reference: $path';
+  }
+
+  @override
+  String get markdownTable => 'Markdown table';
+
+  @override
+  String tableDimensions(int columns, int rows) {
+    return '$columns columns · $rows rows';
+  }
+
+  @override
+  String get deleteTable => 'Delete table';
+
+  @override
+  String get editTable => 'Edit table';
+
+  @override
+  String get invalidMarkdownTable =>
+      'The table syntax is incomplete. Check the Markdown source first.';
+
+  @override
+  String get attachmentRemoved => 'Attachment removed';
+
+  @override
+  String get brokenAttachmentReference =>
+      'This reference is no longer valid. You can remove it.';
+
+  @override
+  String attachmentReferenceDescription(String type, String size) {
+    return '$type · $size · Tap to preview';
+  }
+
+  @override
+  String get removeReference => 'Remove reference';
+
+  @override
+  String tableEditorDescription(int columns, int rows) {
+    return '$columns columns · $rows rows · Swipe horizontally to view all columns';
+  }
+
+  @override
+  String get addColumn => 'Add column';
+
+  @override
+  String get addRow => 'Add row';
+
+  @override
+  String deleteRow(int row) {
+    return 'Delete row $row';
+  }
+
+  @override
+  String get saveTable => 'Save table';
+
+  @override
+  String get tableHeader => 'Header';
+
+  @override
+  String get deleteColumn => 'Delete column';
+
+  @override
+  String get cellAlignment => 'Cell alignment';
+
+  @override
+  String get alignLeft => 'Align left';
+
+  @override
+  String get alignCenter => 'Center';
+
+  @override
+  String get alignRight => 'Align right';
+
+  @override
+  String get content => 'Content';
+
+  @override
+  String get untitled => 'Untitled';
+
+  @override
+  String get timeRibbon => 'Ribbon';
+
+  @override
+  String get timeRibbonDescription => 'Follow your notes through time';
+
+  @override
+  String get timelinePreview => 'Timeline preview';
+
+  @override
+  String timelineDayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0 · tap to jump';
+  }
+
+  @override
+  String timelineNoteCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timelineMoreNotes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count more notes',
+      one: '1 more note',
+    );
+    return '… $_temp0';
+  }
+
+  @override
+  String get collapseTimelinePreview => 'Collapse timeline preview';
+
+  @override
+  String get expandTimelinePreview => 'Expand timeline preview';
+
+  @override
+  String get collapseDayNotes => 'Collapse notes from this day';
+
+  @override
+  String get expandDayNotes => 'Expand notes from this day';
+
+  @override
+  String get constellation => 'Constellation';
+
+  @override
+  String get constellationDescription => 'Explore ideas across an open sky';
+
+  @override
+  String get constellationHint =>
+      'Drag cards to arrange them. Tap to open; long press to connect.';
+
+  @override
+  String get constellationOverview => 'Overview';
+
+  @override
+  String get constellationOverviewHint =>
+      'Tap to open a group; drag its background to move it';
+
+  @override
+  String get constellationReturnToOverviewHint =>
+      'Tap Star Map below again to return to overview';
+
+  @override
+  String get constellationGroupHint =>
+      'Tap a card to expand its preview; drag to arrange it';
+
+  @override
+  String get groupByTime => 'By time';
+
+  @override
+  String get groupByTags => 'By tags';
+
+  @override
+  String get untaggedStars => 'Untagged';
+
+  @override
+  String get starRegions => 'Star regions';
+
+  @override
+  String get starRegionsDescription =>
+      'Organize related notes into clusters, nebulae, or galaxies';
+
+  @override
+  String get newStarRegion => 'New region';
+
+  @override
+  String get editStarRegion => 'Edit region';
+
+  @override
+  String get starRegionEmpty =>
+      'No regions yet. Gather a few notes into a cluster, nebula, or galaxy.';
+
+  @override
+  String get starRegionName => 'Region name';
+
+  @override
+  String get starRegionNameHint => 'For example: Product ideas';
+
+  @override
+  String get starRegionType => 'Region type';
+
+  @override
+  String get starCluster => 'Cluster';
+
+  @override
+  String get nebula => 'Nebula';
+
+  @override
+  String get galaxy => 'Galaxy';
+
+  @override
+  String get starRegionMembers => 'Member notes';
+
+  @override
+  String starRegionMemberCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count stars',
+      one: '1 star',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get saveStarRegion => 'Save region';
+
+  @override
+  String get collapseStarRegion => 'Collapse the whole region';
+
+  @override
+  String get expandStarRegion => 'Expand the whole region';
+
+  @override
+  String get deleteStarRegion => 'Delete region';
+
+  @override
+  String get deleteStarRegionQuestion => 'Delete this region?';
+
+  @override
+  String get deleteStarRegionDescription =>
+      'Only the group is removed. Notes and their connections stay intact.';
+
+  @override
+  String get editNoteLinks => 'Connect stars';
+
+  @override
+  String editNoteLinksDescription(String title) {
+    return 'Choose notes to connect with “$title”';
+  }
+
+  @override
+  String linkedStarCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Connected to $count stars',
+      one: 'Connected to 1 star',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noNotesToLink => 'There are no other notes to connect yet';
+
+  @override
+  String get saveLinks => 'Save connections';
+
+  @override
+  String todayAt(String time) {
+    return 'Today $time';
+  }
+
+  @override
+  String yesterdayAt(String time) {
+    return 'Yesterday $time';
+  }
+
+  @override
+  String get quickNoteTile => 'Quick\nnote';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String mixedAttachmentMetadata(int count) {
+    return 'Mixed · $count items';
+  }
+
+  @override
+  String imageAttachmentMetadata(int count) {
+    return 'Images · $count';
+  }
+
+  @override
+  String audioAttachmentMetadata(int count) {
+    return 'Recordings · $count';
+  }
+
+  @override
+  String videoAttachmentMetadata(int count) {
+    return 'Videos · $count';
+  }
+
+  @override
+  String fileAttachmentMetadata(int count) {
+    return 'Files · $count';
+  }
+
+  @override
+  String get localLanguageModel => 'Local language model';
+
+  @override
+  String get conversationHistory => 'Chat history';
+
+  @override
+  String get conversationHistoryHint => 'Choose a chat to continue';
+
+  @override
+  String get searchConversations => 'Search titles and messages';
+
+  @override
+  String get noMatchingConversations => 'No matching chats';
+
+  @override
+  String get noMatchingConversationsHint => 'Try a different title or keyword';
+
+  @override
+  String get personaManagement => 'Personas';
+
+  @override
+  String get moreConversationActions => 'More chat actions';
+
+  @override
+  String get newConversation => 'New chat';
+
+  @override
+  String get deleteCurrentConversation => 'Delete current chat';
+
+  @override
+  String get jumpToBottom => 'Jump to bottom';
+
+  @override
+  String get generalAssistant => 'FKNotes assistant';
+
+  @override
+  String get textOnlyRuntimeImageWarning =>
+      'The current local runtime supports text only. Images remain in the composer; remove them or wait for a multimodal runtime.';
+
+  @override
+  String get imageConversation => 'Image chat';
+
+  @override
+  String chatModelDownloadDescription(String model, String size) {
+    return 'The selected model is $model. Its first use requires about $size. Chat content is processed only on this device.';
+  }
+
+  @override
+  String get imageKeptUnsupportedModel =>
+      'The image remains in the composer. The current model can\'t understand images; switch to a compatible model.';
+
+  @override
+  String get voiceInputBusyElsewhere =>
+      'Another page is using live voice input.';
+
+  @override
+  String get voiceInputFailed => 'Voice input failed.';
+
+  @override
+  String get deleteCurrentConversationQuestion => 'Delete current chat?';
+
+  @override
+  String get deleteConversationDescription =>
+      'The messages and persona selection in this chat can\'t be recovered.';
+
+  @override
+  String chatSaveFailed(String error) {
+    return 'Couldn\'t save chat history: $error';
+  }
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get installedState => 'Installed';
+
+  @override
+  String get notInstalledState => 'Not installed';
+
+  @override
+  String get modelRuntimeStandby => 'Standby';
+
+  @override
+  String get modelRuntimeStandbyDetail =>
+      'The model starts automatically when you send a message and is released after 2 minutes of inactivity to save memory.';
+
+  @override
+  String get modelRuntimeStarting => 'Starting';
+
+  @override
+  String get modelRuntimeStartingDetail =>
+      'Starting the local model. The first launch may take a moment.';
+
+  @override
+  String modelRuntimeStartingBackend(String backend) {
+    return 'Starting $backend';
+  }
+
+  @override
+  String modelRuntimeSwitchingBackend(String backend) {
+    return 'Loading $backend';
+  }
+
+  @override
+  String modelRuntimeRetryingBackend(String backend) {
+    return 'Retrying on $backend';
+  }
+
+  @override
+  String get modelRuntimeReleasing => 'Releasing';
+
+  @override
+  String get modelRuntimeReleasingDetail =>
+      'Releasing memory used by the local model.';
+
+  @override
+  String get modelRuntimeFailed => 'Start failed';
+
+  @override
+  String get modelRuntimeFailedDetail =>
+      'The local model could not start. Sending a message will retry automatically.';
+
+  @override
+  String get modelRuntimeUnavailable => 'Unavailable';
+
+  @override
+  String get modelRuntimeUnavailableDetail =>
+      'This device cannot currently run the local model.';
+
+  @override
+  String get modelRuntimeGpu => 'GPU';
+
+  @override
+  String get modelRuntimeCpu => 'CPU';
+
+  @override
+  String modelRuntimeBackendDetail(String backend) {
+    return 'Current runtime backend: $backend';
+  }
+
+  @override
+  String get chatEmptyTitle => 'What would you like to explore?';
+
+  @override
+  String get chatEmptyDescription =>
+      'Ask anything. Messages and persona settings remain on this device.';
+
+  @override
+  String get yourImageMessage => 'Your image message';
+
+  @override
+  String get yourMessage => 'Your message';
+
+  @override
+  String get aiReplying => 'AI is replying';
+
+  @override
+  String get aiReply => 'AI reply';
+
+  @override
+  String get stopped => 'Stopped';
+
+  @override
+  String get copyReply => 'Copy reply';
+
+  @override
+  String get replyCopied => 'Reply copied';
+
+  @override
+  String get generating => 'Generating…';
+
+  @override
+  String get messageWhileGeneratingHint => 'Type your next message…';
+
+  @override
+  String queuedMessages(int count) {
+    return 'Queued · $count';
+  }
+
+  @override
+  String get editQueuedMessage => 'Edit queued message';
+
+  @override
+  String get cancelQueuedMessage => 'Cancel this queued message';
+
+  @override
+  String get queuedMessageConsumed => 'This message is already being processed';
+
+  @override
+  String get promoteQueuedMessage =>
+      'Steer next: adjust direction after the current step';
+
+  @override
+  String steeringMessages(int count) {
+    return 'Steering next · $count';
+  }
+
+  @override
+  String get cancelSteeringMessage => 'Cancel steering message';
+
+  @override
+  String get agentFollowUpMessage => 'Follow-up message';
+
+  @override
+  String get assistantPreparingModel => 'Preparing the local model…';
+
+  @override
+  String assistantStartingBackend(String backend) {
+    return 'Starting $backend…';
+  }
+
+  @override
+  String assistantSwitchingBackend(String previousBackend, String backend) {
+    return '$previousBackend failed to start. Loading the $backend model…';
+  }
+
+  @override
+  String assistantRetryingBackend(String backend) {
+    return 'The $backend model is ready. Processing this message again…';
+  }
+
+  @override
+  String get assistantThinking => 'Thinking…';
+
+  @override
+  String get assistantUsingNoteTools => 'Working with your notes…';
+
+  @override
+  String assistantSearchingNotes(String query) {
+    return 'Searching notes for “$query”…';
+  }
+
+  @override
+  String get assistantComposingWithNotes =>
+      'Composing an answer from your notes…';
+
+  @override
+  String get modelDoesNotSupportImages =>
+      'The current model can\'t understand images. Switch models before sending.';
+
+  @override
+  String get takePhoto => 'Take photo';
+
+  @override
+  String get takePhotoUnsupported => 'Take photo (current model unsupported)';
+
+  @override
+  String get dictating => 'Listening…';
+
+  @override
+  String get messageOrVoiceHint => 'Message or use voice…';
+
+  @override
+  String get stopGeneration => 'Stop generation';
+
+  @override
+  String get finishVoiceInput => 'Finish voice input';
+
+  @override
+  String get send => 'Send';
+
+  @override
+  String get voiceInput => 'Voice input';
+
+  @override
+  String get addImage => 'Add image';
+
+  @override
+  String get addImageUnsupported => 'Add image (current model unsupported)';
+
+  @override
+  String get preparingOfflineSpeech => 'Preparing voice input…';
+
+  @override
+  String get dictationTapMicToFinish =>
+      'Speak naturally. Your words appear here.';
+
+  @override
+  String get previewImage => 'Preview image';
+
+  @override
+  String get removeImage => 'Remove image';
+
+  @override
+  String get addMoreImages => 'Add more images';
+
+  @override
+  String previewImageNumber(int index) {
+    return 'Preview image $index';
+  }
+
+  @override
+  String get closePreview => 'Close preview';
+
+  @override
+  String get imageCannotOpen => 'Couldn\'t open image';
+
+  @override
+  String get dismissMessage => 'Dismiss message';
+
+  @override
+  String get readAgain => 'Read again';
+
+  @override
+  String get switchPersona => 'Switch persona';
+
+  @override
+  String get manage => 'Manage';
+
+  @override
+  String get noSavedConversations => 'No saved chats';
+
+  @override
+  String conversationMessageCount(int count, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages',
+      one: '1 message',
+    );
+    return '$_temp0 · $time';
+  }
+
+  @override
+  String personaDeleteQuestion(String name) {
+    return 'Delete “$name”?';
+  }
+
+  @override
+  String get personaDeleteDescription =>
+      'Chats using this persona will switch to the FKNotes assistant. Chat history won\'t be deleted.';
+
+  @override
+  String get createPersona => 'New persona';
+
+  @override
+  String get reload => 'Reload';
+
+  @override
+  String get personaManagementDescription =>
+      'Personas define the identity, tone, and rules used by the local model. Switch at any time while chatting. All settings remain on this device.';
+
+  @override
+  String get builtIn => 'Built in';
+
+  @override
+  String get current => 'Current';
+
+  @override
+  String get personaDescriptionMissing => 'No description';
+
+  @override
+  String get personaActions => 'Persona actions';
+
+  @override
+  String get editPersona => 'Edit persona';
+
+  @override
+  String get deletePersona => 'Delete persona';
+
+  @override
+  String get personaInstructionDescription =>
+      'The name appears in the persona switcher. The system prompt is sent as the highest-priority local instruction with every request.';
+
+  @override
+  String get personaName => 'Persona name';
+
+  @override
+  String get shortDescriptionOptional => 'Short description (optional)';
+
+  @override
+  String get systemPrompt => 'System prompt';
+
+  @override
+  String get systemPromptHint =>
+      'For example: You are a patient English conversation coach…';
+
+  @override
+  String get savePersona => 'Save persona';
+
+  @override
+  String get microphonePermissionRequired => 'Microphone permission required';
+
+  @override
+  String get microphonePermissionDescription =>
+      'Recordings are saved only on this device. Allow microphone access before starting.';
+
+  @override
+  String get openSettings => 'Open settings';
+
+  @override
+  String recordingStartFailed(String error) {
+    return 'Couldn\'t start recording: $error';
+  }
+
+  @override
+  String voiceNoteDefaultTitle(String date, String time) {
+    return 'Voice note $date $time';
+  }
+
+  @override
+  String recordingSaveFailed(String error) {
+    return 'Couldn\'t save recording: $error';
+  }
+
+  @override
+  String get discardRecordingQuestion => 'Discard this recording?';
+
+  @override
+  String get discardRecordingDescription =>
+      'The unsaved recording will be deleted.';
+
+  @override
+  String get continueEditing => 'Continue editing';
+
+  @override
+  String get discard => 'Discard';
+
+  @override
+  String get deviceOnly => 'On device';
+
+  @override
+  String get recordIdea => 'Record an idea';
+
+  @override
+  String get recordingPrivacyDescription =>
+      'Recordings stay on this device by default and are uploaded only during manual cloud sync. Add tags and notes after saving.';
+
+  @override
+  String get preparingMicrophone => 'Preparing microphone…';
+
+  @override
+  String get startRecording => 'Start recording';
+
+  @override
+  String get paused => 'Paused';
+
+  @override
+  String get recording => 'Recording';
+
+  @override
+  String get resume => 'Resume';
+
+  @override
+  String get pause => 'Pause';
+
+  @override
+  String get finishRecording => 'Done';
+
+  @override
+  String get savingRecording => 'Saving recording…';
+
+  @override
+  String get recordingAdded => 'Recording added to the note';
+
+  @override
+  String get playRecording => 'Play recording';
+
+  @override
+  String get pauseRecording => 'Pause playback';
+
+  @override
+  String get recordingPlaybackFailed => 'Couldn\'t play this recording';
+
+  @override
+  String get recordingActions => 'Recording actions';
+
+  @override
+  String get recordAgain => 'Record again';
+
+  @override
+  String get saveVoiceNote => 'Save voice note';
+
+  @override
+  String get editTranscript => 'Edit transcript';
+
+  @override
+  String get transcriptLocalOnlyDescription =>
+      'Only the local transcript is changed. The original recording remains unchanged.';
+
+  @override
+  String get transcriptHint => 'Enter transcript';
+
+  @override
+  String transcriptCharacterCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count characters',
+      one: '1 character',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get preparingModel => 'Preparing model';
+
+  @override
+  String get recognizedTextCopied => 'Recognized text copied';
+
+  @override
+  String ocrFailedDetail(String error) {
+    return 'OCR failed: $error';
+  }
+
+  @override
+  String get noClearTextRecognized => 'No clear text recognized';
+
+  @override
+  String get importOfflineSpeechModel => 'Import offline speech model';
+
+  @override
+  String get importSpeechModelDescription =>
+      'From the extracted SenseVoice Small INT8 model directory, select both the ONNX model and tokens.txt.\n\nThe model is about 228 MB, stays on this device, and is excluded from note backups.';
+
+  @override
+  String get chooseFiles => 'Choose files';
+
+  @override
+  String get importingOfflineModel => 'Importing offline model';
+
+  @override
+  String get offlineSpeechModelImported => 'Offline speech model imported';
+
+  @override
+  String modelImportFailed(String error) {
+    return 'Model import failed: $error';
+  }
+
+  @override
+  String get downloadOfflineSpeechModelQuestion =>
+      'Download offline speech model?';
+
+  @override
+  String get downloadSpeechModelDescription =>
+      'About 228 MB will be downloaded from ModelScope. Wi-Fi is recommended.\n\nDownloading the model uses the network. Notes and audio are uploaded only during manual cloud sync. Interrupted downloads can resume.';
+
+  @override
+  String get downloadingFromModelScope => 'Downloading from ModelScope';
+
+  @override
+  String get offlineSpeechModelDownloaded => 'Offline speech model downloaded';
+
+  @override
+  String get downloadPausedResumable =>
+      'Download paused. It will resume next time.';
+
+  @override
+  String modelDownloadFailedDetail(String error) {
+    return 'Model download failed: $error';
+  }
+
+  @override
+  String get finishingInstallation => 'Finishing installation';
+
+  @override
+  String importedAmount(String amount) {
+    return 'Imported $amount';
+  }
+
+  @override
+  String downloadedAmount(String amount) {
+    return 'Downloaded $amount';
+  }
+
+  @override
+  String amountFinishingInstall(String amount) {
+    return '$amount · Finishing installation';
+  }
+
+  @override
+  String get speedTesting => 'Testing speed…';
+
+  @override
+  String get waitForTranscription =>
+      'Wait for the current transcription to finish.';
+
+  @override
+  String get removeOfflineModelQuestion => 'Remove offline model?';
+
+  @override
+  String get removeOfflineModelDescription =>
+      'This frees about 228 MB. Saved transcripts won\'t be deleted.';
+
+  @override
+  String get speakerModelRequired => 'Speaker diarization model required';
+
+  @override
+  String get speakerModelDownloadDescription =>
+      'First use requires an approximately 44.4 MB local-model download. Segmentation and transcription then run entirely on device.';
+
+  @override
+  String get speakerCount => 'Number of speakers';
+
+  @override
+  String get speakerCountDescription =>
+      'Recordings up to 30 minutes are supported. A more accurate speaker count usually produces more stable separation.';
+
+  @override
+  String get estimateAutomatically => 'Estimate automatically';
+
+  @override
+  String get estimateAutomaticallyDescription =>
+      'Best when the number of speakers is unknown';
+
+  @override
+  String speakerCountOption(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count speakers',
+      one: '1 speaker',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get transcriptCopied => 'Transcript copied';
+
+  @override
+  String get openWithAnotherApp => 'Open with another app';
+
+  @override
+  String get editInformation => 'Edit information';
+
+  @override
+  String get preview => 'Preview';
+
+  @override
+  String get recognizedText => 'Recognized text';
+
+  @override
+  String get transcript => 'Transcript';
+
+  @override
+  String get information => 'Information';
+
+  @override
+  String get textInImage => 'Text in image';
+
+  @override
+  String get copyAll => 'Copy all';
+
+  @override
+  String get recognizeAgain => 'Recognize again';
+
+  @override
+  String get recognizeText => 'Recognize text';
+
+  @override
+  String get noRecognizedText => 'No recognized text';
+
+  @override
+  String get ocrOnDemandDescription =>
+      'Run on-device text recognition on this image when needed';
+
+  @override
+  String get recognizing => 'Recognizing…';
+
+  @override
+  String get audioTranscript => 'Audio transcript';
+
+  @override
+  String get recognizeAudio => 'Speech recognition';
+
+  @override
+  String get audioTranscriptionDescription =>
+      'Recognized on device and saved with the recording. The note body stays unchanged.';
+
+  @override
+  String get audioTranscriptStartFailed =>
+      'Could not start recognition. Make sure the note is saved and try again.';
+
+  @override
+  String get audioTranscriptSaveFailed =>
+      'The transcript has not been saved. You can copy it or retry.';
+
+  @override
+  String get audioTranscriptFileMissing =>
+      'The audio file is missing or has been removed.';
+
+  @override
+  String get noClearSpeechRecognized =>
+      'No clear speech recognized. Check the recording and try again.';
+
+  @override
+  String get audioTranscriptCopyFailed =>
+      'Could not copy the text. Please try again.';
+
+  @override
+  String get editText => 'Edit text';
+
+  @override
+  String get audioStaysOnDevice =>
+      'Processed entirely on device. Audio never leaves this device.';
+
+  @override
+  String get offlineSpeechModelRequired => 'Offline speech model required';
+
+  @override
+  String get offlineModelBackupDescription =>
+      'The model is stored separately on this device and doesn\'t increase backup size.';
+
+  @override
+  String get downloadAbout228Mb => 'Download about 228 MB';
+
+  @override
+  String get backgroundTranscriptionHint =>
+      'You can leave this page and continue using notes';
+
+  @override
+  String get transcriptionIncomplete => 'Transcription didn\'t finish';
+
+  @override
+  String get tryAgainLater => 'Try again later';
+
+  @override
+  String get transcribeAgain => 'Transcribe again';
+
+  @override
+  String get transcriptionCanceled => 'Transcription canceled';
+
+  @override
+  String get recordingUnaffected => 'The recording wasn\'t changed';
+
+  @override
+  String get noTranscript => 'No transcript';
+
+  @override
+  String get transcriptionOnDemandDescription =>
+      'Start on-device recognition only when needed; recordings aren\'t processed automatically.';
+
+  @override
+  String get transcribeOnDevice => 'Transcribe on device';
+
+  @override
+  String get speakerDiarizedTranscription => 'Transcribe with speakers';
+
+  @override
+  String get speakerDiarizedTranscriptionModelRequired =>
+      'Transcribe with speakers · 44.4 MB model required';
+
+  @override
+  String manageModelSize(String size) {
+    return 'Manage model · $size';
+  }
+
+  @override
+  String get importFromFiles => 'Import from files';
+
+  @override
+  String get viewAllModels => 'View all models';
+
+  @override
+  String get preparingLocalTranscription => 'Preparing on-device transcription';
+
+  @override
+  String get readingAudio => 'Reading audio';
+
+  @override
+  String get separatingSpeakers => 'Separating speakers';
+
+  @override
+  String get recognizingOnDevice => 'Recognizing on device';
+
+  @override
+  String get savingTranscriptText => 'Saving transcript';
+
+  @override
+  String get processing => 'Processing';
+
+  @override
+  String get noteInformation => 'Note information';
+
+  @override
+  String get renameAttachment => 'Rename';
+
+  @override
+  String get editAttachmentTitle => 'Edit attachment title';
+
+  @override
+  String get attachmentTitle => 'Attachment title';
+
+  @override
+  String get attachmentTitleHint => 'Enter the title shown in this note';
+
+  @override
+  String get attachmentTitleDescription =>
+      'This only changes the title shown in the note. The original file name and file contents stay unchanged.';
+
+  @override
+  String get restoreOriginalFileName => 'Restore original file name';
+
+  @override
+  String get type => 'Type';
+
+  @override
+  String get created => 'Created';
+
+  @override
+  String get updated => 'Updated';
+
+  @override
+  String get fileInformation => 'File information';
+
+  @override
+  String get fileName => 'File name';
+
+  @override
+  String get size => 'Size';
+
+  @override
+  String get imageCopied => 'Image copied';
+
+  @override
+  String get imageCopyUnavailable =>
+      'Copying images is unavailable on this device';
+
+  @override
+  String get imageCopyFailed => 'Could not copy the image';
+
+  @override
+  String get editImage => 'Edit image';
+
+  @override
+  String get imageActions => 'Actions';
+
+  @override
+  String get imageOcrAction => 'OCR · Recognize text';
+
+  @override
+  String get imageOcrDescription =>
+      'Recognized on device and saved with the image. The note body stays unchanged.';
+
+  @override
+  String get imageOcrFailed =>
+      'Text recognition is unavailable. Please try again.';
+
+  @override
+  String get imageOcrSaveFailed =>
+      'The recognized text has not been saved. Please retry.';
+
+  @override
+  String get imageOcrSourceChanged =>
+      'This image was changed or removed. Please reopen OCR.';
+
+  @override
+  String get imageOcrCopyFailed => 'Could not copy the text. Please try again.';
+
+  @override
+  String get replaceFromGallery => 'Replace from gallery';
+
+  @override
+  String get replaceWithCamera => 'Retake photo';
+
+  @override
+  String get viewOriginalImage => 'View original';
+
+  @override
+  String get imageDetails => 'Image details';
+
+  @override
+  String get imageReplaced => 'Image replaced';
+
+  @override
+  String get imageReplaceFailed => 'Could not replace the image';
+
+  @override
+  String get duration => 'Duration';
+
+  @override
+  String get saveStatus => 'Save status';
+
+  @override
+  String get fileMissing => 'File missing';
+
+  @override
+  String get savedInUnifiedDirectory => 'Saved in unified directory';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get originalFileMissing => 'Original file missing';
+
+  @override
+  String get missingFileDescription =>
+      'Keep the note information or delete it permanently.';
+
+  @override
+  String get openWithLocalApp => 'Open with local app';
+
+  @override
+  String get coverSettings => 'Cover settings';
+
+  @override
+  String get noteCover => 'Cover';
+
+  @override
+  String get coverSettingsDescription =>
+      'Choose how this note appears on Home and in the Library.';
+
+  @override
+  String get coverAutomatic => 'Automatic';
+
+  @override
+  String get coverAutomaticDescription =>
+      'Prefer an image or video from the note, otherwise use a type cover';
+
+  @override
+  String get coverType => 'Type cover';
+
+  @override
+  String get coverTypeDescription =>
+      'Use a consistent note, image, audio, video, or file icon';
+
+  @override
+  String get hideCover => 'Hide cover';
+
+  @override
+  String get hideCoverDescription =>
+      'Show only the title, preview, and modified time';
+
+  @override
+  String get chooseAttachmentCover => 'Choose from note attachments';
+
+  @override
+  String get setAsCover => 'Set as cover';
+
+  @override
+  String get currentCover => 'Current cover';
+
+  @override
+  String get shareNoteAsImage => 'Share as images';
+
+  @override
+  String get noteHasNoShareableContent =>
+      'This note has no content to share yet';
+
+  @override
+  String get createShareImage => 'Create share images';
+
+  @override
+  String get shareImageStyle => 'Style';
+
+  @override
+  String get shareImageCanvas => 'Canvas';
+
+  @override
+  String get shareImageRatio => 'Image ratio';
+
+  @override
+  String get shareImageContent => 'Content';
+
+  @override
+  String get shareImageLayout => 'Layout';
+
+  @override
+  String get shareTemplateLetter => 'A Letter from FKNotes';
+
+  @override
+  String get shareTemplatePlain => 'Plain Paper';
+
+  @override
+  String get shareTemplateNight => 'Night Reading';
+
+  @override
+  String get shareTemplateEditorial => 'Editorial';
+
+  @override
+  String get shareTemplateNewspaper => 'Morning Press';
+
+  @override
+  String get shareTemplateManuscript => 'Grid Manuscript';
+
+  @override
+  String get shareTemplateBotanical => 'Botanical';
+
+  @override
+  String get shareTemplateBlueprint => 'Blueprint';
+
+  @override
+  String get shareTemplateAmber => 'Amber';
+
+  @override
+  String get shareTemplateFilm => 'Film Strip';
+
+  @override
+  String get shareTemplatePostcard => 'Postcard';
+
+  @override
+  String get shareTemplateGallery => 'Gallery Label';
+
+  @override
+  String get shareTemplateNeon => 'Neon';
+
+  @override
+  String get shareTemplateTide => 'Tides';
+
+  @override
+  String get shareTemplateVermilion => 'Vermilion';
+
+  @override
+  String get shareRatioSquare => '1:1 · Square card';
+
+  @override
+  String get shareRatioFourFive => '4:5 · Social portrait';
+
+  @override
+  String get shareRatioThreeFour => '3:4 · Note card';
+
+  @override
+  String get shareRatioNineSixteen => '9:16 · Full screen';
+
+  @override
+  String get shareRatioSixteenNine => '16:9 · Landscape';
+
+  @override
+  String get shareRatioA4 => 'A4 · Document';
+
+  @override
+  String get shareRatioLong => 'Long image · One adaptive canvas';
+
+  @override
+  String get shareLongImageHint =>
+      'The canvas grows with the content and exports as one image';
+
+  @override
+  String get shareRatioCustom => 'Custom size';
+
+  @override
+  String get portraitOrientation => 'Portrait';
+
+  @override
+  String get landscapeOrientation => 'Landscape';
+
+  @override
+  String get shareImageWidth => 'Width';
+
+  @override
+  String get shareImageHeight => 'Height';
+
+  @override
+  String get shareImageQuality => 'Quality';
+
+  @override
+  String get shareQualityStandard => 'Standard · 1080 px short edge';
+
+  @override
+  String get shareQualityHigh => 'High · 1440 px short edge';
+
+  @override
+  String get shareQualityUltra => 'Ultra · 2160 px short edge';
+
+  @override
+  String get includeNoteTitle => 'Show title';
+
+  @override
+  String get includeNoteDate => 'Show date';
+
+  @override
+  String get includeNoteTags => 'Show tags';
+
+  @override
+  String get includeNoteImages => 'Show images';
+
+  @override
+  String get includeNoteAttachments => 'Show attachments';
+
+  @override
+  String get noteShareSource => 'Created with FKNotes · 非空笔记';
+
+  @override
+  String get noteShareSourceAlwaysIncluded =>
+      'The source is kept on every shared image';
+
+  @override
+  String get shareDensityComfortable => 'Comfortable';
+
+  @override
+  String get shareDensityStandard => 'Standard';
+
+  @override
+  String get shareDensityCompact => 'Compact';
+
+  @override
+  String get noteShareUntitled => 'A note';
+
+  @override
+  String get generateAndShare => 'Generate and share';
+
+  @override
+  String get previousPage => 'Previous page';
+
+  @override
+  String get nextPage => 'Next page';
+
+  @override
+  String shareImagePageIndicator(int current, int total) {
+    return 'Page $current of $total';
+  }
+
+  @override
+  String shareImageOutputSummary(int count, int width, int height) {
+    return 'Creates $count PNG images at $width × $height';
+  }
+
+  @override
+  String generatingShareImageProgress(int current, int total) {
+    return 'Generating image $current of $total';
+  }
+
+  @override
+  String shareNoteImageTitle(String title) {
+    return 'Share note: $title';
+  }
+
+  @override
+  String get shareImageGenerationFailed =>
+      'Couldn\'t create the share image. Try again later.';
+
+  @override
+  String get moveAttachmentHint => 'Long press and drag to reposition';
+
+  @override
+  String get checkForUpdates => 'Check for updates';
+
+  @override
+  String get updatesCheckedAutomatically =>
+      'Checked automatically after launch, or check here anytime';
+
+  @override
+  String get checkingForUpdates => 'Checking for updates…';
+
+  @override
+  String get latestVersionInstalled => 'You\'re using the latest version';
+
+  @override
+  String get updateCheckFailed =>
+      'Couldn\'t check for updates. Try again later.';
+
+  @override
+  String get updateAvailableTitle => 'Update available';
+
+  @override
+  String updateAvailableDescription(String version) {
+    return 'FKNotes $version is ready to install';
+  }
+
+  @override
+  String get mandatoryUpdate => 'Required';
+
+  @override
+  String get releaseNotes => 'What\'s new';
+
+  @override
+  String get releaseNotesUnavailable =>
+      'Release notes aren\'t available right now.';
+
+  @override
+  String get updateNow => 'Update now';
+
+  @override
+  String get remindMeLater => 'Later';
+
+  @override
+  String get downloadingUpdate => 'Downloading update';
+
+  @override
+  String get downloadInBackground => 'Hide and download in background';
+
+  @override
+  String get updateDownloadingInBackground =>
+      'The download will continue in the background. View its progress in Settings.';
+
+  @override
+  String get updateReadyToInstall =>
+      'The update has been verified and is ready to install.';
+
+  @override
+  String get installUpdateNow => 'Install now';
+
+  @override
+  String get viewUpdate => 'View update';
+
+  @override
+  String updateDownloadProgress(int percent, String downloaded, String total) {
+    return '$percent% · $downloaded / $total';
+  }
+
+  @override
+  String get verifyingUpdate => 'Verifying update package';
+
+  @override
+  String get installPermissionRequired => 'Install permission required';
+
+  @override
+  String get installPermissionDescription =>
+      'Allow FKNotes to install unknown apps in system settings. You\'ll still confirm the update in Android\'s installer.';
+
+  @override
+  String get openInstallSettings => 'Open settings';
+
+  @override
+  String get openingInstaller => 'Opening Android installer';
+
+  @override
+  String get installerOpened =>
+      'The update is ready. Confirm it in Android\'s installer.';
+
+  @override
+  String get updateFailed => 'Update didn\'t finish';
+
+  @override
+  String get updateDownloadFailed =>
+      'Couldn\'t download the update package. Check your connection and try again.';
+
+  @override
+  String get updateDownloadTimedOut =>
+      'The update download timed out. Try again later.';
+
+  @override
+  String get updateSizeMismatch =>
+      'The update package size doesn\'t match the release information. Installation was stopped.';
+
+  @override
+  String get updateChecksumMismatch =>
+      'The update package failed verification and may be incomplete. Installation was stopped.';
+
+  @override
+  String get updatePackageInvalid =>
+      'The update\'s app identity or signature doesn\'t match. Installation was stopped.';
+
+  @override
+  String get updateVersionInvalid =>
+      'The update version doesn\'t match the release information. Installation was stopped.';
+
+  @override
+  String get updateInstallerUnavailable =>
+      'No Android package installer is available.';
+
+  @override
+  String get updatePermissionSettingsFailed =>
+      'Couldn\'t open the install permission settings.';
+
+  @override
+  String get updateVerificationFailed =>
+      'Couldn\'t verify the update package. Installation was stopped.';
+
+  @override
+  String get updateInstallFailed =>
+      'Couldn\'t open Android\'s installer. Try again later.';
+
+  @override
+  String get privateNotes => 'Private notes';
+
+  @override
+  String get openPrivateNotes => 'Open private space';
+
+  @override
+  String get releaseForPrivateNotes => 'Release to verify and enter';
+
+  @override
+  String get authenticatePrivateNotes =>
+      'Verify your identity to access private notes in FKNotes';
+
+  @override
+  String get authenticatePrivateBackup =>
+      'This backup may contain private notes or chats. Verify your identity to continue';
+
+  @override
+  String get privateNotesLocked => 'Private space is locked';
+
+  @override
+  String get privateNotesLockedHint =>
+      'System authentication is required on entry and after returning from the background, even when App lock is off.';
+
+  @override
+  String get unlockPrivateNotes => 'Verify and unlock';
+
+  @override
+  String get exitPrivateNotes => 'Leave private space';
+
+  @override
+  String get newPrivateNote => 'New private note';
+
+  @override
+  String get privateCloudAiNotice =>
+      'This conversation contains private note content that will be sent to cloud AI.';
+
+  @override
+  String get privateAssistant => 'Private assistant';
+
+  @override
+  String get noteDataSize => 'Note size';
+
+  @override
+  String get emptyPrivateNotes => 'No private notes yet';
+
+  @override
+  String get emptyPrivateNotesHint =>
+      'Create a note here, or long-press a note on Home and make it private. Private notes are hidden from ordinary search, calendar and tag groups.';
+
+  @override
+  String get makeNotesPrivate => 'Make private';
+
+  @override
+  String get makeNotesPublic => 'Move out';
+
+  @override
+  String get notesMadePrivate => 'Moved to private space';
+
+  @override
+  String get notesMadePublic => 'Moved to ordinary notes';
+
+  @override
+  String get privateNotesExportNotice =>
+      'Complete backups include private notes, private chats, and attachments and require system authentication before export or upload. Backup files are not encrypted; keep them safe.';
+
+  @override
+  String get agentTitle => 'Agent assistant';
+
+  @override
+  String get agentSettings => 'Agent settings';
+
+  @override
+  String get agentSettingsSubtitle =>
+      'Online models, your API keys and remote tools';
+
+  @override
+  String get agentProfiles => 'Models';
+
+  @override
+  String get agentLocal => 'On-device inference';
+
+  @override
+  String get agentOnline => 'Online inference';
+
+  @override
+  String get agentAddModel => 'Add online model';
+
+  @override
+  String get agentProfileName => 'Profile name';
+
+  @override
+  String get agentProtocol => 'API protocol';
+
+  @override
+  String get agentEndpoint => 'Service URL';
+
+  @override
+  String get agentModelId => 'Model identifier';
+
+  @override
+  String get agentApiKey => 'API key';
+
+  @override
+  String get agentKeyHint =>
+      'Leave blank to keep the stored key; saved only in system secure storage';
+
+  @override
+  String get agentByokSummary =>
+      'Online services receive messages and content you authorize.';
+
+  @override
+  String get agentByokNotice =>
+      'After saving, the agent sends input, note context and tool results from the current workspace to this service when needed. Private space requires system authentication; private note use shows a persistent cloud notice without per-turn dialogs. The provider’s data policy applies, and the key stays in system secure storage.';
+
+  @override
+  String get agentCapabilities => 'Capabilities and compatibility';
+
+  @override
+  String get agentContextTokens => 'Context capacity (tokens)';
+
+  @override
+  String get agentToolCalling => 'Structured tool calling';
+
+  @override
+  String get agentImageInput => 'Image input';
+
+  @override
+  String get agentServerSearch => 'Provider server search';
+
+  @override
+  String get agentThinking => 'Enable protocol thinking option';
+
+  @override
+  String get agentUsageOption => 'Request streaming usage';
+
+  @override
+  String get agentStatelessOption =>
+      'Responses: disable storage and replay encrypted continuation items';
+
+  @override
+  String get agentTestConnection => 'Test connection';
+
+  @override
+  String get agentTestNotice =>
+      'Testing sends a short request without notes to this provider and may incur a small charge.';
+
+  @override
+  String get agentConnectionOk =>
+      'Connected; capability support still depends on the provider';
+
+  @override
+  String get agentUseModel => 'Use this model';
+
+  @override
+  String get agentNoTools =>
+      'Tool calling is disabled for this model. Answers and rewriting suggestions remain available.';
+
+  @override
+  String get agentMcp => 'Remote MCP tools';
+
+  @override
+  String get agentAddMcp => 'Add MCP server';
+
+  @override
+  String get agentMcpDiscover => 'Connect and discover tools';
+
+  @override
+  String get agentMcpToken => 'Access token (optional)';
+
+  @override
+  String get agentMcpSummary =>
+      'HTTP MCP servers provide remote tools for tasks.';
+
+  @override
+  String get agentMcpNotice =>
+      'HTTP MCP only. After you save and enable a server, the agent calls its tools when a task needs them. You can disable it in Agent settings or enable per-operation approval. Servers cannot independently access local files or invoke models.';
+
+  @override
+  String get agentMcpReadOnly => 'I confirm this tool only reads data';
+
+  @override
+  String get agentTasks => 'Agent statistics';
+
+  @override
+  String get agentStatisticsSubtitle =>
+      'Usage frequency and local or online models';
+
+  @override
+  String get agentStatisticsPrivacy =>
+      'Statistics are summarized on this device to show usage frequency and model activity without reading or showing task content.';
+
+  @override
+  String get agentStatisticsRecent => 'Used in 7 days';
+
+  @override
+  String get agentStatisticsTokens => 'Total tokens';
+
+  @override
+  String get agentStatisticsLocalRuns => 'On-device runs';
+
+  @override
+  String get agentStatisticsOnlineRuns => 'Online runs';
+
+  @override
+  String get agentStatisticsModels => 'Model usage';
+
+  @override
+  String get agentStatisticsEmpty => 'No statistics yet';
+
+  @override
+  String get agentStatisticsEmptyHint =>
+      'A summary will appear after you use the agent for a task.';
+
+  @override
+  String agentStatisticsModelUsage(int executions, String tokens) {
+    return 'Used $executions times · $tokens tokens';
+  }
+
+  @override
+  String get agentEmptyTasks => 'No tasks yet';
+
+  @override
+  String get agentTaskDetails => 'Task details';
+
+  @override
+  String get agentTaskHistoryHint =>
+      'Review task status and result summaries. Open a record for the full reply, process, and actions.';
+
+  @override
+  String get agentPermissionTitle => 'Review access for this task';
+
+  @override
+  String get agentPermissionBody =>
+      'Reading, online sending, network tools and modifications are separate grants. Granted operations run automatically by default; per-operation approval is optional.';
+
+  @override
+  String get agentAutomaticTaskHint =>
+      'Starts directly with the current model and configured tools. Only private content requires separate verification.';
+
+  @override
+  String get agentScopeNone => 'Do not read notes';
+
+  @override
+  String get agentScopeSelected => 'Selected notes / current context';
+
+  @override
+  String get agentScopeAll => 'All ordinary notes';
+
+  @override
+  String get agentChooseNotes => 'Choose notes';
+
+  @override
+  String get agentOnlineConsent =>
+      'Allow sending this task’s input, context and tool results to this provider';
+
+  @override
+  String get agentNetworkConsent =>
+      'Allow web search, page reading and configured MCP tools';
+
+  @override
+  String get agentWriteConsent => 'Allow note changes';
+
+  @override
+  String get agentExternalConsent => 'Allow external tool operations';
+
+  @override
+  String get agentPrivateConsent =>
+      'Include private notes; authentication required';
+
+  @override
+  String get agentPrivateOnlineConsent =>
+      'Explicitly allow sending private content to this provider / network tools';
+
+  @override
+  String get agentPrivateHidden =>
+      'This task contains private content. Unlock and renew access to view or continue.';
+
+  @override
+  String get agentPrivateUnlock => 'Verify access to private notes';
+
+  @override
+  String get agentPrivateSendTitle => 'Send private content';
+
+  @override
+  String agentPrivateSendBody(String target) {
+    return 'This task will send private content to $target or enabled network tools. This access applies only to this task and requires identity verification before continuing.';
+  }
+
+  @override
+  String get agentSkill => 'Task template';
+
+  @override
+  String get agentBudget => 'Task limits';
+
+  @override
+  String get agentMaxRequests => 'Maximum model requests';
+
+  @override
+  String get agentMaxTokens => 'Total token budget';
+
+  @override
+  String get agentMaxOutput => 'Output tokens per request';
+
+  @override
+  String get agentMaxMinutes => 'Active execution minutes';
+
+  @override
+  String get agentRequestSeconds => 'Request timeout seconds';
+
+  @override
+  String get agentStart => 'Start task';
+
+  @override
+  String get agentPause => 'Pause';
+
+  @override
+  String get agentStop => 'Stop';
+
+  @override
+  String get agentContinue => 'Continue';
+
+  @override
+  String get agentRetry => 'Retry';
+
+  @override
+  String get agentRegenerate => 'Regenerate';
+
+  @override
+  String get agentReview => 'Review changes';
+
+  @override
+  String get agentApprove => 'Approve execution';
+
+  @override
+  String get agentReject => 'Reject';
+
+  @override
+  String get agentBefore => 'Before';
+
+  @override
+  String get agentAfter => 'After';
+
+  @override
+  String get agentAdjustPreview => 'Rebuild preview for selected changes';
+
+  @override
+  String get agentEditProposal => 'Adjust text';
+
+  @override
+  String get agentUndo => 'Undo this change group';
+
+  @override
+  String get agentUndone => 'Undone';
+
+  @override
+  String get agentUndoConfirm =>
+      'Undo checks note revisions and will not overwrite later edits. Stopping does not undo committed changes.';
+
+  @override
+  String get agentSources => 'Sources';
+
+  @override
+  String get agentVisitedWebSources => 'Pages visited this run';
+
+  @override
+  String get agentNoteChanges => 'Note changes';
+
+  @override
+  String get agentNoteCreated => 'Created';
+
+  @override
+  String get agentNoteEdited => 'Edited';
+
+  @override
+  String get agentNoteAppended => 'Appended';
+
+  @override
+  String get agentNoteMetadataUpdated => 'Details updated';
+
+  @override
+  String get agentNoteDeleted => 'Deleted';
+
+  @override
+  String get agentPlan => 'Task plan';
+
+  @override
+  String get agentActions => 'Execution record';
+
+  @override
+  String get agentChildren => 'Subtasks';
+
+  @override
+  String get agentEstimatedUsage => 'Usage includes estimates';
+
+  @override
+  String get agentOfflineNotice =>
+      'Strictly offline: inference, compression and subtasks stay on device';
+
+  @override
+  String get agentLocalNetworkNotice =>
+      'On-device inference; network tools allowed';
+
+  @override
+  String get agentReconcile => 'Verify external operation';
+
+  @override
+  String get agentReconcileNotice =>
+      'Check the external service before continuing. A timeout does not prove failure. FKNotes will not automatically replay this step.';
+
+  @override
+  String get agentEffectDone => 'Verified: operation completed';
+
+  @override
+  String get agentEffectNone => 'Verified: no operation occurred';
+
+  @override
+  String get agentVerificationNote => 'Verification details';
+
+  @override
+  String get agentDeleteTask => 'Delete task record (does not undo actions)';
+
+  @override
+  String get agentLegacyProposal =>
+      'The current agent will rebuild this legacy proposal as a safe preview.';
+
+  @override
+  String get agentClearHistory => 'Clear agent execution history';
+
+  @override
+  String get agentClearHistoryNotice =>
+      'This removes all agent records and recovery information. It does not undo note edits or external operations.';
+
+  @override
+  String agentError(String code) {
+    String _temp0 = intl.Intl.selectLogic(code, {
+      'authentication':
+          'The API key is invalid or lacks access. Check the model configuration.',
+      'endpointNotFound':
+          'The model endpoint was not found. Check the base URL and API protocol.',
+      'invalidRequest':
+          'The model service rejected this request. Check the model name, context limit, and API compatibility.',
+      'rateLimited':
+          'Too many requests or insufficient quota. Try again later.',
+      'requestTimeout': 'The model service timed out. Try again later.',
+      'serviceUnavailable':
+          'The model service is temporarily unavailable. Try again later.',
+      'contextOverflow':
+          'This conversation exceeds the model context limit. Shorten it or increase the configured context length.',
+      'modelTransport':
+          'The model response could not be read. Check the network, API protocol, and model configuration.',
+      'httpError':
+          'The model service returned an unexpected response. Try again later.',
+      'other':
+          'The operation did not complete. Check the related settings and try again.',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String agentUsage(int requests, String tokens) {
+    return '$requests agent rounds · $tokens tokens';
+  }
+
+  @override
+  String agentRunSummary(
+    String status,
+    int rounds,
+    int tools,
+    String duration,
+  ) {
+    return '$status · $rounds agent rounds · $tools tool calls · $duration';
+  }
+
+  @override
+  String agentRunSummaryWithoutTools(
+    String status,
+    int rounds,
+    String duration,
+  ) {
+    return '$status · $rounds agent rounds · $duration';
+  }
+
+  @override
+  String agentReasoningRound(int round) {
+    return 'Reasoning round $round';
+  }
+
+  @override
+  String agentModelRounds(int rounds) {
+    return 'Agent execution · $rounds rounds';
+  }
+
+  @override
+  String get agentStageExplanation => 'Stage update';
+
+  @override
+  String get agentPlanUpdated => 'Plan updated';
+
+  @override
+  String agentPlanCurrent(String title) {
+    return 'In progress: $title';
+  }
+
+  @override
+  String agentPlanNext(String title) {
+    return 'Next: $title';
+  }
+
+  @override
+  String get agentPlanCompleted => 'Plan completed';
+
+  @override
+  String get agentLoadingModel => 'Loading the local model';
+
+  @override
+  String get agentCompressingContext => 'Organizing earlier task context';
+
+  @override
+  String get agentWebSearchUsed => 'Web search completed';
+
+  @override
+  String get agentOpeningWebPage => 'Opening web page…';
+
+  @override
+  String get agentWebPageOpened => 'Web page opened';
+
+  @override
+  String get agentFindingInWebPage => 'Finding on page…';
+
+  @override
+  String get agentWebPageFindCompleted => 'Page find completed';
+
+  @override
+  String get agentWebSearchContent => 'Search';
+
+  @override
+  String get agentWebPageAddress => 'Page address';
+
+  @override
+  String get agentWebFindContent => 'Find on page';
+
+  @override
+  String get agentWebSearchResults => 'Results';
+
+  @override
+  String get agentWebRelatedSources => 'Related sources';
+
+  @override
+  String get agentWebSearchNoResults => 'No relevant results were found';
+
+  @override
+  String get agentWebSearchProviderManaged =>
+      'Search results were provided to the model, but the provider did not expose their details to the client';
+
+  @override
+  String get agentWebPageProviderManaged =>
+      'Page content was provided to the model, but the provider did not expose its details to the client';
+
+  @override
+  String get agentWebSearchDetailsUnavailable =>
+      'The provider did not supply displayable result details';
+
+  @override
+  String get agentWebPageDetailsUnavailable =>
+      'The provider did not supply a displayable page summary';
+
+  @override
+  String get agentWebSearchFailed => 'Search results could not be retrieved';
+
+  @override
+  String agentPlanSteps(int count) {
+    return 'Planned $count steps';
+  }
+
+  @override
+  String agentSubtaskCount(int count) {
+    return 'Ran $count subtasks';
+  }
+
+  @override
+  String agentRunFinished(String time, String duration) {
+    return 'Completed at $time · $duration';
+  }
+
+  @override
+  String agentRunFinishedAt(String time) {
+    return 'Completed at $time';
+  }
+
+  @override
+  String agentRunningTool(String action) {
+    return 'Running: $action';
+  }
+
+  @override
+  String get agentSearchingWeb => 'Searching web pages…';
+
+  @override
+  String get agentThinkingNow => 'Thinking…';
+
+  @override
+  String get agentToolInput => 'Arguments';
+
+  @override
+  String get agentToolResult => 'Result';
+
+  @override
+  String agentToolSearchQuery(String query) {
+    return 'Search “$query”';
+  }
+
+  @override
+  String agentToolFoundNotes(int count) {
+    return 'Found $count notes';
+  }
+
+  @override
+  String agentToolReadNotes(int count) {
+    return 'Read $count notes';
+  }
+
+  @override
+  String agentToolChangedNotes(int count) {
+    return 'Processed $count notes';
+  }
+
+  @override
+  String agentStatus(String status) {
+    String _temp0 = intl.Intl.selectLogic(status, {
+      'queued': 'Queued',
+      'running': 'Running',
+      'waitingApproval': 'Awaiting approval',
+      'paused': 'Paused',
+      'interrupted': 'Recoverable',
+      'cancelling': 'Stopping',
+      'completed': 'Completed',
+      'cancelled': 'Stopped',
+      'failed': 'Failed',
+      'needsReconciliation': 'Needs verification',
+      'other': 'Unknown',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String agentSkillName(String skill) {
+    String _temp0 = intl.Intl.selectLogic(skill, {
+      'assistant': 'Assistant',
+      'summarize': 'Summarize notes',
+      'rewrite': 'Rewrite',
+      'tasks': 'Extract tasks',
+      'organize': 'Organize a topic',
+      'other': 'Assistant',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String agentActionName(String action) {
+    String _temp0 = intl.Intl.selectLogic(action, {
+      'search_notes': 'Search notes',
+      'read_notes': 'Read notes',
+      'propose_note_changes': 'Note changes',
+      'web_fetch': 'Read web page',
+      'update_plan': 'Update plan',
+      'delegate': 'Read-only subtask',
+      'other': 'External tool',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get agentIncludeHistory => 'Include this conversation history';
+
+  @override
+  String get agentHistoryScopeHint =>
+      'Notes already referenced in history also need access. Turn this off to start without earlier context.';
+
+  @override
+  String get agentSkipApproval => 'Skip per-operation approval';
+
+  @override
+  String get agentApprovalDefaultHint =>
+      'On by default: granted operations run automatically. Turn off to review each change first. Applies to new tasks only.';
+
+  @override
+  String get agentApprovalTaskHint =>
+      'Run granted note changes and external operations directly, without expanding read or network access.';
+
+  @override
+  String get agentApprovalAutomatic => 'Granted operations run automatically';
+
+  @override
+  String get agentApprovalManual => 'Review each change before execution';
+
+  @override
+  String get agentModelLimits => 'Model length limits';
+
+  @override
+  String get agentModelLimitsSummary =>
+      'Enter token limits from your provider’s specifications.';
+
+  @override
+  String get agentTokenUnits =>
+      'Tokens: enter an integer or K / M. 1K = 1024; 1M = 1048576.';
+
+  @override
+  String get agentModelLimitsHint =>
+      'Context includes input, history, tools and output. Output must be smaller than context. New tasks inherit these values; actual support depends on your provider.';
+
+  @override
+  String get agentModelLimitsError =>
+      'Context must be 1024–2097152 tokens. Output must be positive and smaller than context. Enter an integer or K / M.';
+
+  @override
+  String get agentSharedKeyHint =>
+      'All models in this service share this key. Leave blank to keep the saved key; stored only in secure system storage.';
+
+  @override
+  String get agentServiceModels => 'Models in this service';
+
+  @override
+  String get agentServiceModelsSummary =>
+      'Fetch or enter model IDs, then verify limits and capabilities for each model.';
+
+  @override
+  String get agentCatalogNotice =>
+      'Enter the URL and key to fetch model IDs without sending notes or generating content. Listed models may not support this protocol; configure each model\'s limits and capabilities.';
+
+  @override
+  String get agentFetchModels => 'Fetch models from API';
+
+  @override
+  String agentCatalogFailed(String code) {
+    return 'Could not fetch a usable list ($code). Retry or add models manually; saving is still available.';
+  }
+
+  @override
+  String get agentBatchModelIds => 'Add model IDs manually';
+
+  @override
+  String get agentBatchModelHint =>
+      'Paste multiple IDs, one per line or separated by commas. Duplicates are removed. Unlisted models are allowed. Save up to 100 models per service.';
+
+  @override
+  String get agentAddModelsToList => 'Add to model list';
+
+  @override
+  String agentEditingModel(int count) {
+    return 'Current model ($count added)';
+  }
+
+  @override
+  String get agentRemoveModelFromList => 'Remove this model from list';
+
+  @override
+  String get agentPerModelHint =>
+      'Settings and connection tests below apply only to the current model. Switch to configure each one. New models use default values. Saving keeps all models in the list.';
+
+  @override
+  String get agentModelListError =>
+      'Add 1–100 model IDs separated by newlines or commas. Each ID must have no spaces and at most 200 characters.';
+
+  @override
+  String get agentSelectCatalogModels => 'Choose models to add';
+
+  @override
+  String get agentSearchModels => 'Search models or services';
+
+  @override
+  String get agentSelectVisibleModels => 'Select search results (up to 100)';
+
+  @override
+  String get agentModelAlreadyAdded => 'Already in this service';
+
+  @override
+  String agentAddSelectedModels(int count) {
+    return 'Add selected models ($count)';
+  }
+
+  @override
+  String get agentDeleteService => 'Delete service and its models';
+
+  @override
+  String get agentDeleteServiceHint =>
+      'Removes all model configurations and the saved key for this service. Notes and task history are kept.';
+
+  @override
+  String get agentSwitchModel => 'Switch model';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get agentExecution => 'Execution';
+
+  @override
+  String get agentNoMcpServers => 'No MCP servers added';
+
+  @override
+  String get agentConnection => 'Connection';
+
+  @override
+  String get agentModelParameters => 'Model parameters';
+
+  @override
+  String get agentKeyStored => 'Stored securely';
+
+  @override
+  String get agentManageLocalModels => 'Manage local models';
+
+  @override
+  String agentServiceModelCount(int count) {
+    return '$count models';
+  }
+
+  @override
+  String get fmTitle => 'Files';
+
+  @override
+  String get fmSubtitle => 'A place for everything';
+
+  @override
+  String get fmAllFiles => 'All files';
+
+  @override
+  String get fmRecent => 'Recent';
+
+  @override
+  String get fmFavorites => 'Favorites';
+
+  @override
+  String get fmTrash => 'Trash';
+
+  @override
+  String get fmImport => 'Import files';
+
+  @override
+  String get fmNewFolder => 'New folder';
+
+  @override
+  String get fmSearch => 'Search files and folders';
+
+  @override
+  String get fmAllTypes => 'All types';
+
+  @override
+  String get fmDocuments => 'Documents';
+
+  @override
+  String get fmSpreadsheets => 'Spreadsheets';
+
+  @override
+  String get fmPresentations => 'Presentations';
+
+  @override
+  String get fmImages => 'Images';
+
+  @override
+  String get fmAudio => 'Audio';
+
+  @override
+  String get fmVideo => 'Video';
+
+  @override
+  String get fmText => 'Text';
+
+  @override
+  String get fmArchives => 'Archives';
+
+  @override
+  String get fmOther => 'Other files';
+
+  @override
+  String get fmFolder => 'Folder';
+
+  @override
+  String get fmSort => 'Sort';
+
+  @override
+  String get fmSortName => 'Name';
+
+  @override
+  String get fmSortModified => 'Modified';
+
+  @override
+  String get fmSortSize => 'Size';
+
+  @override
+  String get fmSortType => 'Type';
+
+  @override
+  String get fmAscending => 'Ascending';
+
+  @override
+  String get fmDescending => 'Descending';
+
+  @override
+  String get fmGrid => 'Grid view';
+
+  @override
+  String get fmList => 'List view';
+
+  @override
+  String get fmSelect => 'Select files';
+
+  @override
+  String fmSelected(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String fmItems(int count) {
+    return '$count items';
+  }
+
+  @override
+  String fmFileCount(int count) {
+    return '$count files';
+  }
+
+  @override
+  String fmLocalStorage(String size) {
+    return 'On this device · $size';
+  }
+
+  @override
+  String get fmEmptyTitle => 'Make room for your files';
+
+  @override
+  String get fmEmptyBody =>
+      'Import documents, images, audio, video or any other file, and organize them into folders.';
+
+  @override
+  String get fmFolderEmpty => 'This folder is empty';
+
+  @override
+  String get fmNoResults => 'No matching files';
+
+  @override
+  String get fmNoResultsBody => 'Try another name or clear the type filter.';
+
+  @override
+  String get fmNoFavorites => 'No favorites yet';
+
+  @override
+  String get fmNoFavoritesBody =>
+      'Favorite files and folders to keep them close at hand.';
+
+  @override
+  String get fmNoRecent => 'No recent files';
+
+  @override
+  String get fmNoRecentBody => 'Files you open will appear here.';
+
+  @override
+  String get fmTrashEmpty => 'Trash is empty';
+
+  @override
+  String get fmTrashHint =>
+      'Deleted files stay here until you restore or permanently delete them.';
+
+  @override
+  String get fmRename => 'Rename';
+
+  @override
+  String get fmMove => 'Move to';
+
+  @override
+  String get fmCopy => 'Copy to';
+
+  @override
+  String get fmMoveHere => 'Move here';
+
+  @override
+  String get fmCopyHere => 'Copy here';
+
+  @override
+  String get fmFavorite => 'Add to favorites';
+
+  @override
+  String get fmUnfavorite => 'Remove from favorites';
+
+  @override
+  String get fmDetails => 'Details';
+
+  @override
+  String get fmShare => 'Share';
+
+  @override
+  String get fmExport => 'Save to device';
+
+  @override
+  String get fmOpenSystem => 'Open with another app';
+
+  @override
+  String get fmRestore => 'Restore';
+
+  @override
+  String get fmDelete => 'Move to trash';
+
+  @override
+  String get fmDeleteForever => 'Delete permanently';
+
+  @override
+  String get fmEmptyTrash => 'Empty trash';
+
+  @override
+  String fmDeleteConfirm(int count) {
+    return 'Permanently delete $count selected items and their contents? This cannot be undone.';
+  }
+
+  @override
+  String get fmTrashed => 'Moved to trash';
+
+  @override
+  String get fmUndo => 'Undo';
+
+  @override
+  String get fmCancel => 'Cancel';
+
+  @override
+  String get fmConfirm => 'Confirm';
+
+  @override
+  String get fmName => 'Name';
+
+  @override
+  String get fmCreate => 'Create';
+
+  @override
+  String get fmCreated => 'Created';
+
+  @override
+  String get fmModified => 'Modified';
+
+  @override
+  String get fmSize => 'Size';
+
+  @override
+  String get fmType => 'Type';
+
+  @override
+  String get fmLocation => 'Location';
+
+  @override
+  String fmImporting(int current, int total) {
+    return 'Importing $current/$total';
+  }
+
+  @override
+  String get fmImportCancelled => 'Cancel import';
+
+  @override
+  String get fmErrorLoad => 'Could not load your files. Please retry.';
+
+  @override
+  String get fmErrorOperation =>
+      'Could not complete the operation. Check available storage and file access, then retry.';
+
+  @override
+  String get fmErrorImport =>
+      'Some files could not be imported. Imported files are safe. Select the failed files to retry.';
+
+  @override
+  String get fmErrorName =>
+      'Use 1–240 characters without paths or special characters.';
+
+  @override
+  String get fmErrorExists => 'An item with this name already exists here.';
+
+  @override
+  String get fmErrorDestination =>
+      'This folder is unavailable. Choose another location.';
+
+  @override
+  String get fmErrorCycle =>
+      'An item cannot be placed inside itself or one of its subfolders.';
+
+  @override
+  String get fmRetry => 'Retry';
+
+  @override
+  String get fmPreviewUnavailable => 'Open this format with a compatible app';
+
+  @override
+  String get fmOfficeHint =>
+      'Use Office, WPS or another compatible app on this device to view the original layout.';
+
+  @override
+  String get fmPreviewHint =>
+      'Open with another app, share, or save a copy to your device.';
+
+  @override
+  String get fmOpenFailed =>
+      'Could not open the file. Install an app that supports this format and try again.';
+
+  @override
+  String get fmPreviewFailed => 'Could not preview this file';
+
+  @override
+  String get fmPreviewLarge =>
+      'This file is large. Use another app to view its full contents.';
+
+  @override
+  String get fmSaved => 'File saved to the selected location';
+
+  @override
+  String get fmTextTruncated =>
+      'Showing the first 200,000 characters. Open with another app to see the full file.';
+
+  @override
+  String get fmPlay => 'Play';
+
+  @override
+  String get fmPause => 'Pause';
+
+  @override
+  String get fmArchiveHint => 'Archive contents (read only)';
+
+  @override
+  String get fmArchiveLimit => 'Showing the first 1,000 entries.';
+
+  @override
+  String get fmMissing =>
+      'This file is missing or unreadable. Restore a backup or import it again.';
+
+  @override
+  String get fmLocalHint =>
+      'Imported copies stay in the app. Original files are kept.';
+
+  @override
+  String get fmMore => 'More actions';
+
+  @override
+  String get materialRecent => 'At hand';
+
+  @override
+  String get materialFavorites => 'Favorites';
+
+  @override
+  String get materialImages => 'Pictures';
+
+  @override
+  String get materialContinue => 'Keep writing';
+
+  @override
+  String get materialCategories => 'Browse by type';
+
+  @override
+  String get materialAllFiles => 'All files';
+
+  @override
+  String get materialWrite => 'Write a note';
+
+  @override
+  String get materialContinueNote => 'Continue note';
+
+  @override
+  String get materialPreview => 'Preview';
+
+  @override
+  String get materialPickFavorites => 'Choose files';
+
+  @override
+  String get materialOpenImages => 'All pictures';
+
+  @override
+  String get materialEmptyRecentTitle =>
+      'Keep something worth writing about close at hand.';
+
+  @override
+  String get materialEmptyRecentBody => 'Start with a document or a picture.';
+
+  @override
+  String get materialEmptyFavoritesTitle => 'Keep your favorite files close.';
+
+  @override
+  String get materialEmptyFavoritesBody =>
+      'Choose files from your library to favorite.';
+
+  @override
+  String get materialEmptyImagesTitle => 'Let a picture start your next note.';
+
+  @override
+  String get materialEmptyImagesBody =>
+      'Import pictures to preview them and write.';
+
+  @override
+  String get materialEmptyContinueTitle => 'Leave a thought to pick up later.';
+
+  @override
+  String get materialEmptyContinueBody =>
+      'Notes started from a file will appear here.';
+
+  @override
+  String get materialLoading => 'Loading your files…';
+
+  @override
+  String get materialLoadFailed => 'Could not load your files';
+
+  @override
+  String get materialLinked => 'Related note available';
+
+  @override
+  String get materialRecentlyOpened => 'Recently opened';
+
+  @override
+  String get materialRecentlyImported => 'Recently imported';
+
+  @override
+  String get materialSavedLayoutFailed =>
+      'Could not remember your card selection. Please try again later.';
+
+  @override
+  String materialPage(String name, int page, int total) {
+    return '$name, card $page of $total';
+  }
+
+  @override
+  String get materialSaveFavorites => 'Save favorites';
+
+  @override
+  String materialFileCount(int count) {
+    return '$count files';
+  }
+
+  @override
+  String get fileReferences => 'File references';
+
+  @override
+  String get shareFileReferencesContinued => 'File references (continued)';
+
+  @override
+  String get shareImageUnavailable => 'Image unavailable';
+
+  @override
+  String fileReferenceCount(int count) {
+    return '$count files';
+  }
+
+  @override
+  String get fileReferencesHint => 'View all referenced files';
+
+  @override
+  String get fileReferenceUnavailable => 'File removed or in Trash';
+
+  @override
+  String get fileReferencesRemove => 'Remove reference card';
+
+  @override
+  String get fileReferencesChoose => 'Choose files to reference';
+
+  @override
+  String fileReferencesAdd(int count) {
+    return 'Reference selected files ($count)';
+  }
+
+  @override
+  String get fileReferencesEmpty =>
+      'Choose from your library or import files to reference';
+
+  @override
+  String get fileReferencesSelect => 'Reference files';
+
+  @override
+  String get moveFileReferencesHint =>
+      'Long press and drag to move this reference card';
+}

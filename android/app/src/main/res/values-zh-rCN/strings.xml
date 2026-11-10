@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">非空笔记</string>
+    <string name="app_update_channel">应用更新</string>
+    <string name="app_update_download_title">正在下载非空笔记更新</string>
+    <string name="app_update_download_description">下载在后台继续，可正常使用笔记。</string>
+    <string name="app_update_download_complete">更新安装包下载完成</string>
+    <string name="app_update_download_complete_description">点击返回非空笔记，校验并安装更新。</string>
+    <string name="invalid_audio_decode">音频解码参数无效</string>
+    <string name="audio_decode_failed">无法解码音频</string>
+    <string name="audio_file_missing">音频文件不存在</string>
+    <string name="audio_track_missing">文件中没有可识别的音轨</string>
+    <string name="unsupported_pcm_format">设备输出了不支持的 PCM 音频格式</string>
+</resources>

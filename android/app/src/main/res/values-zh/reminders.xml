@@ -1,0 +1,9 @@
+<resources>
+    <string name="reminder_channel">笔记提醒</string>
+    <string name="reminder_channel_description">在为笔记选择的日期和时间发送提醒</string>
+    <string name="reminder_title">笔记提醒</string>
+    <string name="reminder_private_body">解锁后查看笔记内容</string>
+    <string name="reminder_empty_body">到时间了，查看你的笔记</string>
+    <string name="reminder_dismiss">忽略</string>
+    <string name="reminder_view">查看提醒</string>
+</resources>

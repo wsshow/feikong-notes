@@ -1,0 +1,322 @@
+name: Release Android
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify release source
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      version_name: ${{ steps.release.outputs.version_name }}
+      build_number: ${{ steps.release.outputs.build_number }}
+      build_time: ${{ steps.release.outputs.build_time }}
+    env:
+      FLUTTER_VERSION: "3.47.2"
+      PUB_HOSTED_URL: "https://pub.flutter-io.cn"
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate release tag
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$ ]]; then
+            echo "::error::Tag must use SemVer, for example v1.2.3 or v1.2.3-beta.1"
+            exit 1
+          fi
+
+          pub_version=$(sed -n 's/^version:[[:space:]]*//p' pubspec.yaml | head -n 1)
+          if [[ ! "$pub_version" =~ ^([0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?)\+([1-9][0-9]*)$ ]]; then
+            echo "::error::pubspec.yaml must declare a version and positive build number, for example 0.1.0+1"
+            exit 1
+          fi
+          version_name="${BASH_REMATCH[1]}"
+          build_number="${BASH_REMATCH[4]}"
+          if [[ "${GITHUB_REF_NAME#v}" != "$version_name" ]]; then
+            echo "::error::Release tag must match pubspec.yaml version: v$version_name"
+            exit 1
+          fi
+
+          echo "version_name=$version_name" >> "$GITHUB_OUTPUT"
+          echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
+          echo "build_time=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          flutter pub get --enforce-lockfile
+          (cd packages/fknotes_harness && dart pub get --enforce-lockfile)
+
+      - name: Verify source quality
+        run: |
+          dart format --output=none --set-exit-if-changed lib test
+          flutter analyze
+          flutter test
+
+  build-apk:
+    name: Build APK (${{ matrix.abi }})
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - abi: armeabi-v7a
+            target_platform: android-arm
+          - abi: arm64-v8a
+            target_platform: android-arm64
+          - abi: x86_64
+            target_platform: android-x64
+    env:
+      FLUTTER_VERSION: "3.47.2"
+      PUB_HOSTED_URL: "https://pub.flutter-io.cn"
+      ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android/app/fknotes-release.jks
+      FKNOTES_UPDATE_MANIFEST_URL: ${{ vars.FKNOTES_UPDATE_MANIFEST_URL }}
+      VERSION_NAME: ${{ needs.verify.outputs.version_name }}
+      BUILD_NUMBER: ${{ needs.verify.outputs.build_number }}
+      BUILD_TIME: ${{ needs.verify.outputs.build_time }}
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Set up Java
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Prepare signing key
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          umask 077
+
+          for name in \
+            ANDROID_KEYSTORE_BASE64 \
+            ANDROID_KEYSTORE_PASSWORD \
+            ANDROID_KEY_PASSWORD \
+            ANDROID_KEY_ALIAS; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Missing required Actions secret: $name"
+              exit 1
+            fi
+          done
+
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+
+      - name: Build signed ${{ matrix.abi }} APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          TARGET_PLATFORM: ${{ matrix.target_platform }}
+          ABI: ${{ matrix.abi }}
+        run: |
+          set -euo pipefail
+
+          flutter build apk \
+            --release \
+            --split-per-abi \
+            --target-platform "$TARGET_PLATFORM" \
+            --build-name "$VERSION_NAME" \
+            --build-number "$BUILD_NUMBER" \
+            --dart-define="FKNOTES_BUILD_TIME=$BUILD_TIME" \
+            --dart-define="FKNOTES_UPDATE_MANIFEST_URL=$FKNOTES_UPDATE_MANIFEST_URL"
+
+          python3 tool/check_android_release.py "build/app/outputs/flutter-apk/app-$ABI-release.apk"
+          mkdir -p dist
+          cp "build/app/outputs/flutter-apk/app-$ABI-release.apk" \
+            "dist/fknotes-$VERSION_NAME+$BUILD_NUMBER-$ABI-release.apk"
+
+      - name: Remove signing key
+        if: always()
+        run: rm -f "$ANDROID_KEYSTORE_PATH"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: fknotes-${{ github.ref_name }}-input-apk-${{ matrix.abi }}
+          path: dist/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  build-aab:
+    name: Build AAB
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FLUTTER_VERSION: "3.47.2"
+      PUB_HOSTED_URL: "https://pub.flutter-io.cn"
+      ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android/app/fknotes-release.jks
+      FKNOTES_UPDATE_MANIFEST_URL: ${{ vars.FKNOTES_UPDATE_MANIFEST_URL }}
+      VERSION_NAME: ${{ needs.verify.outputs.version_name }}
+      BUILD_NUMBER: ${{ needs.verify.outputs.build_number }}
+      BUILD_TIME: ${{ needs.verify.outputs.build_time }}
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Set up Java
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Prepare signing key
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          umask 077
+
+          for name in \
+            ANDROID_KEYSTORE_BASE64 \
+            ANDROID_KEYSTORE_PASSWORD \
+            ANDROID_KEY_PASSWORD \
+            ANDROID_KEY_ALIAS; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Missing required Actions secret: $name"
+              exit 1
+            fi
+          done
+
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+
+      - name: Build signed AAB
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: make aab BUILD_NAME="$VERSION_NAME" BUILD_NUMBER="$BUILD_NUMBER" BUILD_TIME="$BUILD_TIME"
+
+      - name: Remove signing key
+        if: always()
+        run: rm -f "$ANDROID_KEYSTORE_PATH"
+
+      - name: Check AAB for developer paths
+        run: python3 tool/check_android_release.py dist/*.aab
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: fknotes-${{ github.ref_name }}-input-aab
+          path: dist/*.aab
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: Publish GitHub Release
+    needs:
+      - build-apk
+      - build-aab
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: fknotes-${{ github.ref_name }}-input-*
+          path: dist
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: sha256sum dist/*.apk dist/*.aab > dist/SHA256SUMS.txt
+
+      - name: Upload combined workflow artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: fknotes-${{ github.ref_name }}-android
+          path: |
+            dist/*.apk
+            dist/*.aab
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" \
+              dist/*.apk dist/*.aab dist/SHA256SUMS.txt \
+              --clobber \
+              --repo "$GITHUB_REPOSITORY"
+          else
+            arguments=(
+              release create "$GITHUB_REF_NAME"
+              dist/*.apk dist/*.aab dist/SHA256SUMS.txt
+              --verify-tag
+              --generate-notes
+              --title "FKNotes $GITHUB_REF_NAME"
+              --repo "$GITHUB_REPOSITORY"
+            )
+            if [[ "$GITHUB_REF_NAME" == v0.* || "$GITHUB_REF_NAME" == *-* ]]; then
+              arguments+=(--prerelease)
+            fi
+            gh "${arguments[@]}"
+          fi

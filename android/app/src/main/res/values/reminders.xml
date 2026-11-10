@@ -1,0 +1,9 @@
+<resources>
+    <string name="reminder_channel">Note reminders</string>
+    <string name="reminder_channel_description">Reminders at the date and time you choose for a note</string>
+    <string name="reminder_title">Note reminder</string>
+    <string name="reminder_private_body">Unlock the app to view your note</string>
+    <string name="reminder_empty_body">It is time to view your note</string>
+    <string name="reminder_dismiss">Dismiss</string>
+    <string name="reminder_view">View note</string>
+</resources>

@@ -1,0 +1,208 @@
+import 'package:flutter/material.dart';
+
+import '../app.dart';
+import '../l10n/l10n.dart';
+import '../models/local_llm.dart';
+
+String localLlmBackendLabel(
+  LocalLlmBackend backend, {
+  LocalLlmEngineKind? engine,
+}) => switch (backend) {
+  LocalLlmBackend.cpu => 'CPU',
+  LocalLlmBackend.openCl when engine == LocalLlmEngineKind.liteRtLm => 'GPU',
+  LocalLlmBackend.openCl => 'OpenCL · GPU',
+  LocalLlmBackend.vulkan => 'Vulkan · GPU',
+  LocalLlmBackend.metal => 'Metal · GPU',
+};
+
+String localLlmRuntimeProgressText(
+  BuildContext context,
+  LocalLlmRuntimeSnapshot snapshot,
+) {
+  final progress = snapshot.progress;
+  if (progress == null) return context.l10n.assistantPreparingModel;
+  final engine = snapshot.model?.engine;
+  final backend = localLlmBackendLabel(progress.backend, engine: engine);
+  final previousBackend = localLlmBackendLabel(
+    progress.previousBackend ?? snapshot.requestedBackend ?? progress.backend,
+    engine: engine,
+  );
+  return switch (progress.kind) {
+    LocalLlmRuntimeProgressKind.starting =>
+      context.l10n.assistantStartingBackend(backend),
+    LocalLlmRuntimeProgressKind.switching =>
+      context.l10n.assistantSwitchingBackend(previousBackend, backend),
+    LocalLlmRuntimeProgressKind.retrying =>
+      context.l10n.assistantRetryingBackend(backend),
+  };
+}
+
+class LocalLlmRuntimeBadge extends StatelessWidget {
+  final LocalLlmRuntimeSnapshot snapshot;
+  final String modelId;
+  final bool installed;
+
+  const LocalLlmRuntimeBadge({
+    super.key,
+    required this.snapshot,
+    required this.modelId,
+    required this.installed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (!installed) return const SizedBox.shrink();
+    final status = _status(context);
+    return Semantics(
+      label: status.detail,
+      child: ExcludeSemantics(
+        child: Tooltip(
+          message: status.detail,
+          triggerMode: TooltipTriggerMode.tap,
+          showDuration: const Duration(seconds: 4),
+          child: Container(
+            key: const Key('local-llm-runtime-badge'),
+            constraints: const BoxConstraints(minWidth: 38),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            decoration: BoxDecoration(
+              color: status.background,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: status.border),
+            ),
+            child: Text(
+              status.label,
+              key: const Key('local-llm-runtime-badge-label'),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              style: TextStyle(
+                color: status.foreground,
+                fontSize: 9,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _LocalLlmRuntimeStatus _status(BuildContext context) {
+    final matchesModel = snapshot.model?.id == modelId;
+    if (snapshot.state == LocalLlmEngineState.unavailable) {
+      return _LocalLlmRuntimeStatus.alert(
+        context,
+        label: context.l10n.modelRuntimeUnavailable,
+        detail: context.l10n.modelRuntimeUnavailableDetail,
+      );
+    }
+    final progress = snapshot.progress;
+    if (matchesModel &&
+        progress != null &&
+        (snapshot.state == LocalLlmEngineState.loading ||
+            snapshot.state == LocalLlmEngineState.generating)) {
+      final compactBackend = progress.backend == LocalLlmBackend.cpu
+          ? context.l10n.modelRuntimeCpu
+          : context.l10n.modelRuntimeGpu;
+      final label = switch (progress.kind) {
+        LocalLlmRuntimeProgressKind.starting =>
+          context.l10n.modelRuntimeStartingBackend(compactBackend),
+        LocalLlmRuntimeProgressKind.switching =>
+          context.l10n.modelRuntimeSwitchingBackend(compactBackend),
+        LocalLlmRuntimeProgressKind.retrying =>
+          context.l10n.modelRuntimeRetryingBackend(compactBackend),
+      };
+      return _LocalLlmRuntimeStatus.neutral(
+        context,
+        label: label,
+        detail: localLlmRuntimeProgressText(context, snapshot),
+      );
+    }
+    if (matchesModel && snapshot.state == LocalLlmEngineState.loading) {
+      return _LocalLlmRuntimeStatus.neutral(
+        context,
+        label: context.l10n.modelRuntimeStarting,
+        detail: context.l10n.modelRuntimeStartingDetail,
+      );
+    }
+    if (matchesModel && snapshot.state == LocalLlmEngineState.unloading) {
+      return _LocalLlmRuntimeStatus.neutral(
+        context,
+        label: context.l10n.modelRuntimeReleasing,
+        detail: context.l10n.modelRuntimeReleasingDetail,
+      );
+    }
+    if (matchesModel && snapshot.state == LocalLlmEngineState.failed) {
+      return _LocalLlmRuntimeStatus.alert(
+        context,
+        label: context.l10n.modelRuntimeFailed,
+        detail: context.l10n.modelRuntimeFailedDetail,
+      );
+    }
+    final backend = snapshot.activeBackend;
+    if (matchesModel && backend != null) {
+      final gpu = backend != LocalLlmBackend.cpu;
+      final backendName = localLlmBackendLabel(
+        backend,
+        engine: snapshot.model?.engine,
+      );
+      return _LocalLlmRuntimeStatus(
+        label: gpu
+            ? context.l10n.modelRuntimeGpu
+            : context.l10n.modelRuntimeCpu,
+        detail: context.l10n.modelRuntimeBackendDetail(backendName),
+        background: gpu
+            ? context.appColors.softGreen
+            : context.appColors.canvas,
+        foreground: gpu ? context.appColors.moss : context.appColors.muted,
+        border: gpu
+            ? context.appColors.moss.withValues(alpha: 0.22)
+            : context.appColors.line,
+      );
+    }
+    return _LocalLlmRuntimeStatus.neutral(
+      context,
+      label: context.l10n.modelRuntimeStandby,
+      detail: context.l10n.modelRuntimeStandbyDetail,
+    );
+  }
+}
+
+class _LocalLlmRuntimeStatus {
+  final String label;
+  final String detail;
+  final Color background;
+  final Color foreground;
+  final Color border;
+
+  const _LocalLlmRuntimeStatus({
+    required this.label,
+    required this.detail,
+    required this.background,
+    required this.foreground,
+    required this.border,
+  });
+
+  factory _LocalLlmRuntimeStatus.neutral(
+    BuildContext context, {
+    required String label,
+    required String detail,
+  }) => _LocalLlmRuntimeStatus(
+    label: label,
+    detail: detail,
+    background: context.appColors.canvas,
+    foreground: context.appColors.muted,
+    border: context.appColors.line,
+  );
+
+  factory _LocalLlmRuntimeStatus.alert(
+    BuildContext context, {
+    required String label,
+    required String detail,
+  }) => _LocalLlmRuntimeStatus(
+    label: label,
+    detail: detail,
+    background: context.appColors.softCoral,
+    foreground: context.appColors.coral,
+    border: context.appColors.coral.withValues(alpha: 0.42),
+  );
+}

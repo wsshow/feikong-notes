@@ -1,0 +1,989 @@
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+
+import '../models/note.dart';
+import '../models/note_document.dart';
+import '../models/note_share.dart';
+import '../models/note_share_theme.dart';
+
+class NoteSharePageBlock {
+  final NoteShareBlock block;
+  final int? orderedNumber;
+  final bool showMarker;
+  final double? imageHeight;
+
+  const NoteSharePageBlock({
+    required this.block,
+    this.orderedNumber,
+    this.showMarker = true,
+    this.imageHeight,
+  });
+}
+
+class NoteSharePageLayout {
+  final int index;
+  final List<NoteSharePageBlock> blocks;
+  final double bodyHeight;
+
+  const NoteSharePageLayout({
+    required this.index,
+    required this.blocks,
+    required this.bodyHeight,
+  });
+}
+
+class NoteShareLayoutResult {
+  final double logicalWidth;
+  final double logicalHeight;
+  final NoteSharePixelSize outputPixelSize;
+  final List<NoteSharePageLayout> pages;
+
+  const NoteShareLayoutResult({
+    required this.logicalWidth,
+    required this.logicalHeight,
+    required this.outputPixelSize,
+    required this.pages,
+  });
+}
+
+/// The single source of truth for share-card text geometry and inline styles.
+///
+/// Pagination must measure the exact same span tree that the canvas renders;
+/// otherwise font weight, inline code or a custom font size can change wrapping
+/// after the long-image height has already been fixed.
+class NoteShareTextPresentation {
+  const NoteShareTextPresentation._();
+
+  static String displayText(NoteShareBlock block) => block.text;
+
+  static TextStyle baseStyle(
+    NoteShareBlock block,
+    double densityScale, {
+    Color? color,
+  }) {
+    final fontSize = switch (block.type) {
+      NoteShareBlockType.heading => switch (block.headingLevel.clamp(1, 6)) {
+        1 => 21.0,
+        2 => 19.0,
+        _ => 17.0,
+      },
+      NoteShareBlockType.code => 12.5,
+      NoteShareBlockType.table => 12.0,
+      _ => 15.0,
+    };
+    return TextStyle(
+      color: color,
+      fontFamily: block.type == NoteShareBlockType.code ? 'monospace' : null,
+      fontSize: fontSize * densityScale,
+      height: block.type == NoteShareBlockType.heading ? 1.28 : 1.48,
+      fontWeight: block.type == NoteShareBlockType.heading
+          ? FontWeight.w700
+          : FontWeight.w400,
+    );
+  }
+
+  static TextSpan inlineSpan(
+    NoteShareBlock block,
+    TextStyle base, {
+    required double densityScale,
+    Color? linkColor,
+    Color? inlineCodeBackground,
+  }) {
+    final text = displayText(block);
+    if (block.styles.isEmpty) {
+      return TextSpan(text: text, style: base);
+    }
+    final ranges = [...block.styles]
+      ..sort((left, right) => left.start.compareTo(right.start));
+    final children = <InlineSpan>[];
+    var cursor = 0;
+    for (final range in ranges) {
+      final start = range.start.clamp(cursor, text.length);
+      final end = range.end.clamp(start, text.length);
+      if (start > cursor) {
+        children.add(TextSpan(text: text.substring(cursor, start)));
+      }
+      final attributes = range.style;
+      final decorations = <TextDecoration>[
+        if (attributes.strikeThrough) TextDecoration.lineThrough,
+        if (attributes.underline || attributes.link != null)
+          TextDecoration.underline,
+      ];
+      children.add(
+        TextSpan(
+          text: text.substring(start, end),
+          style: TextStyle(
+            fontWeight: attributes.bold ? FontWeight.w700 : null,
+            fontStyle: attributes.italic ? FontStyle.italic : null,
+            fontFamily: attributes.inlineCode ? 'monospace' : null,
+            backgroundColor: attributes.inlineCode
+                ? inlineCodeBackground
+                : null,
+            color: attributes.link != null ? linkColor : null,
+            decoration: decorations.isEmpty
+                ? null
+                : TextDecoration.combine(decorations),
+          ),
+        ),
+      );
+      cursor = end;
+    }
+    if (cursor < text.length) {
+      children.add(TextSpan(text: text.substring(cursor)));
+    }
+    return TextSpan(style: base, children: children);
+  }
+}
+
+/// One geometry contract for static file/media cards in measurement and export.
+class NoteShareCardPresentation {
+  const NoteShareCardPresentation._();
+
+  static const padding = 10.0;
+  static const iconSize = 24.0;
+  static const iconGap = 9.0;
+  static const rowPadding = 8.0;
+  static const metadataGap = 3.0;
+  static const headerHeight = 16.0;
+  static const headerGap = 6.0;
+
+  static TextStyle titleStyle(double scale, {Color? color}) => TextStyle(
+    color: color,
+    fontSize: 11.5 * scale,
+    height: 1.3,
+    letterSpacing: 0,
+    fontWeight: FontWeight.w600,
+  );
+
+  static TextStyle metadataStyle(double scale, {Color? color}) => TextStyle(
+    color: color,
+    fontSize: 10 * scale,
+    height: 1.3,
+    letterSpacing: 0,
+    fontWeight: FontWeight.w400,
+  );
+
+  static double rowHeight(
+    String title, {
+    required double width,
+    required double scale,
+    required TextDirection textDirection,
+  }) {
+    final painter = TextPainter(
+      text: TextSpan(text: title, style: titleStyle(scale)),
+      textDirection: textDirection,
+    )..layout(maxWidth: math.max(1, width - (iconSize + iconGap) * scale));
+    final textHeight = painter.height + (metadataGap + 13) * scale;
+    painter.dispose();
+    return math.max(iconSize * scale, textHeight) + rowPadding * 2 * scale;
+  }
+
+  static double referencesHeight(
+    List<NoteFileReference> references, {
+    required double width,
+    required double scale,
+    required TextDirection textDirection,
+  }) =>
+      (padding * 2 + headerHeight + headerGap) * scale +
+      2 +
+      references.fold<double>(
+        0,
+        (height, file) =>
+            height +
+            rowHeight(
+              file.name,
+              width: width - padding * 2 * scale - 2,
+              scale: scale,
+              textDirection: textDirection,
+            ),
+      ) +
+      math.max(0, references.length - 1) +
+      NoteShareLayoutEngine.attachmentBottomGap;
+}
+
+class NoteShareLayoutEngine {
+  static const logicalWidth = 360.0;
+  static const chromeMeasurementSafety = 4.0;
+  // Narrow paper themes create more wrapped lines, and RenderParagraph rounds
+  // each line independently. Keep enough per-block room for those fractions
+  // to accumulate safely in long-image exports.
+  static const blockMeasurementSafety = 2.25;
+  static const blockBottomGap = 8.0;
+  static const dividerVerticalPadding = 10.0;
+  static const quoteBorderWidth = 2.5;
+  static const quoteHorizontalPadding = 21.5;
+  static const quoteVerticalPadding = 14.0;
+  static const codePadding = 10.0;
+  static const attachmentBottomGap = 10.0;
+  static const attachmentMinHeight = 48.0;
+  static const portraitImageHeight = 140.0;
+  static const landscapeImageHeight = 82.0;
+  static const tableCellHorizontalPadding = 7.0;
+  static const tableCellVerticalPadding = 6.0;
+  static const tableFontSize = 12.0;
+  static const tableLineHeight = 1.35;
+
+  static double footerGapFor(bool landscape) => landscape ? 8.0 : 12.0;
+
+  const NoteShareLayoutEngine();
+
+  NoteShareLayoutResult paginate({
+    required NoteShareDraft draft,
+    required NoteShareOptions options,
+    required TextDirection textDirection,
+    required String untitledTitle,
+    Map<NoteAttachmentId, double> imageAspectRatios = const {},
+  }) {
+    final pixelSize = options.canvas.pixelSize;
+    if (options.canvas.isLong) {
+      return _layoutLongImage(
+        draft: draft,
+        options: options,
+        textDirection: textDirection,
+        untitledTitle: untitledTitle,
+        imageAspectRatios: imageAspectRatios,
+      );
+    }
+    final logicalHeight = logicalWidth / pixelSize.aspectRatio;
+    final blocks = _shareableBlocks(draft, options);
+    final pageBlocks = <List<NoteSharePageBlock>>[[]];
+    final usedHeights = <double>[0];
+    var orderedNumber = 0;
+    NoteShareBlockType? previousType;
+
+    double capacity(int pageIndex) => _bodyCapacity(
+      logicalHeight: logicalHeight,
+      pageIndex: pageIndex,
+      draft: draft,
+      options: options,
+      textDirection: textDirection,
+      untitledTitle: untitledTitle,
+    );
+
+    void nextPage() {
+      pageBlocks.add([]);
+      usedHeights.add(0);
+    }
+
+    void addBlock(NoteShareBlock block, {bool showMarker = true}) {
+      if (block.type == NoteShareBlockType.ordered && showMarker) {
+        orderedNumber = previousType == NoteShareBlockType.ordered
+            ? orderedNumber + 1
+            : 1;
+      } else if (block.type != NoteShareBlockType.ordered) {
+        orderedNumber = 0;
+      }
+
+      var remainingBlock = block;
+      var marker = showMarker;
+      while (true) {
+        final pageIndex = pageBlocks.length - 1;
+        final available = capacity(pageIndex) - usedHeights[pageIndex];
+        final measured = _blockHeight(
+          remainingBlock,
+          draft: draft,
+          options: options,
+          textDirection: textDirection,
+          imageAspectRatios: imageAspectRatios,
+        );
+        if (measured <= available ||
+            (pageBlocks[pageIndex].isEmpty && !_canSplit(remainingBlock))) {
+          final maxBlockHeight = measured <= available
+              ? null
+              : capacity(pageIndex);
+          pageBlocks[pageIndex].add(
+            NoteSharePageBlock(
+              block: remainingBlock,
+              orderedNumber: remainingBlock.type == NoteShareBlockType.ordered
+                  ? orderedNumber
+                  : null,
+              showMarker: marker,
+              imageHeight: _imageHeight(
+                remainingBlock,
+                options: options,
+                imageAspectRatios: imageAspectRatios,
+                maxBlockHeight: maxBlockHeight,
+              ),
+            ),
+          );
+          usedHeights[pageIndex] += math.min(measured, capacity(pageIndex));
+          break;
+        }
+
+        if (pageBlocks[pageIndex].isNotEmpty) {
+          if (_canSplit(remainingBlock) &&
+              available >=
+                  _minimumSplitHeight(
+                    remainingBlock,
+                    options: options,
+                    textDirection: textDirection,
+                  )) {
+            final split = _splitToFit(
+              remainingBlock,
+              maxHeight: available,
+              draft: draft,
+              options: options,
+              textDirection: textDirection,
+            );
+            if (split != null) {
+              final headHeight = _blockHeight(
+                split.$1,
+                draft: draft,
+                options: options,
+                textDirection: textDirection,
+              );
+              pageBlocks[pageIndex].add(
+                NoteSharePageBlock(
+                  block: split.$1,
+                  orderedNumber:
+                      remainingBlock.type == NoteShareBlockType.ordered
+                      ? orderedNumber
+                      : null,
+                  showMarker: marker,
+                ),
+              );
+              usedHeights[pageIndex] += headHeight;
+              remainingBlock = split.$2;
+              marker = false;
+              nextPage();
+              continue;
+            }
+          }
+          nextPage();
+          continue;
+        }
+
+        final split = _splitToFit(
+          remainingBlock,
+          maxHeight: math.max(24, capacity(pageIndex)),
+          draft: draft,
+          options: options,
+          textDirection: textDirection,
+        );
+        if (split == null) {
+          pageBlocks[pageIndex].add(
+            NoteSharePageBlock(
+              block: remainingBlock,
+              orderedNumber: remainingBlock.type == NoteShareBlockType.ordered
+                  ? orderedNumber
+                  : null,
+              showMarker: marker,
+            ),
+          );
+          usedHeights[pageIndex] = capacity(pageIndex);
+          break;
+        }
+        pageBlocks[pageIndex].add(
+          NoteSharePageBlock(
+            block: split.$1,
+            orderedNumber: remainingBlock.type == NoteShareBlockType.ordered
+                ? orderedNumber
+                : null,
+            showMarker: marker,
+          ),
+        );
+        usedHeights[pageIndex] = _blockHeight(
+          split.$1,
+          draft: draft,
+          options: options,
+          textDirection: textDirection,
+        );
+        remainingBlock = split.$2;
+        marker = false;
+        nextPage();
+      }
+      previousType = block.type;
+    }
+
+    for (final block in blocks) {
+      addBlock(block);
+    }
+
+    if (pageBlocks.length > 1 && pageBlocks.last.isEmpty) {
+      pageBlocks.removeLast();
+      usedHeights.removeLast();
+    }
+    final pages = <NoteSharePageLayout>[];
+    for (var index = 0; index < pageBlocks.length; index++) {
+      pages.add(
+        NoteSharePageLayout(
+          index: index,
+          blocks: List.unmodifiable(pageBlocks[index]),
+          bodyHeight: capacity(index),
+        ),
+      );
+    }
+    return NoteShareLayoutResult(
+      logicalWidth: logicalWidth,
+      logicalHeight: logicalHeight,
+      outputPixelSize: pixelSize,
+      pages: List.unmodifiable(pages),
+    );
+  }
+
+  NoteShareLayoutResult _layoutLongImage({
+    required NoteShareDraft draft,
+    required NoteShareOptions options,
+    required TextDirection textDirection,
+    required String untitledTitle,
+    required Map<NoteAttachmentId, double> imageAspectRatios,
+  }) {
+    final blocks = _shareableBlocks(draft, options);
+    final pageBlocks = <NoteSharePageBlock>[];
+    var orderedNumber = 0;
+    NoteShareBlockType? previousType;
+    var bodyHeight = 0.0;
+    for (final block in blocks) {
+      if (block.type == NoteShareBlockType.ordered) {
+        orderedNumber = previousType == NoteShareBlockType.ordered
+            ? orderedNumber + 1
+            : 1;
+      } else {
+        orderedNumber = 0;
+      }
+      pageBlocks.add(
+        NoteSharePageBlock(
+          block: block,
+          orderedNumber: block.type == NoteShareBlockType.ordered
+              ? orderedNumber
+              : null,
+          imageHeight: _imageHeight(
+            block,
+            options: options,
+            imageAspectRatios: imageAspectRatios,
+          ),
+        ),
+      );
+      bodyHeight += _blockHeight(
+        block,
+        draft: draft,
+        options: options,
+        textDirection: textDirection,
+        imageAspectRatios: imageAspectRatios,
+      );
+      previousType = block.type;
+    }
+
+    final logicalHeight = _longImageHeight(
+      bodyHeight: bodyHeight,
+      draft: draft,
+      options: options,
+      textDirection: textDirection,
+      untitledTitle: untitledTitle,
+    );
+    final outputPixelSize = _longOutputPixelSize(
+      logicalHeight,
+      options.canvas.quality,
+    );
+    return NoteShareLayoutResult(
+      logicalWidth: logicalWidth,
+      logicalHeight: logicalHeight,
+      outputPixelSize: outputPixelSize,
+      pages: [
+        NoteSharePageLayout(
+          index: 0,
+          blocks: List.unmodifiable(pageBlocks),
+          bodyHeight: bodyHeight,
+        ),
+      ],
+    );
+  }
+
+  double _longImageHeight({
+    required double bodyHeight,
+    required NoteShareDraft draft,
+    required NoteShareOptions options,
+    required TextDirection textDirection,
+    required String untitledTitle,
+  }) {
+    final fixedHeight = _fixedChromeHeight(
+      pageIndex: 0,
+      draft: draft,
+      options: options,
+      textDirection: textDirection,
+      untitledTitle: untitledTitle,
+      landscape: false,
+    );
+    final paperFactor = NoteShareTemplateMetrics.of(
+      options.template,
+    ).paperHeightFactor;
+    return math.max(480, (fixedHeight + bodyHeight) / paperFactor);
+  }
+
+  NoteSharePixelSize _longOutputPixelSize(
+    double logicalHeight,
+    NoteShareQuality quality,
+  ) {
+    var width = quality.shortSide.toDouble();
+    var height = width * logicalHeight / logicalWidth;
+    final heightScale = NoteShareCanvasSpec.maxCustomHeight / height;
+    final pixelScale = math.sqrt(
+      NoteShareCanvasSpec.maxPixels / (width * height),
+    );
+    final scale = math.min(1.0, math.min(heightScale, pixelScale));
+    width *= scale;
+    height *= scale;
+    return NoteSharePixelSize(width.round(), height.round());
+  }
+
+  List<NoteShareBlock> _shareableBlocks(
+    NoteShareDraft draft,
+    NoteShareOptions options,
+  ) {
+    final result = <NoteShareBlock>[];
+    for (final block in draft.blocks) {
+      if (block.type == NoteShareBlockType.attachment ||
+          block.type == NoteShareBlockType.fileReferences) {
+        if (!options.includeAttachments) continue;
+      }
+      if (block.text.trim().isEmpty &&
+          block.type != NoteShareBlockType.divider &&
+          block.type != NoteShareBlockType.table &&
+          block.type != NoteShareBlockType.fileReferences &&
+          block.type != NoteShareBlockType.attachment) {
+        continue;
+      }
+      result.add(block);
+    }
+    return result;
+  }
+
+  double _bodyCapacity({
+    required double logicalHeight,
+    required int pageIndex,
+    required NoteShareDraft draft,
+    required NoteShareOptions options,
+    required TextDirection textDirection,
+    required String untitledTitle,
+  }) {
+    final landscape = logicalHeight < logicalWidth;
+    final paperHeight =
+        logicalHeight *
+        NoteShareTemplateMetrics.of(options.template).paperHeightFactor;
+    final fixedHeight = _fixedChromeHeight(
+      pageIndex: pageIndex,
+      draft: draft,
+      options: options,
+      textDirection: textDirection,
+      untitledTitle: untitledTitle,
+      landscape: landscape,
+    );
+    return math.max(28, paperHeight - fixedHeight);
+  }
+
+  double _fixedChromeHeight({
+    required int pageIndex,
+    required NoteShareDraft draft,
+    required NoteShareOptions options,
+    required TextDirection textDirection,
+    required String untitledTitle,
+    required bool landscape,
+  }) {
+    final metrics = NoteShareTemplateMetrics.of(options.template);
+    final paperPadding = metrics.verticalPadding(landscape) * 2;
+    final runningHeader = pageIndex == 0
+        ? options.includeDate
+              ? 27.0
+              : 8.0
+        : 24.0;
+    final title = pageIndex == 0 && options.includeTitle
+        ? _measureText(
+                draft.title.trim().isEmpty ? untitledTitle : draft.title.trim(),
+                metrics.titleStyle(landscape),
+                _contentWidth(options, landscape),
+                textDirection,
+                maxLines: 3,
+              ) +
+              metrics.titleTopGap(landscape) +
+              metrics.titleBottomGap(landscape)
+        : 0.0;
+    final footer = 31.0 + footerGapFor(landscape) + chromeMeasurementSafety;
+    return paperPadding + runningHeader + title + footer;
+  }
+
+  double _contentWidth(NoteShareOptions options, bool landscape) {
+    final metrics = NoteShareTemplateMetrics.of(options.template);
+    return logicalWidth * metrics.paperWidthFactor -
+        metrics.horizontalPadding(landscape) * 2;
+  }
+
+  double _blockHeight(
+    NoteShareBlock block, {
+    required NoteShareDraft draft,
+    required NoteShareOptions options,
+    required TextDirection textDirection,
+    Map<NoteAttachmentId, double> imageAspectRatios = const {},
+  }) {
+    final landscape = options.canvas.pixelSize.aspectRatio > 1;
+    final width = _contentWidth(options, landscape) - block.indent * 14;
+    final scale = options.density.scale;
+    if (block.type == NoteShareBlockType.divider) {
+      return dividerVerticalPadding * 2 + 1;
+    }
+    if (block.type == NoteShareBlockType.attachment) {
+      final image = block.asset?.kind == NoteAssetKind.image;
+      if (image && options.includeImages) {
+        return _imageHeight(
+              block,
+              options: options,
+              imageAspectRatios: imageAspectRatios,
+            )! +
+            attachmentBottomGap;
+      }
+      return math.max(
+            attachmentMinHeight,
+            NoteShareCardPresentation.rowHeight(
+                  block.asset!.displayTitle,
+                  width:
+                      width - NoteShareCardPresentation.padding * 2 * scale - 2,
+                  scale: scale,
+                  textDirection: textDirection,
+                ) +
+                2,
+          ) +
+          attachmentBottomGap +
+          blockMeasurementSafety * scale;
+    }
+    if (block.type == NoteShareBlockType.fileReferences) {
+      return NoteShareCardPresentation.referencesHeight(
+            block.fileReferences,
+            width: width,
+            scale: scale,
+            textDirection: textDirection,
+          ) +
+          blockMeasurementSafety * scale;
+    }
+    if (block.type == NoteShareBlockType.table) {
+      return _tableHeight(
+        block,
+        width: width,
+        densityScale: scale,
+        textDirection: textDirection,
+      );
+    }
+    final style = NoteShareTextPresentation.baseStyle(block, scale);
+    final prefixWidth = switch (block.type) {
+      NoteShareBlockType.bullet ||
+      NoteShareBlockType.ordered ||
+      NoteShareBlockType.todo => 26.0,
+      _ => 0.0,
+    };
+    final horizontalDecoration = switch (block.type) {
+      NoteShareBlockType.quote => quoteHorizontalPadding,
+      NoteShareBlockType.code => codePadding * 2,
+      _ => 0.0,
+    };
+    final textHeight = _measureSpan(
+      NoteShareTextPresentation.inlineSpan(block, style, densityScale: scale),
+      math.max(40, width - prefixWidth - horizontalDecoration),
+      textDirection,
+    );
+    final decoration = switch (block.type) {
+      NoteShareBlockType.quote => quoteVerticalPadding,
+      NoteShareBlockType.code => codePadding * 2,
+      _ => 0.0,
+    };
+    // RichText can round individual line metrics slightly above TextPainter's
+    // aggregate result. Keep a tiny per-block guard so those fractions never
+    // accumulate into a visible RenderFlex overflow at the footer.
+    return textHeight +
+        decoration +
+        (blockBottomGap + blockMeasurementSafety) * scale;
+  }
+
+  double? _imageHeight(
+    NoteShareBlock block, {
+    required NoteShareOptions options,
+    required Map<NoteAttachmentId, double> imageAspectRatios,
+    double? maxBlockHeight,
+  }) {
+    final asset = block.asset;
+    if (block.type != NoteShareBlockType.attachment ||
+        asset?.kind != NoteAssetKind.image ||
+        !options.includeImages) {
+      return null;
+    }
+    final landscape = options.canvas.pixelSize.aspectRatio > 1;
+    final width = _contentWidth(options, landscape) - block.indent * 14;
+    final aspectRatio = imageAspectRatios[asset!.id];
+    var height = aspectRatio != null && aspectRatio.isFinite && aspectRatio > 0
+        ? width / aspectRatio
+        : landscape
+        ? landscapeImageHeight
+        : portraitImageHeight;
+    if (maxBlockHeight != null) {
+      height = math.min(
+        height,
+        math.max(1, maxBlockHeight - attachmentBottomGap),
+      );
+    }
+    return height;
+  }
+
+  double _minimumSplitHeight(
+    NoteShareBlock block, {
+    required NoteShareOptions options,
+    required TextDirection textDirection,
+  }) {
+    if (block.type == NoteShareBlockType.fileReferences) {
+      final landscape = options.canvas.pixelSize.aspectRatio > 1;
+      return NoteShareCardPresentation.referencesHeight(
+            [block.fileReferences.first],
+            width: _contentWidth(options, landscape),
+            scale: options.density.scale,
+            textDirection: textDirection,
+          ) +
+          blockMeasurementSafety * options.density.scale;
+    }
+    if (block.type == NoteShareBlockType.table) {
+      final table = block.table!;
+      final minimum = NoteShareBlock(
+        type: NoteShareBlockType.table,
+        table: NoteTable(
+          rows: table.rows.length > 1
+              ? [table.rows.first, table.rows[1]]
+              : [table.rows.first],
+          alignments: table.alignments,
+        ),
+      );
+      final landscape = options.canvas.pixelSize.aspectRatio > 1;
+      return _tableHeight(
+        minimum,
+        width: _contentWidth(options, landscape),
+        densityScale: options.density.scale,
+        textDirection: textDirection,
+      );
+    }
+    final scale = options.density.scale;
+    final style = NoteShareTextPresentation.baseStyle(block, scale);
+    final lineHeight = (style.fontSize ?? 15) * (style.height ?? 1.48);
+    final decoration = switch (block.type) {
+      NoteShareBlockType.quote => quoteVerticalPadding,
+      NoteShareBlockType.code => codePadding * 2,
+      _ => 0.0,
+    };
+    return lineHeight +
+        decoration +
+        (blockBottomGap + blockMeasurementSafety) * scale;
+  }
+
+  double _measureText(
+    String text,
+    TextStyle style,
+    double maxWidth,
+    TextDirection textDirection, {
+    int? maxLines,
+  }) {
+    if (text.isEmpty) return 0;
+    final painter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: textDirection,
+      maxLines: maxLines,
+      ellipsis: maxLines == null ? null : '…',
+    )..layout(maxWidth: maxWidth);
+    return painter.height;
+  }
+
+  double _measureSpan(
+    InlineSpan span,
+    double maxWidth,
+    TextDirection textDirection,
+  ) {
+    final painter = TextPainter(text: span, textDirection: textDirection)
+      ..layout(maxWidth: maxWidth);
+    return painter.height;
+  }
+
+  bool _canSplit(NoteShareBlock block) =>
+      block.type == NoteShareBlockType.fileReferences
+      ? block.fileReferences.length > 1
+      : block.type == NoteShareBlockType.table
+      ? block.table!.rows.length > 2
+      : block.text.length > 1 &&
+            block.type != NoteShareBlockType.heading &&
+            block.type != NoteShareBlockType.divider &&
+            block.type != NoteShareBlockType.attachment;
+
+  (NoteShareBlock, NoteShareBlock)? _splitToFit(
+    NoteShareBlock block, {
+    required double maxHeight,
+    required NoteShareDraft draft,
+    required NoteShareOptions options,
+    required TextDirection textDirection,
+  }) {
+    if (!_canSplit(block)) return null;
+    if (block.type == NoteShareBlockType.fileReferences) {
+      var low = 1;
+      var high = block.fileReferences.length - 1;
+      var best = 0;
+      NoteShareBlock part(int start, int end) => NoteShareBlock(
+        type: NoteShareBlockType.fileReferences,
+        fileReferences: block.fileReferences.sublist(start, end),
+      );
+      while (low <= high) {
+        final count = (low + high) ~/ 2;
+        final height = _blockHeight(
+          part(0, count),
+          draft: draft,
+          options: options,
+          textDirection: textDirection,
+        );
+        if (height <= maxHeight) {
+          best = count;
+          low = count + 1;
+        } else {
+          high = count - 1;
+        }
+      }
+      if (best == 0) return null;
+      return (part(0, best), part(best, block.fileReferences.length));
+    }
+    if (block.type == NoteShareBlockType.table) {
+      return _splitTableToFit(
+        block,
+        maxHeight: maxHeight,
+        draft: draft,
+        options: options,
+        textDirection: textDirection,
+      );
+    }
+    var low = 1;
+    var high = block.text.length - 1;
+    var best = 0;
+    while (low <= high) {
+      final middle = (low + high) ~/ 2;
+      final index = _safeSplitIndex(block.text, middle);
+      final head = _sliceBlock(block, 0, index);
+      final height = _blockHeight(
+        head,
+        draft: draft,
+        options: options,
+        textDirection: textDirection,
+      );
+      if (height <= maxHeight) {
+        best = index;
+        low = middle + 1;
+      } else {
+        high = middle - 1;
+      }
+    }
+    if (best <= 0 || best >= block.text.length) return null;
+    var splitAt = best;
+    final preferred = block.text.lastIndexOf(
+      RegExp(
+        block.type == NoteShareBlockType.code ? r'\n' : r'[\n\s，。！？；、,.!?;]',
+      ),
+      best,
+    );
+    if (preferred > best * .55) splitAt = preferred + 1;
+    splitAt = _safeSplitIndex(block.text, splitAt);
+    final preferredHead = _sliceBlock(block, 0, splitAt);
+    if (_blockHeight(
+          preferredHead,
+          draft: draft,
+          options: options,
+          textDirection: textDirection,
+        ) >
+        maxHeight) {
+      splitAt = best;
+    }
+    if (splitAt <= 0 || splitAt >= block.text.length) return null;
+    return (
+      _sliceBlock(block, 0, splitAt),
+      _sliceBlock(block, splitAt, block.text.length),
+    );
+  }
+
+  int _safeSplitIndex(String text, int index) {
+    var result = index.clamp(1, text.length - 1);
+    final code = text.codeUnitAt(result - 1);
+    if (code >= 0xD800 && code <= 0xDBFF) result++;
+    return result.clamp(1, text.length - 1);
+  }
+
+  NoteShareBlock _sliceBlock(NoteShareBlock block, int start, int end) =>
+      block.slice(start, end);
+
+  double _tableHeight(
+    NoteShareBlock block, {
+    required double width,
+    required double densityScale,
+    required TextDirection textDirection,
+  }) {
+    final table = block.table!;
+    final columnWidth = math.max(24, width / table.columnCount);
+    var height = 1.0;
+    for (var rowIndex = 0; rowIndex < table.rows.length; rowIndex++) {
+      var rowHeight = 0.0;
+      for (final cell in table.rows[rowIndex]) {
+        rowHeight = math.max(
+          rowHeight,
+          _measureText(
+            cell.isEmpty ? ' ' : cell,
+            TextStyle(
+              fontSize: tableFontSize * densityScale,
+              height: tableLineHeight,
+              fontWeight: rowIndex == 0 ? FontWeight.w700 : FontWeight.w400,
+            ),
+            math.max(12, columnWidth - tableCellHorizontalPadding * 2),
+            textDirection,
+          ),
+        );
+      }
+      height +=
+          rowHeight +
+          tableCellVerticalPadding * 2 +
+          (rowIndex == table.rows.length - 1 ? 0 : 1);
+    }
+    return height + (blockBottomGap + blockMeasurementSafety) * densityScale;
+  }
+
+  (NoteShareBlock, NoteShareBlock)? _splitTableToFit(
+    NoteShareBlock block, {
+    required double maxHeight,
+    required NoteShareDraft draft,
+    required NoteShareOptions options,
+    required TextDirection textDirection,
+  }) {
+    final table = block.table!;
+    final bodyRows = table.rows.length - 1;
+    if (bodyRows < 2) return null;
+    var low = 1;
+    var high = bodyRows - 1;
+    var best = 0;
+    while (low <= high) {
+      final count = (low + high) ~/ 2;
+      final head = _tableBlock(block, [
+        table.rows.first,
+        ...table.rows.skip(1).take(count),
+      ]);
+      final height = _blockHeight(
+        head,
+        draft: draft,
+        options: options,
+        textDirection: textDirection,
+      );
+      if (height <= maxHeight) {
+        best = count;
+        low = count + 1;
+      } else {
+        high = count - 1;
+      }
+    }
+    if (best == 0 || best >= bodyRows) return null;
+    return (
+      _tableBlock(block, [table.rows.first, ...table.rows.skip(1).take(best)]),
+      _tableBlock(block, [table.rows.first, ...table.rows.skip(best + 1)]),
+    );
+  }
+
+  NoteShareBlock _tableBlock(
+    NoteShareBlock source,
+    Iterable<List<String>> rows,
+  ) => NoteShareBlock(
+    type: NoteShareBlockType.table,
+    indent: source.indent,
+    table: NoteTable(rows: rows, alignments: source.table!.alignments),
+  );
+}

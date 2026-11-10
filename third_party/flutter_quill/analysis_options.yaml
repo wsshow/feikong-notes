@@ -1,0 +1,10 @@
+# Keep upstream diagnostics, without applying application-specific style lints
+# to vendored code. Changed runtime paths are also covered by editor tests.
+linter:
+  rules: []
+
+analyzer:
+  errors:
+    # Existing upstream annotations; do not rewrite unrelated vendor APIs.
+    invalid_export_of_internal_element: ignore
+    invalid_annotation_target: ignore

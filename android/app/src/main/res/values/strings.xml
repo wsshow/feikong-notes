@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FKNotes</string>
+    <string name="app_update_channel">App updates</string>
+    <string name="app_update_download_title">Downloading FKNotes update</string>
+    <string name="app_update_download_description">You can keep using the app while the update downloads.</string>
+    <string name="app_update_download_complete">Update download complete</string>
+    <string name="app_update_download_complete_description">Tap to open FKNotes, verify the package and install.</string>
+    <string name="invalid_audio_decode">Invalid audio decoding parameters</string>
+    <string name="audio_decode_failed">Could not decode audio</string>
+    <string name="audio_file_missing">Audio file not found</string>
+    <string name="audio_track_missing">No recognizable audio track found</string>
+    <string name="unsupported_pcm_format">The device produced an unsupported PCM audio format</string>
+</resources>

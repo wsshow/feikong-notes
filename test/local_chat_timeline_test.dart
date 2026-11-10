@@ -1,0 +1,80 @@
+import 'package:fknotes/pages/local_chat_page.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  test('chat date labels distinguish today, yesterday and older messages', () {
+    final now = DateTime(2026, 7, 12, 16, 30);
+
+    expect(LocalChatTimeLabel.date(DateTime(2026, 7, 12), now: now), '今天');
+    expect(LocalChatTimeLabel.date(DateTime(2026, 7, 11), now: now), '昨天');
+    expect(LocalChatTimeLabel.date(DateTime(2026, 7, 1), now: now), '7月1日');
+    expect(
+      LocalChatTimeLabel.date(DateTime(2025, 12, 31), now: now),
+      '2025年12月31日',
+    );
+    expect(LocalChatTimeLabel.time(DateTime(2026, 7, 12, 8, 5)), '08:05');
+  });
+
+  test('streaming follows only while the user remains near the bottom', () {
+    expect(LocalChatScrollFollowPolicy.shouldFollow(0), isTrue);
+    expect(LocalChatScrollFollowPolicy.shouldFollow(72), isTrue);
+    expect(LocalChatScrollFollowPolicy.shouldFollow(72.1), isFalse);
+    expect(LocalChatScrollFollowPolicy.shouldFollow(500), isFalse);
+    expect(LocalChatScrollFollowPolicy.shouldResumeAfterDrag(0), isTrue);
+    expect(LocalChatScrollFollowPolicy.shouldResumeAfterDrag(8), isTrue);
+    expect(LocalChatScrollFollowPolicy.shouldResumeAfterDrag(8.1), isFalse);
+  });
+
+  test('viewport resize preserves the content above the composer', () {
+    expect(
+      LocalChatScrollFollowPolicy.offsetAfterViewportResize(
+        offset: 500,
+        previousViewport: 600,
+        currentViewport: 300,
+        minScrollExtent: 0,
+        maxScrollExtent: 1200,
+      ),
+      800,
+    );
+    expect(
+      LocalChatScrollFollowPolicy.offsetAfterViewportResize(
+        offset: 100,
+        previousViewport: 300,
+        currentViewport: 600,
+        minScrollExtent: 0,
+        maxScrollExtent: 900,
+      ),
+      0,
+    );
+  });
+
+  test('send scroll waits only while the keyboard is closing', () {
+    expect(
+      LocalChatScrollFollowPolicy.shouldDeferUntilKeyboardClosed(
+        keyboardDismissRequested: true,
+        keyboardInset: 320,
+      ),
+      isTrue,
+    );
+    expect(
+      LocalChatScrollFollowPolicy.shouldDeferUntilKeyboardClosed(
+        keyboardDismissRequested: true,
+        keyboardInset: 0,
+      ),
+      isFalse,
+    );
+    expect(
+      LocalChatScrollFollowPolicy.shouldDeferUntilKeyboardClosed(
+        keyboardDismissRequested: false,
+        keyboardInset: 320,
+      ),
+      isFalse,
+    );
+  });
+
+  test('voice input appends recognized text without damaging the draft', () {
+    expect(LocalChatVoiceInputText.combine('', ' 你好 '), '你好');
+    expect(LocalChatVoiceInputText.combine('已有文字  ', '继续说'), '已有文字 继续说');
+    expect(LocalChatVoiceInputText.combine('已有文字', ''), '已有文字');
+  });
+}
