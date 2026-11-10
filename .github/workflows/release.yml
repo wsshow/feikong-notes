@@ -23,7 +23,7 @@ jobs:
       build_time: ${{ steps.release.outputs.build_time }}
     env:
       FLUTTER_VERSION: "3.47.2"
-      PUB_HOSTED_URL: "https://pub.flutter-io.cn"
+      PUB_HOSTED_URL: "https://pub.dev"
 
     steps:
       - name: Check out source
@@ -93,7 +93,7 @@ jobs:
             target_platform: android-x64
     env:
       FLUTTER_VERSION: "3.47.2"
-      PUB_HOSTED_URL: "https://pub.flutter-io.cn"
+      PUB_HOSTED_URL: "https://pub.dev"
       ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android/app/fknotes-release.jks
       FKNOTES_UPDATE_MANIFEST_URL: ${{ vars.FKNOTES_UPDATE_MANIFEST_URL }}
       VERSION_NAME: ${{ needs.verify.outputs.version_name }}
@@ -188,7 +188,7 @@ jobs:
     timeout-minutes: 30
     env:
       FLUTTER_VERSION: "3.47.2"
-      PUB_HOSTED_URL: "https://pub.flutter-io.cn"
+      PUB_HOSTED_URL: "https://pub.dev"
       ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android/app/fknotes-release.jks
       FKNOTES_UPDATE_MANIFEST_URL: ${{ vars.FKNOTES_UPDATE_MANIFEST_URL }}
       VERSION_NAME: ${{ needs.verify.outputs.version_name }}
