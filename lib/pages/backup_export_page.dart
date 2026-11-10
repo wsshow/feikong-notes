@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../app.dart';
 import '../l10n/l10n.dart';
@@ -222,6 +223,10 @@ class _BackupExportPageState extends State<BackupExportPage> {
       final saved = await _service.saveManagedBackupCopy(record);
       if (saved && mounted) {
         AppFeedback.success(context, context.l10n.backupCopySaved);
+      }
+    } on PlatformException {
+      if (mounted) {
+        AppFeedback.error(context, context.l10n.fmErrorOperation);
       }
     } catch (error) {
       if (mounted) {
