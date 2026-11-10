@@ -20,6 +20,7 @@
 		A11052000000000000000002 /* AudioDecodeBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11051000000000000000002 /* AudioDecodeBridge.swift */; };
 		A11C0DE10000000000000001 /* fknotes_mnn_bridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A11C0DE10000000000000002 /* fknotes_mnn_bridge.cpp */; };
 		C2BB3DF669180A2565631E43 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224D21198C6C785A07AED4A3 /* Pods_Runner.framework */; };
+		A11052000000000000000003 /* FileExportBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11051000000000000000003 /* FileExportBridge.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		B77293A94B0608F81295E007 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		EF69AA80D8F5778720431564 /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		FA8DAF330C047AB52A4A62A0 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		A11051000000000000000003 /* FileExportBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExportBridge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +149,7 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				A11051000000000000000001 /* AudioFileDecoder.swift */,
 				A11051000000000000000002 /* AudioDecodeBridge.swift */,
+				A11051000000000000000003 /* FileExportBridge.swift */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
@@ -431,6 +434,7 @@
 				A11C0DE10000000000000001 /* fknotes_mnn_bridge.cpp in Sources */,
 				A11052000000000000000001 /* AudioFileDecoder.swift in Sources */,
 				A11052000000000000000002 /* AudioDecodeBridge.swift in Sources */,
+				A11052000000000000000003 /* FileExportBridge.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,

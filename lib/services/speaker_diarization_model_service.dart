@@ -161,10 +161,12 @@ class SpeakerDiarizationModelService {
     const archiveGroup = XTypeGroup(
       label: 'Pyannote 分段模型归档',
       extensions: ['bz2'],
+      uniformTypeIdentifiers: ['public.data'],
     );
     const embeddingGroup = XTypeGroup(
       label: '3D-Speaker 嵌入模型',
       extensions: ['onnx'],
+      uniformTypeIdentifiers: ['public.data'],
     );
     final archive = await openFile(acceptedTypeGroups: [archiveGroup]);
     if (archive == null) return null;

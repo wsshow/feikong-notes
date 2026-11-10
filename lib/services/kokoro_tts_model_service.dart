@@ -168,7 +168,11 @@ class KokoroTtsModelService {
   Future<KokoroTtsModelInfo?> pickAndImport({
     void Function(SpeechModelImportProgress progress)? onProgress,
   }) async {
-    const group = XTypeGroup(label: 'Kokoro TTS 模型归档', extensions: ['bz2']);
+    const group = XTypeGroup(
+      label: 'Kokoro TTS 模型归档',
+      extensions: ['bz2'],
+      uniformTypeIdentifiers: ['public.data'],
+    );
     final selected = await openFile(acceptedTypeGroups: [group]);
     if (selected == null) return null;
     return _runExclusive(() async {

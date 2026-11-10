@@ -6,8 +6,6 @@ import 'package:archive/archive_io.dart';
 import 'package:crypto/crypto.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:fknotes_harness/fknotes_harness.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -22,6 +20,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../providers/app_locale_controller.dart';
 import '../widgets/private_notes_auth.dart';
 import 'device_authentication_service.dart';
+import 'file_export_service.dart';
 import 'file_storage_service.dart';
 import 'file_library_store.dart';
 import 'note_database_service.dart';
@@ -100,7 +99,6 @@ final class BackupService {
   static const _assistantImageExtensions = {'.jpg', '.jpeg', '.png', '.webp'};
 
   final _storage = FileStorageService.instance;
-  static const _exportChannel = MethodChannel('fknotes/backup_export');
   var _operationInProgress = false;
 
   Directory get backupDirectory =>
@@ -293,30 +291,18 @@ final class BackupService {
     if (record.containsPrivateNotes) await _authorizePrivateNotes();
     final source = managedBackupFile(record);
     if (!await source.exists()) throw const FormatException('备份文件不存在');
-    if (!kIsWeb && Platform.isAndroid) {
-      return await _exportChannel.invokeMethod<bool>('saveFile', {
-            'sourcePath': source.path,
-            'suggestedName': record.fileName,
-            'mimeType': 'application/zip',
-          }) ??
-          false;
-    }
     const type = XTypeGroup(
       label: 'FKNotes Backup',
       extensions: ['zip'],
       mimeTypes: ['application/zip'],
+      uniformTypeIdentifiers: ['public.zip-archive'],
     );
-    final location = await getSaveLocation(
+    return FileExportService().save(
+      source: source,
+      mimeType: 'application/zip',
       acceptedTypeGroups: const [type],
       suggestedName: record.fileName,
     );
-    if (location == null) return false;
-    await XFile(
-      source.path,
-      mimeType: 'application/zip',
-      name: record.fileName,
-    ).saveTo(location.path);
-    return true;
   }
 
   Future<BackupArtifact> createBackupArtifact({
@@ -524,7 +510,11 @@ final class BackupService {
   }
 
   Future<File?> chooseBackupFile() async {
-    const group = XTypeGroup(label: 'FK Notes Backup', extensions: ['zip']);
+    const group = XTypeGroup(
+      label: 'FK Notes Backup',
+      extensions: ['zip'],
+      uniformTypeIdentifiers: ['public.zip-archive'],
+    );
     final selected = await openFile(acceptedTypeGroups: [group]);
     return selected == null ? null : File(selected.path);
   }

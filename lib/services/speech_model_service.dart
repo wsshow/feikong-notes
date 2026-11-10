@@ -122,6 +122,7 @@ class SpeechModelService {
       label: 'SenseVoice 模型文件',
       extensions: ['onnx', 'txt'],
       mimeTypes: ['application/octet-stream', 'text/plain'],
+      uniformTypeIdentifiers: ['public.data'],
     );
     final selected = await openFiles(acceptedTypeGroups: [group]);
     if (selected.isEmpty) return null;

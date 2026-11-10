@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:file_selector/file_selector.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/painting.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
@@ -11,6 +10,7 @@ import 'package:uuid/uuid.dart';
 
 import '../models/library_file.dart';
 import 'file_library_store.dart';
+import 'file_export_service.dart';
 
 class FileLibraryActions {
   FileLibraryActions(this.store);
@@ -64,23 +64,10 @@ class FileLibraryActions {
   Future<bool> save(LibraryFile entry) async {
     final source = store.fileFor(entry);
     if (!await source.exists()) throw const FileLibraryException('missing');
-    if (Platform.isAndroid) {
-      return await const MethodChannel(
-            'fknotes/backup_export',
-          ).invokeMethod<bool>('saveFile', {
-            'sourcePath': source.path,
-            'suggestedName': entry.name,
-            'mimeType': mimeType(entry),
-          }) ??
-          false;
-    }
-    if (Platform.isIOS) {
-      await share([entry]);
-      return false;
-    }
-    final destination = await getSaveLocation(suggestedName: entry.name);
-    if (destination == null) return false;
-    await XFile(source.path).saveTo(destination.path);
-    return true;
+    return FileExportService().save(
+      source: source,
+      suggestedName: entry.name,
+      mimeType: mimeType(entry),
+    );
   }
 }

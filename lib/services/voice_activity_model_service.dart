@@ -114,7 +114,11 @@ class VoiceActivityModelService {
   Future<VoiceActivityModelInfo?> pickAndImport({
     void Function(SpeechModelImportProgress progress)? onProgress,
   }) async {
-    const group = XTypeGroup(label: 'Silero VAD 模型', extensions: ['onnx']);
+    const group = XTypeGroup(
+      label: 'Silero VAD 模型',
+      extensions: ['onnx'],
+      uniformTypeIdentifiers: ['public.data'],
+    );
     final selected = await openFile(acceptedTypeGroups: [group]);
     if (selected == null) return null;
     return _runExclusive(() async {

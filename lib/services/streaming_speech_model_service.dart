@@ -349,6 +349,7 @@ class StreamingSpeechModelService {
     const group = XTypeGroup(
       label: 'Streaming Zipformer 模型文件',
       extensions: ['onnx', 'txt', 'vocab'],
+      uniformTypeIdentifiers: ['public.data'],
     );
     final selected = await openFiles(acceptedTypeGroups: [group]);
     if (selected.isEmpty) return null;

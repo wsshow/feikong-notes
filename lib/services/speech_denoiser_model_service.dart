@@ -118,7 +118,11 @@ class SpeechDenoiserModelService {
   Future<SpeechDenoiserModelInfo?> pickAndImport({
     void Function(SpeechModelImportProgress progress)? onProgress,
   }) async {
-    const group = XTypeGroup(label: 'DPDFNet 降噪模型', extensions: ['onnx']);
+    const group = XTypeGroup(
+      label: 'DPDFNet 降噪模型',
+      extensions: ['onnx'],
+      uniformTypeIdentifiers: ['public.data'],
+    );
     final selected = await openFile(acceptedTypeGroups: [group]);
     if (selected == null) return null;
     return _runExclusive(() async {

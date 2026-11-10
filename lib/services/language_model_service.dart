@@ -746,8 +746,13 @@ class LanguageModelService {
         ? const XTypeGroup(
             label: 'MNN 语言模型文件',
             extensions: ['json', 'mnn', 'weight', 'bin', 'mtok', 'txt'],
+            uniformTypeIdentifiers: ['public.data'],
           )
-        : const XTypeGroup(label: 'LiteRT-LM 模型文件', extensions: ['litertlm']);
+        : const XTypeGroup(
+            label: 'LiteRT-LM 模型文件',
+            extensions: ['litertlm'],
+            uniformTypeIdentifiers: ['public.data'],
+          );
     final selected = await openFiles(acceptedTypeGroups: [group]);
     if (selected.isEmpty) return null;
     return _runExclusive(id, () async {
