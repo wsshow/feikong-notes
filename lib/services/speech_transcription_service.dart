@@ -4,13 +4,13 @@ import 'dart:isolate';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:sherpa_onnx/sherpa_onnx.dart' as sherpa;
 
 import '../debug/app_diagnostics.dart';
 import '../models/note.dart';
 import '../models/note_document.dart';
+import 'audio_decode_service.dart';
 import 'file_storage_service.dart';
 import 'local_inference_coordinator.dart';
 import 'note_database_service.dart';
@@ -215,7 +215,7 @@ class SpeechTranscriptionService extends ChangeNotifier
   static final SpeechTranscriptionService instance =
       SpeechTranscriptionService._();
 
-  static const _audioChannel = MethodChannel('fknotes/audio_decode');
+  final _audioDecoder = AudioDecodeService();
   final _storage = FileStorageService.instance;
   final _models = SpeechModelService.instance;
   final _voiceActivityModels = VoiceActivityModelService.instance;
@@ -435,22 +435,21 @@ class SpeechTranscriptionService extends ChangeNotifier
 
   Future<String> _prepareWave(String source, TranscriptionJob job) async {
     if (p.extension(source).toLowerCase() == '.wav') return source;
-    if (!Platform.isAndroid) {
-      throw UnsupportedError('当前平台暂时只支持转写 WAV 音频');
-    }
     final output = p.join(
       _storage.baseDir,
       'transcription_temp',
       '${DateTime.now().microsecondsSinceEpoch}.wav',
     );
-    final decoded = await _audioChannel.invokeMethod<String>('decodeToWav', {
-      'sourcePath': source,
-      'outputPath': output,
-    });
-    if (decoded == null || !await File(decoded).exists()) {
-      throw StateError('无法解码这个音频格式');
+    job.cancelWorker = () => unawaited(_audioDecoder.cancel(output));
+    try {
+      return await _audioDecoder.prepare(
+        source,
+        outputPath: output,
+        isCancelled: () => job.status == TranscriptionStatus.canceled,
+      );
+    } finally {
+      job.cancelWorker = null;
     }
-    return decoded;
   }
 
   Future<String> _recognizeInWorker(
