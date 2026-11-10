@@ -48,6 +48,35 @@ void main() {
       );
     });
 
+    test('selects GitHub split APKs and preserves escaped release URLs', () {
+      final value = _manifest();
+      final artifacts = value['artifacts']! as Map<String, Object?>;
+      for (final abi in ['armeabi-v7a', 'x86_64']) {
+        artifacts['android-$abi'] = {
+          'url':
+              'https://github.com/wsshow/feikong-notes/releases/download/'
+              'v1.2.3/fknotes-1.2.3%2B2040-$abi-release.apk',
+          'size': 100000,
+          'sha256': _validSha256,
+        };
+      }
+      final manifest = AppUpdateManifest.fromJson(value);
+      for (final abi in ['armeabi-v7a', 'x86_64']) {
+        final artifact = manifest.selectArtifact([abi]);
+        expect(artifact.id, 'android-$abi');
+        expect(
+          artifact.url.pathSegments.last,
+          'fknotes-1.2.3+2040-$abi-release.apk',
+        );
+        expect(
+          AppUpdateManifest.fromJson(
+            manifest.toJson(),
+          ).selectArtifact([abi]).url,
+          artifact.url,
+        );
+      }
+    });
+
     test('rejects another app feed', () {
       final value = _manifest()..['app'] = 'another-app';
 

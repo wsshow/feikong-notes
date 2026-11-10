@@ -10,7 +10,11 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-const _manifestUrl = String.fromEnvironment('FKNOTES_UPDATE_MANIFEST_URL');
+const _manifestUrl = String.fromEnvironment(
+  'FKNOTES_UPDATE_MANIFEST_URL',
+  defaultValue:
+      'https://raw.githubusercontent.com/wsshow/feikong-notes/updates/android/latest.json',
+);
 const _feedId = 'fknotes';
 const _androidPackageName = 'com.fknotes.app';
 
@@ -555,4 +559,9 @@ String _dateText(DateTime value) =>
     '${value.month.toString().padLeft(2, '0')}-'
     '${value.day.toString().padLeft(2, '0')}';
 
-const _supportedArtifactKeys = {'android-universal', 'android-arm64-v8a'};
+const _supportedArtifactKeys = {
+  'android-universal',
+  'android-arm64-v8a',
+  'android-armeabi-v7a',
+  'android-x86_64',
+};

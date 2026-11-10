@@ -16,8 +16,8 @@ BUILD_NAME ?=
 BUILD_NUMBER ?=
 BUILD_TIME ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 DIST_DIR ?= dist
-FKNOTES_RELEASE_BASE_URL ?=
-FKNOTES_UPDATE_MANIFEST_URL ?= $(if $(strip $(FKNOTES_RELEASE_BASE_URL)),$(patsubst %/,%,$(FKNOTES_RELEASE_BASE_URL))/latest.json)
+FKNOTES_GITHUB_REPOSITORY ?= wsshow/feikong-notes
+FKNOTES_UPDATE_MANIFEST_URL ?= https://raw.githubusercontent.com/$(FKNOTES_GITHUB_REPOSITORY)/updates/android/latest.json
 FKNOTES_UPDATE_MANDATORY ?= false
 FKNOTES_RELEASE_DATE ?=
 
@@ -40,7 +40,7 @@ DEVICE_ARG := $(if $(DEVICE),-d $(DEVICE))
 help: ## 显示所有可用命令
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_-]+:.*##/ { printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
 	@printf '\n可选参数：DEVICE=<设备 ID>，BUILD_NAME=<版本名>，BUILD_NUMBER=<构建号>，BUILD_TIME=<ISO 8601 时间>，DIST_DIR=<输出目录>\n'
-	@printf '正式发布参数：FKNOTES_RELEASE_BASE_URL=<公开目录>，FKNOTES_UPDATE_MANDATORY=true|false，FKNOTES_RELEASE_DATE=YYYY-MM-DD\n'
+	@printf '正式发布参数：FKNOTES_GITHUB_REPOSITORY=<owner/repo>，FKNOTES_UPDATE_MANDATORY=true|false，FKNOTES_RELEASE_DATE=YYYY-MM-DD\n'
 
 doctor: ## 检查 Flutter 开发环境
 	$(FLUTTER) doctor
@@ -101,7 +101,7 @@ package: android-release ## 构建并归档正式 Android 版本
 release: android-release ## 构建并归档正式 Android 版本
 
 android-release: ## 构建通用及分架构 Android APK，生成 SHA-256 与 latest.json
-	FKNOTES_RELEASE_BASE_URL="$(FKNOTES_RELEASE_BASE_URL)" \
+	FKNOTES_GITHUB_REPOSITORY="$(FKNOTES_GITHUB_REPOSITORY)" \
 	FKNOTES_UPDATE_MANIFEST_URL="$(FKNOTES_UPDATE_MANIFEST_URL)" \
 	FKNOTES_UPDATE_MANDATORY="$(FKNOTES_UPDATE_MANDATORY)" \
 	FKNOTES_RELEASE_DATE="$(FKNOTES_RELEASE_DATE)" \

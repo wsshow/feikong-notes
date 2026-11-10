@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-android
   cancel-in-progress: false
 
 jobs:
@@ -51,6 +51,12 @@ jobs:
             echo "::error::Release tag must match pubspec.yaml version: v$version_name"
             exit 1
           fi
+
+          test -s "docs/releases/$version_name.md" || {
+            echo "::error::Missing docs/releases/$version_name.md"
+            exit 1
+          }
+          python3 -m unittest discover -s tool -p 'test_*release*.py'
 
           echo "version_name=$version_name" >> "$GITHUB_OUTPUT"
           echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
@@ -112,6 +118,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - abi: universal
+            target_platform: android-arm,android-arm64,android-x64
           - abi: armeabi-v7a
             target_platform: android-arm
           - abi: arm64-v8a
@@ -122,7 +130,7 @@ jobs:
       FLUTTER_VERSION: "3.47.2"
       PUB_HOSTED_URL: "https://pub.dev"
       ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android/app/fknotes-release.jks
-      FKNOTES_UPDATE_MANIFEST_URL: ${{ vars.FKNOTES_UPDATE_MANIFEST_URL }}
+      FKNOTES_UPDATE_MANIFEST_URL: https://raw.githubusercontent.com/${{ github.repository }}/updates/android/latest.json
       VERSION_NAME: ${{ needs.verify.outputs.version_name }}
       BUILD_NUMBER: ${{ needs.verify.outputs.build_number }}
       BUILD_TIME: ${{ needs.verify.outputs.build_time }}
@@ -182,19 +190,26 @@ jobs:
         run: |
           set -euo pipefail
 
+          split_args=()
+          apk_path="build/app/outputs/flutter-apk/app-release.apk"
+          if [[ "$ABI" != universal ]]; then
+            split_args+=(--split-per-abi)
+            apk_path="build/app/outputs/flutter-apk/app-$ABI-release.apk"
+          fi
+
           flutter build apk \
             --release \
             --no-pub \
-            --split-per-abi \
+            "${split_args[@]}" \
             --target-platform "$TARGET_PLATFORM" \
             --build-name "$VERSION_NAME" \
             --build-number "$BUILD_NUMBER" \
             --dart-define="FKNOTES_BUILD_TIME=$BUILD_TIME" \
             --dart-define="FKNOTES_UPDATE_MANIFEST_URL=$FKNOTES_UPDATE_MANIFEST_URL"
 
-          python3 tool/check_android_release.py "build/app/outputs/flutter-apk/app-$ABI-release.apk"
+          python3 tool/check_android_release.py "$apk_path"
           mkdir -p dist
-          cp "build/app/outputs/flutter-apk/app-$ABI-release.apk" \
+          cp "$apk_path" \
             "dist/fknotes-$VERSION_NAME+$BUILD_NUMBER-$ABI-release.apk"
 
       - name: Remove signing key
@@ -218,7 +233,7 @@ jobs:
       FLUTTER_VERSION: "3.47.2"
       PUB_HOSTED_URL: "https://pub.dev"
       ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android/app/fknotes-release.jks
-      FKNOTES_UPDATE_MANIFEST_URL: ${{ vars.FKNOTES_UPDATE_MANIFEST_URL }}
+      FKNOTES_UPDATE_MANIFEST_URL: https://raw.githubusercontent.com/${{ github.repository }}/updates/android/latest.json
       VERSION_NAME: ${{ needs.verify.outputs.version_name }}
       BUILD_NUMBER: ${{ needs.verify.outputs.build_number }}
       BUILD_TIME: ${{ needs.verify.outputs.build_time }}
@@ -306,6 +321,7 @@ jobs:
   release:
     name: Publish GitHub Release
     needs:
+      - verify
       - test
       - build-apk
       - build-aab
@@ -314,7 +330,16 @@ jobs:
     permissions:
       contents: write
 
+    env:
+      VERSION_NAME: ${{ needs.verify.outputs.version_name }}
+      BUILD_NUMBER: ${{ needs.verify.outputs.build_number }}
+      BUILD_TIME: ${{ needs.verify.outputs.build_time }}
+      FKNOTES_UPDATE_MANDATORY: ${{ vars.FKNOTES_UPDATE_MANDATORY || 'false' }}
+
     steps:
+      - name: Check out source
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
       - name: Download release artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
@@ -322,8 +347,16 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - name: Generate checksums
-        run: sha256sum dist/*.apk dist/*.aab > dist/SHA256SUMS.txt
+      - name: Generate update manifest and checksums
+        run: |
+          python3 tool/prepare_github_release.py \
+            --dist dist \
+            --repository "$GITHUB_REPOSITORY" \
+            --version "$VERSION_NAME" \
+            --build-number "$BUILD_NUMBER" \
+            --notes "docs/releases/$VERSION_NAME.md" \
+            --date "${BUILD_TIME%%T*}" \
+            --mandatory "$FKNOTES_UPDATE_MANDATORY"
 
       - name: Upload combined workflow artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -333,6 +366,8 @@ jobs:
             dist/*.apk
             dist/*.aab
             dist/SHA256SUMS.txt
+            dist/latest.json
+            dist/notes.md
           if-no-files-found: error
           retention-days: 14
 
@@ -344,16 +379,20 @@ jobs:
           set -euo pipefail
 
           if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" \
-              dist/*.apk dist/*.aab dist/SHA256SUMS.txt \
-              --clobber \
-              --repo "$GITHUB_REPOSITORY"
+            # Never replace public APKs: their hashes are already in installed clients.
+            is_draft=$(gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)
+            if [[ "$is_draft" == true ]]; then
+              gh release upload "$GITHUB_REF_NAME" \
+                dist/*.apk dist/*.aab dist/SHA256SUMS.txt dist/latest.json dist/notes.md \
+                --clobber --repo "$GITHUB_REPOSITORY"
+              gh release edit "$GITHUB_REF_NAME" --draft=false --repo "$GITHUB_REPOSITORY"
+            fi
           else
             arguments=(
               release create "$GITHUB_REF_NAME"
-              dist/*.apk dist/*.aab dist/SHA256SUMS.txt
+              dist/*.apk dist/*.aab dist/SHA256SUMS.txt dist/latest.json dist/notes.md
               --verify-tag
-              --generate-notes
+              --notes-file dist/notes.md
               --title "FKNotes $GITHUB_REF_NAME"
               --repo "$GITHUB_REPOSITORY"
             )
@@ -362,3 +401,20 @@ jobs:
             fi
             gh "${arguments[@]}"
           fi
+
+          # Always use the published manifest, including when retrying a completed release.
+          mkdir -p published
+          gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+            --pattern latest.json --dir published
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          manifest = json.loads(Path("published/latest.json").read_text())
+          assert manifest["app"] == "fknotes"
+          assert manifest["version"] == os.environ["VERSION_NAME"]
+          assert manifest["versionCode"] == int(os.environ["BUILD_NUMBER"])
+          PY
+
+      - name: Publish Android update feed
+        run: python3 tool/publish_update_feed.py published/latest.json

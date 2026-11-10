@@ -61,7 +61,7 @@ OCR 的图片与识别结果在设备端处理，但 ML Kit SDK 会发送性能�
 ## 获取与体验
 
 目前可通过[源码运行](#从源码运行)体验。公开安装包发布后，会放在本仓库的 GitHub Releases，
-并附带 SHA-256 校验文件。首次公开版本为 `0.1.0+1`。
+并附带 SHA-256 校验文件。首次公开版本为 `0.1.0+1`。Android 应用内更新也通过 GitHub 获取清单、安装包和更新说明，发布流程见[Android 发布指南](docs/ANDROID_RELEASE.md)。
 
 - **主要平台：Android 手机。** 仓库内的 iOS、macOS、Windows、Linux 和 Web 工程用于开发验证，尚未作为正式支持平台交付。
 - **本地 AI：优先使用 Android ARM64 设备。** 语言模型需要额外下载，存储和内存要求因模型而异；应用内提供模型体积和内存建议。
@@ -86,7 +86,7 @@ OCR 的图片与识别结果在设备端处理，但 ML Kit SDK 会发送性能�
 但 SDK 会发送性能与使用指标，详见 [Google 官方说明](https://developers.google.com/ml-kit/terms)。
 当前尚未实现可靠的遥测关闭方案或完成 OCR 引擎替换。
 
-模型下载、配置了更新地址的构建、用户启用的在线服务等也会产生网络请求。
+模型下载、Android 应用通过 GitHub 检查和下载更新、用户启用的在线服务等也会产生网络请求。
 更多细节见[产品数据原则](PRODUCT.md#数据与隐私)、[隐私工作区](docs/private-workspace.md)和[智能体说明](docs/fknotes-harness.md)。
 
 ## 从源码运行

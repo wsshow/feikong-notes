@@ -15,14 +15,13 @@ STAGED_UNIVERSAL_APK="$STAGING_DIR/app-universal-release.apk"
 STAGED_UNIVERSAL_METADATA="$STAGING_DIR/universal-output-metadata.json"
 RELEASE_ROOT=${FKNOTES_RELEASE_ROOT:-"$PROJECT_ROOT/release/android"}
 RELEASE_DIR="$RELEASE_ROOT/$VERSION"
-NOTES_PATH="$RELEASE_DIR/notes.md"
-UPDATE_BASE_URL=${FKNOTES_RELEASE_BASE_URL:-}
-UPDATE_BASE_URL=${UPDATE_BASE_URL%/}
+NOTES_PATH="$PROJECT_ROOT/docs/releases/$VERSION.md"
+GITHUB_REPOSITORY=${FKNOTES_GITHUB_REPOSITORY:-wsshow/feikong-notes}
 UPDATE_MANDATORY=${FKNOTES_UPDATE_MANDATORY:-false}
 RELEASE_DATE=${FKNOTES_RELEASE_DATE:-}
 
-UNIVERSAL_NAME="fknotes-$VERSION.apk"
-ARM64_NAME="fknotes-$VERSION-arm64-v8a.apk"
+UNIVERSAL_NAME="fknotes-$VERSION+$VERSION_CODE-universal-release.apk"
+ARM64_NAME="fknotes-$VERSION+$VERSION_CODE-arm64-v8a-release.apk"
 
 if [ -z "$RELEASE_DATE" ]; then
   RELEASE_DATE=$(date +%F)
@@ -67,19 +66,11 @@ case "$RELEASE_DATE" in
     ;;
 esac
 
-case "$UPDATE_BASE_URL" in
-  https://*) ;;
-  *)
-    echo "FKNOTES_RELEASE_BASE_URL must use HTTPS." >&2
-    exit 1
-    ;;
-esac
-
 mkdir -p "$RELEASE_DIR"
 
 if [ ! -s "$NOTES_PATH" ]; then
   echo "Release notes are missing or empty: $NOTES_PATH" >&2
-  echo "Create notes.md in the version release directory before building." >&2
+  echo "Create docs/releases/$VERSION.md before building." >&2
   exit 1
 fi
 
@@ -191,47 +182,15 @@ if [ -d "$RELEASE_DIR/r8" ]; then
   find "$RELEASE_DIR/r8" -depth -delete
 fi
 
-artifact_sha256() {
-  cd "$RELEASE_DIR" && shasum -a 256 "$1" | awk '{print $1}'
-}
-
-artifact_size() {
-  wc -c < "$RELEASE_DIR/$1" | tr -d ' '
-}
-
-UNIVERSAL_SHA256=$(artifact_sha256 "$UNIVERSAL_NAME")
-ARM64_SHA256=$(artifact_sha256 "$ARM64_NAME")
-UNIVERSAL_SIZE=$(artifact_size "$UNIVERSAL_NAME")
-ARM64_SIZE=$(artifact_size "$ARM64_NAME")
-MANIFEST_PATH="$RELEASE_ROOT/latest.json"
-MANIFEST_TEMP=$(mktemp "$RELEASE_ROOT/.latest.json.XXXXXXXX")
-trap 'if [ -f "$MANIFEST_TEMP" ]; then unlink "$MANIFEST_TEMP"; fi' EXIT
-CHANGELOG_URL="$UPDATE_BASE_URL/$VERSION/notes.md"
-
-cat > "$MANIFEST_TEMP" <<EOF
-{
-  "app": "fknotes",
-  "version": "$VERSION",
-  "versionCode": $VERSION_CODE,
-  "releaseDate": "$RELEASE_DATE",
-  "mandatory": $UPDATE_MANDATORY,
-  "changelog": "$CHANGELOG_URL",
-  "artifacts": {
-    "android-universal": {
-      "url": "$UPDATE_BASE_URL/$VERSION/$UNIVERSAL_NAME",
-      "size": $UNIVERSAL_SIZE,
-      "sha256": "$UNIVERSAL_SHA256"
-    },
-    "android-arm64-v8a": {
-      "url": "$UPDATE_BASE_URL/$VERSION/$ARM64_NAME",
-      "size": $ARM64_SIZE,
-      "sha256": "$ARM64_SHA256"
-    }
-  }
-}
-EOF
-chmod 644 "$MANIFEST_TEMP"
-mv "$MANIFEST_TEMP" "$MANIFEST_PATH"
+python3 "$PROJECT_ROOT/tool/prepare_github_release.py" \
+  --dist "$RELEASE_DIR" \
+  --repository "$GITHUB_REPOSITORY" \
+  --version "$VERSION" \
+  --build-number "$VERSION_CODE" \
+  --notes "$NOTES_PATH" \
+  --date "$RELEASE_DATE" \
+  --mandatory "$UPDATE_MANDATORY"
+cp "$RELEASE_DIR/latest.json" "$RELEASE_ROOT/latest.json"
 
 find "$RELEASE_ROOT" -name '.DS_Store' -type f -delete
 find "$STAGING_DIR" -depth -delete

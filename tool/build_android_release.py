@@ -6,6 +6,8 @@ import sys
 import tempfile
 from urllib.parse import urlsplit
 
+from prepare_github_release import DEFAULT_REPOSITORY, repository_name
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -65,9 +67,10 @@ def main(flutter_command, dart_command, build_args):
     dart = str(Path(dart).absolute())
 
     env = os.environ.copy()
-    env["FKNOTES_RELEASE_BASE_URL"] = release_url(
-        env, "FKNOTES_RELEASE_BASE_URL"
-    ).rstrip("/")
+    repository = repository_name(env.get("FKNOTES_GITHUB_REPOSITORY", DEFAULT_REPOSITORY))
+    env["FKNOTES_GITHUB_REPOSITORY"] = repository
+    env.setdefault("FKNOTES_UPDATE_MANIFEST_URL",
+                   f"https://raw.githubusercontent.com/{repository}/updates/android/latest.json")
     manifest_url = release_url(env, "FKNOTES_UPDATE_MANIFEST_URL")
     env["FKNOTES_RELEASE_ROOT"] = str(ROOT / "release/android")
     env["FKNOTES_ANDROID_SIGNING_PROJECT_DIR"] = str(ROOT / "android")
