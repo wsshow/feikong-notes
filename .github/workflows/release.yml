@@ -15,7 +15,8 @@ concurrency:
 jobs:
   verify:
     name: Verify release source
-    runs-on: ubuntu-latest
+    # Golden baselines are rendered on macOS; keep the rasterizer consistent.
+    runs-on: macos-26
     timeout-minutes: 15
     outputs:
       version_name: ${{ steps.release.outputs.version_name }}

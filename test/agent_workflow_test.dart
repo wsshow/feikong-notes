@@ -2461,6 +2461,14 @@ void main() {
         tester,
         () => find.byKey(const Key('agent-model-search')).evaluate().isEmpty,
       );
+      // Closing the picker starts an asynchronous write to the profile store.
+      // Wait for that write rather than treating the route animation as I/O.
+      await tester.runAsync(() async {
+        for (var attempt = 0; attempt < 250; attempt++) {
+          if (await service.profiles.selectedId() == second.id) return;
+          await Future<void>.delayed(const Duration(milliseconds: 10));
+        }
+      });
       expect(
         await tester.runAsync(() => service.profiles.selectedId()),
         second.id,

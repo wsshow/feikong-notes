@@ -74,6 +74,8 @@ release/android/
 
 [tag 工作流](../.github/workflows/release.yml)是独立的发布渠道，按 ABI 构建 APK 和 AAB，并将产物及 `SHA256SUMS.txt` 上传到 GitHub Release。应用内更新使用上面的 `release/android/` 流程。
 
+CI 从 `pub.dev` 下载锁定版本的依赖，并保留 `--enforce-lockfile` 哈希校验。源码检查与全量测试在 macOS 上运行，以匹配现有 golden 截图基准；Android 签名构建在 Ubuntu 上运行。
+
 首次使用在仓库的 Actions Secrets 配置 `ANDROID_KEYSTORE_BASE64`、`ANDROID_KEYSTORE_PASSWORD`、`ANDROID_KEY_PASSWORD` 和 `ANDROID_KEY_ALIAS`。如需在这些产物中启用应用内更新，设置仓库变量 `FKNOTES_UPDATE_MANIFEST_URL`。
 
 准备好测试版后，推送 `v0.1.0` tag 会触发首次构建。工作流要求 tag 去掉 `v`
