@@ -83,3 +83,5 @@ flutter build ios --release --no-codesign --no-pub
 ```
 
 以上命令生成未签名的 `build/ios/iphoneos/Runner.app`，无需连接设备。安装设备前仍须在 Xcode 的 Runner 中配置个人签名，再执行 `make ios` 或 `make run-ios DEVICE=<设备 ID>`；不将 Team、证书或 provisioning profile 写入仓库。当前固定的 ML Kit 原生库不支持 Apple Silicon 的 ARM64 模拟器，因此不能用模拟器构建替代 ARM64 真机目标的编译检查。
+
+完整无设备检查使用 `make check-ios`。检查内容、当前证据和后续设备验收清单见 [iOS 适配与验收](ios-development.md)。

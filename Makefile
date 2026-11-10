@@ -33,7 +33,7 @@ UPDATE_ARGS := $(if $(strip $(FKNOTES_UPDATE_MANIFEST_URL)),--dart-define="FKNOT
 DEVICE_ARG := $(if $(DEVICE),-d $(DEVICE))
 
 .DEFAULT_GOAL := help
-.PHONY: help doctor get upgrade outdated format analyze test check \
+.PHONY: help doctor get upgrade outdated format analyze test check check-ios \
 	devices emulators run run-android run-ios run-macos clean clean-all \
 	debug debug-overlay package release android-release apk-debug apk-debug-split apk apk-split aab ios macos linux windows web
 
@@ -64,6 +64,18 @@ test: get ## 运行单元和组件测试
 	$(FLUTTER) test
 
 check: format analyze test ## 格式化、分析并测试
+
+check-ios: ## iOS 无设备检查：锁定依赖、测试、未签名构建与原生能力打包检查
+	PUB_HOSTED_URL=https://pub.dev $(FLUTTER) pub get --enforce-lockfile
+	cd packages/fknotes_harness && PUB_HOSTED_URL=https://pub.dev $(DART) pub get --enforce-lockfile
+	$(DART) format --output=none --set-exit-if-changed lib test packages/fknotes_harness/lib packages/fknotes_harness/test
+	$(FLUTTER) analyze --no-pub
+	$(FLUTTER) test --no-pub
+	cd packages/fknotes_harness && $(DART) analyze && $(DART) test
+	python3 -m unittest discover -s tool -p 'test_ios_*.py'
+	cd ios && pod install --deployment
+	$(FLUTTER) build ios --release --no-codesign --no-pub
+	python3 tool/verify_ios_bundle.py
 
 devices: ## 列出可用设备
 	$(FLUTTER) devices

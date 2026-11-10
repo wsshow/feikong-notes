@@ -4,7 +4,7 @@
 
 | 主题 | 文档 |
 | --- | --- |
-| 开发与发布 | [开发指南](development.md) · [Android 发布](ANDROID_RELEASE.md) |
+| 开发与发布 | [开发指南](development.md) · [iOS 适配与验收](ios-development.md) · [Android 发布](ANDROID_RELEASE.md) |
 | 笔记与资料 | [编辑器](editor.md) · [文件管理器](file-manager.md) · [日历](note-calendar.md) · [提醒](note-reminders.md) |
 | 分享与导入 | [笔记分享图](note-image-sharing.md) · [接收 Android 系统分享](incoming-sharing.md) |
 | 模型与智能体 | [本地语言模型](local-llm.md) · [智能体使用与维护](fknotes-harness.md) |
