@@ -72,4 +72,14 @@ adb install -r -t dist/fknotes-1.2.3+2040-arm64-v8a-diagnostic-debug.apk
 | `lib/theme/`、`lib/experience/` | 主题语义和主题专属渲染 |
 | `android/`、`native/`、`test/` | Android 原生接入、共享原生代码和测试 |
 
-其他平台工程用于开发验证。iOS 构建使用 macOS 和 Xcode，在 Runner 中配置签名后执行 `make ios`。
+其他平台工程用于开发验证。iOS 正在适配，最低部署版本为 iOS 15.0；构建通过不代表功能已经完成设备验收。
+
+iOS 使用 macOS、Xcode 和 CocoaPods。项目将 Flutter 插件统一交给 CocoaPods 管理，保留 ML Kit、sherpa 的原生依赖和 Podfile 中的权限宏；暂不启用 Flutter 的 Swift Package Manager 插件迁移。提交 `ios/Podfile.lock` 固定原生依赖。
+
+```bash
+# 使用与 pubspec.lock 一致的源，避免本机镜像配置触发重新解析。
+PUB_HOSTED_URL=https://pub.dev flutter pub get --enforce-lockfile
+flutter build ios --release --no-codesign --no-pub
+```
+
+以上命令生成未签名的 `build/ios/iphoneos/Runner.app`，无需连接设备。安装设备前仍须在 Xcode 的 Runner 中配置个人签名，再执行 `make ios` 或 `make run-ios DEVICE=<设备 ID>`；不将 Team、证书或 provisioning profile 写入仓库。当前固定的 ML Kit 原生库不支持 Apple Silicon 的 ARM64 模拟器，因此不能用模拟器构建替代 ARM64 真机目标的编译检查。

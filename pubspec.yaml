@@ -130,6 +130,10 @@ dependency_overrides:
 
 # The following section is specific to Flutter packages.
 flutter:
+  # ML Kit / sherpa use CocoaPods; permission macros are configured in Podfile.
+  # Keep one plugin integration path until those packages support SwiftPM.
+  config:
+    enable-swift-package-manager: false
   generate: true
 
   # The following line ensures that the Material Icons font is
