@@ -36,6 +36,8 @@ git push origin v0.1.1
 
 [tag 工作流](../.github/workflows/release.yml)校验版本、发布脚本、格式与静态分析，执行两组分片测试，构建签名通用 APK、ARM64 / ARM32 / x86_64 APK 和 AAB。依赖从 `pub.dev` 下载，保留锁文件哈希校验。APK 和 AAB 检查 Flutter 库中的开发者主目录路径。
 
+发布同时调用 iOS 无签名构建与归档检查，全部通过后才公开 Release。此检查无需 Apple 签名账号，不生成可安装 IPA，也不能代替 iPhone 真机验收。
+
 ### 说明来源与兼容路径
 
 发布任务通过 `tool/release_notes.py` 分页读取 GitHub Releases，并以 tag 精确匹配当前版本：
