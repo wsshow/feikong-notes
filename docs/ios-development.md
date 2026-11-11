@@ -10,9 +10,9 @@ iOS 当前处于适配阶段，尚未作为正式支持平台发布。本阶段�
 make check-ios
 ```
 
-该目标会按锁文件获取依赖，执行只读格式检查、静态分析、应用及 Harness 测试、合成音频回归、CocoaPods deployment 安装、未签名 Release 构建和原生能力打包检查。不会连接设备、写入签名账号或发布应用。
+该目标会按锁文件获取依赖，执行只读格式检查、静态分析、应用及 Harness 测试、原生音频/分享/提醒回归、原生文案与 SDK 源码一致性检查、CocoaPods deployment 安装、未签名 Release 构建和原生能力打包检查，并生成隐私声明清单。不会连接设备、写入签名账号或发布应用。
 
-`.github/workflows/ios.yml` 在相关 Pull Request 或手动触发时执行同一目标。工作流无需签名密钥，只有仓库读取权限；本地检查通过不代表远端 CI 已运行。
+`.github/workflows/ios.yml` 在相关 Pull Request 或手动触发时执行同一目标，再验证无签名归档。工作流无需签名密钥，只有仓库读取权限；本地检查通过不代表远端 CI 已运行。
 
 单独检查已构建的产物：
 
@@ -21,7 +21,7 @@ python3 tool/verify_ios_bundle.py build/ios/iphoneos/Runner.app
 python3 -m unittest discover -s tool -p 'test_ios_*.py'
 ```
 
-打包检查确认 iPhone ARM64、MNN 实际 LLM 实现及 FFI 符号、sherpa 离线/流式识别与 TTS 创建/销毁符号、中文 OCR 资源和权限用途声明。它不能证明模型能加载、权限弹窗正常或推理质量合格。
+打包检查确认 iPhone ARM64、MNN 实际 LLM 实现及 FFI 导出、sherpa 离线/流式识别与 TTS 创建/销毁导出、中文 OCR 资源和权限用途声明。符号检查使用 dyld 加载器导出表，避免将 dSYM 中存在但运行时不可查找的接口误判为可用；归档保留全局导出名供 Dart FFI 查找。它不能证明模型能加载、权限弹窗正常或推理质量合格。
 
 当前 ML Kit 固定原生库缺少 Apple Silicon ARM64 模拟器支持；主机音频回归使用 macOS AVFoundation 编译并执行与 Runner 相同的解码代码，不依赖模拟器，也不等于 iPhone 音频验收。
 
@@ -74,11 +74,31 @@ iOS 提醒始终显示通用内容，不把标题、正文或隐私空间信息�
 - 失去活动状态时先覆盖原生窗口；回到前台并绘制含认证门禁的 Flutter 帧后解除遮挡，避免应用切换器提前截取笔记。该时序有通道回归，真实系统快照仍需设备验收。
 - 分享扩展与提醒使用应用所选中英文，恢复/启动时同步原生偏好；系统权限提示使用系统对该应用选择的语言。
 
-## 下一批独立功能
+## 归档与发布准备
 
-5. 发布：原生权限文案本地化、隐私清单/隐私说明核对、签名归档、TestFlight、升级回归与商店资料。
+无需设备或账号的归档检查：
 
-每个独立功能完成对应检查后单独提交。未经设备实测的能力继续标为待验收，不把打包检查写成“已完整支持”。
+```bash
+make ios-archive IOS_ARCHIVE_ARGS="--unsigned"
+```
+
+产物位于 `build/ios/archive/Runner.xcarchive`，不导出可安装 IPA。脚本固定依赖、检查主应用及分享扩展、原生能力和隐私资源，生成 `build/ios/privacy-report.json`。`--dry-run` 可先查看构建参数。
+
+后续具备签名账号时，可本地导出签名 IPA；以下 ID 均为占位示例，应替换为账号中实际注册的值：
+
+```bash
+make ios-archive IOS_ARCHIVE_ARGS="--team TEAMID1234 --bundle-id com.example.notes --export-method app-store-connect --build-name 1.0.0 --build-number 1"
+```
+
+主应用与扩展共用 Team，App Group 默认 `group.<bundle-id>`，也可通过 `--app-group` 显式指定。需预先在开发者账号为两个 App ID 启用共享组并准备签名；不把账号、证书或 profile 提交到仓库。脚本只本地归档/导出，校验新生成 IPA 与签名，不上传 TestFlight 或 App Store。签名、安装、升级、TestFlight 和商店资料尚未验收。
+
+系统权限文案和应用名称由中英文 ARB 生成 `InfoPlist.strings`；修改后运行 `flutter gen-l10n` 与 `python3 tool/generate_ios_localizations.py`。局域网权限用途用于用户配置的同步/模型服务，ATS 仅声明本地网络例外。
+
+主应用与分享扩展包含自身代码的隐私清单，声明偏好与共享组、受管/用户选择的文件元数据，以及主应用的本地耗时计量。理由对应 Apple 的[必需理由 API 定义](https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacyaccessedapitypes/nsprivacyaccessedapitype)。主应用的空采集列表仅描述本项目代码，不能代表全部 SDK。
+
+静态链接的 ML Kit SDK 原始隐私清单会原样保存在独立资源 bundle 中，避免 CocoaPods 链接时丢失。其声明包含设备标识、诊断等类别，发布前须根据实际 SDK 行为核对商店隐私回答。`privacy-report.json` 汇总所有打包声明并列出无内嵌清单的 framework（目前包括 LiteRT-LM、sherpa、PDFium 等）；该清单是审查输入，不能替代 SDK 行为核实或 Apple 审核。部分原生库使用文件/时间 API，仍需与上游核实适用理由和 SDK 隐私打包要求，完成后才能认定具备上架条件；不伪造供应商声明或修改其二进制签名。
+
+各功能已分别提交。未经设备实测的能力继续标为待验收，不把打包检查写成“已完整支持”。
 
 ## 设备验收门槛（暂不执行）
 

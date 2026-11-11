@@ -33,7 +33,7 @@ UPDATE_ARGS := $(if $(strip $(FKNOTES_UPDATE_MANIFEST_URL)),--dart-define="FKNOT
 DEVICE_ARG := $(if $(DEVICE),-d $(DEVICE))
 
 .DEFAULT_GOAL := help
-.PHONY: help doctor get upgrade outdated format analyze test check check-ios \
+.PHONY: help doctor get upgrade outdated format analyze test check check-ios ios-archive \
 	devices emulators run run-android run-ios run-macos clean clean-all \
 	debug debug-overlay package release android-release apk-debug apk-debug-split apk apk-split aab ios macos linux windows web
 
@@ -78,6 +78,7 @@ check-ios: ## iOS 无设备检查：锁定依赖、测试、未签名构建与�
 	cd ios && pod install --deployment
 	$(FLUTTER) build ios --release --no-codesign --no-pub
 	python3 tool/verify_ios_bundle.py
+	python3 tool/ios_privacy_report.py build/ios/iphoneos/Runner.app --output build/ios/privacy-report.json
 
 devices: ## 列出可用设备
 	$(FLUTTER) devices
@@ -163,6 +164,9 @@ aab: get ## 打包 Android 发布 AAB，产物放入 dist/
 	@rm -f $(DIST_DIR)/fknotes-release.aab
 	@cp build/app/outputs/bundle/release/app-release.aab $(DIST_DIR)/fknotes-$(ARTIFACT_VERSION)-release.aab
 	@echo "已生成：$(DIST_DIR)/fknotes-$(ARTIFACT_VERSION)-release.aab"
+
+ios-archive: ## iOS 归档；用 IOS_ARCHIVE_ARGS="--unsigned" 或指定签名 Team
+	python3 tool/build_ios_archive.py --flutter "$(FLUTTER)" $(IOS_ARCHIVE_ARGS)
 
 ios: get ## 打包 iOS Release（需 Xcode 签名配置）
 	$(FLUTTER) build ipa --release $(BUILD_ARGS) $(BUILD_METADATA_ARGS)

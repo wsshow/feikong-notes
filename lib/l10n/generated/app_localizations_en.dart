@@ -96,6 +96,37 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not save the theme. Your previous appearance has been restored. Please try again.';
 
   @override
+  String get iosAppDisplayName => 'Feikong Notes';
+
+  @override
+  String get iosCameraPurpose =>
+      'Take photos, videos and watermarked photos for your notes.';
+
+  @override
+  String get iosMicrophonePurpose =>
+      'Record voice notes and capture live dictation.';
+
+  @override
+  String get iosPhotoLibraryPurpose =>
+      'Select photos and videos for notes or text recognition.';
+
+  @override
+  String get iosFaceIdPurpose =>
+      'Use Face ID to unlock the app and private notes.';
+
+  @override
+  String get iosLocationPurpose =>
+      'Add a location to watermarked photos. The system geocoding service may receive the location to look up place names.';
+
+  @override
+  String get iosLocalNetworkPurpose =>
+      'Connect to local-network sync servers or model services that you configure.';
+
+  @override
+  String get iosReminderPermissionHint =>
+      'Allow notifications when setting your first reminder. Focus and system notification settings may affect delivery. Up to 64 reminders can be pending.';
+
+  @override
   String get iosReminderTitle => 'Note reminder';
 
   @override
@@ -2327,7 +2358,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locationPermissionRequired =>
-      'The watermark camera needs location access. The location is written only to the photo and stored on this device.';
+      'The watermark camera needs location access. The system geocoding service may use the location to look up place names.';
 
   @override
   String get locationPermissionPermanentlyDenied =>

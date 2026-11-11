@@ -28,16 +28,23 @@
 	<string>$(FKNOTES_APP_GROUP)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>用于连接你配置的局域网同步服务器或在线模型服务。</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>用于拍摄图片、位置水印照片和笔记视频。</string>
+	<string>用于拍摄并添加笔记图片、视频及水印照片。</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>用于通过系统 Face ID 解锁非空笔记中的本地内容。</string>
+	<string>用于通过系统 Face ID 解锁应用和隐私笔记空间。</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>用于创建默认保存在本机的语音笔记。</string>
+	<string>用于录制语音笔记和实时听写。</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>用于识别水印照片中的地点名称；地点与定位信息仅在本机处理。</string>
+	<string>用于为水印照片添加地点；系统地理编码服务可能接收位置以查询地名。</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>用于选择需要保存和识别的图片或视频。</string>
+	<string>用于选择要添加到笔记或识别文字的图片与视频。</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

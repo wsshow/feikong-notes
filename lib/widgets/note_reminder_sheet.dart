@@ -142,7 +142,9 @@ final class _NoteReminderSheetState extends State<NoteReminderSheet> {
               ),
             const SizedBox(height: 12),
             Text(
-              context.l10n.reminderPermissionHint,
+              Theme.of(context).platform == TargetPlatform.iOS
+                  ? context.l10n.iosReminderPermissionHint
+                  : context.l10n.reminderPermissionHint,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,

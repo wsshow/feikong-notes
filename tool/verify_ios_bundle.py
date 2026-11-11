@@ -3,14 +3,19 @@
 import argparse
 from pathlib import Path
 import plistlib
+import re
 import subprocess
 
 
 def symbols(binary):
     result = subprocess.run(
-        ["xcrun", "nm", "-gU", str(binary)], check=True, capture_output=True, text=True
+        ["xcrun", "dyld_info", "-exports", str(binary)], check=True, capture_output=True, text=True
     )
-    return {line.split()[-1] for line in result.stdout.splitlines() if line.split()}
+    # Check the loader's exports, not a debug symbol table. Archive stripping
+    # can leave code/dSYM symbols present while making Dart dlsym fail.
+    return {match.group(1) for match in re.finditer(
+        r"^\s*0x[0-9a-fA-F]+\s+(\S+)", result.stdout, re.MULTILINE
+    )}
 
 
 def verify(app):
@@ -35,6 +40,21 @@ def verify(app):
     for language in ["en", "zh-Hans"]:
         if not (extension / f"{language}.lproj/Localizable.strings").is_file():
             raise ValueError("Share extension localized UI is missing")
+    for bundle in [app, extension]:
+        privacy = plistlib.loads((bundle / "PrivacyInfo.xcprivacy").read_bytes())
+        reasons = {entry["NSPrivacyAccessedAPIType"]: set(entry["NSPrivacyAccessedAPITypeReasons"])
+                   for entry in privacy.get("NSPrivacyAccessedAPITypes", [])}
+        if not {"CA92.1", "1C8F.1"}.issubset(reasons.get("NSPrivacyAccessedAPICategoryUserDefaults", set())):
+            raise ValueError("App and App Group preferences require privacy reasons")
+        if not {"C617.1", "3B52.1"}.issubset(reasons.get("NSPrivacyAccessedAPICategoryFileTimestamp", set())):
+            raise ValueError("Managed and user-selected file metadata require privacy reasons")
+        for language in ["en", "zh-Hans"]:
+            localized = bundle / f"{language}.lproj/InfoPlist.strings"
+            if not localized.is_file():
+                raise ValueError("Localized permission purposes are absent")
+    for sdk in ["MLKitCommon", "MLKitTextRecognitionCommon"]:
+        if not (app / f"{sdk}_Privacy.bundle/PrivacyInfo.xcprivacy").is_file():
+            raise ValueError("Static ML Kit privacy manifests are absent")
     binary = app / info["CFBundleExecutable"]
     architectures = subprocess.check_output(["xcrun", "lipo", "-archs", str(binary)], text=True)
     if "arm64" not in architectures.split():

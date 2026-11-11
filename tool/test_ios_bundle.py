@@ -4,9 +4,18 @@ from pathlib import Path
 import plistlib
 import tempfile
 import unittest
+import subprocess
 from unittest.mock import patch
 
 import verify_ios_bundle
+
+
+class IosExportSymbolsTest(unittest.TestCase):
+    def test_loader_exports_ignore_headers_and_weak_annotations(self):
+        output = "Runner [arm64]:\n    -exports:\n offset symbol\n 0x00004000 _fk_mnn_is_available\n 0x00004100 _weak_symbol [weak-def]\n"
+        with patch.object(verify_ios_bundle.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, stdout=output)) as run:
+            self.assertEqual(verify_ios_bundle.symbols(Path("Runner")), {"_fk_mnn_is_available", "_weak_symbol"})
+            self.assertEqual(run.call_args.args[0][1:3], ["dyld_info", "-exports"])
 
 
 class IosBundleTest(unittest.TestCase):
@@ -32,6 +41,19 @@ class IosBundleTest(unittest.TestCase):
         for language in ["en", "zh-Hans"]:
             (extension / f"{language}.lproj").mkdir()
             (extension / f"{language}.lproj/Localizable.strings").write_text("synthetic")
+        privacy = {"NSPrivacyAccessedAPITypes": [
+            {"NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults", "NSPrivacyAccessedAPITypeReasons": ["CA92.1", "1C8F.1"]},
+            {"NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp", "NSPrivacyAccessedAPITypeReasons": ["C617.1", "3B52.1"]},
+        ]}
+        for bundle in [self.app, extension]:
+            (bundle / "PrivacyInfo.xcprivacy").write_bytes(plistlib.dumps(privacy))
+            for language in ["en", "zh-Hans"]:
+                (bundle / f"{language}.lproj").mkdir(exist_ok=True)
+                (bundle / f"{language}.lproj/InfoPlist.strings").write_text("synthetic")
+        for sdk in ["MLKitCommon", "MLKitTextRecognitionCommon"]:
+            folder = self.app / f"{sdk}_Privacy.bundle"
+            folder.mkdir()
+            (folder / "PrivacyInfo.xcprivacy").write_bytes(plistlib.dumps({}))
         (self.app / "ChineseOCRResources.bundle").mkdir()
         self.ocr = self.app / "ChineseOCRResources.bundle/model.bincfg"
         self.ocr.write_bytes(b"synthetic model")
@@ -78,6 +100,11 @@ class IosBundleTest(unittest.TestCase):
         info["FKNotesAppGroup"] = "group.other"
         path.write_bytes(plistlib.dumps(info))
         with self.assertRaisesRegex(ValueError, "App Group"):
+            verify_ios_bundle.verify(self.app)
+
+    def test_missing_static_sdk_privacy_fails(self):
+        (self.app / "MLKitCommon_Privacy.bundle/PrivacyInfo.xcprivacy").unlink()
+        with self.assertRaisesRegex(ValueError, "ML Kit privacy"):
             verify_ios_bundle.verify(self.app)
 
     def test_missing_litert_cancellation_fails(self):

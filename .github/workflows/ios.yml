@@ -47,3 +47,5 @@ jobs:
           pod --version
       - name: Verify without device or signing
         run: make check-ios
+      - name: Verify archive exports without signing
+        run: make ios-archive IOS_ARCHIVE_ARGS="--unsigned"

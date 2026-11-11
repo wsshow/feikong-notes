@@ -89,6 +89,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get themeSaveFailed => '主题设置未保存，已恢复之前的外观，请重试。';
 
   @override
+  String get iosAppDisplayName => '非空笔记';
+
+  @override
+  String get iosCameraPurpose => '用于拍摄并添加笔记图片、视频及水印照片。';
+
+  @override
+  String get iosMicrophonePurpose => '用于录制语音笔记和实时听写。';
+
+  @override
+  String get iosPhotoLibraryPurpose => '用于选择要添加到笔记或识别文字的图片与视频。';
+
+  @override
+  String get iosFaceIdPurpose => '用于通过系统 Face ID 解锁应用和隐私笔记空间。';
+
+  @override
+  String get iosLocationPurpose => '用于为水印照片添加地点；系统地理编码服务可能接收位置以查询地名。';
+
+  @override
+  String get iosLocalNetworkPurpose => '用于连接你配置的局域网同步服务器或在线模型服务。';
+
+  @override
+  String get iosReminderPermissionHint =>
+      '首次设置需允许通知。专注模式与系统通知设置可能影响提醒；最多同时安排 64 个待提醒。';
+
+  @override
   String get iosReminderTitle => '笔记提醒';
 
   @override
@@ -2125,7 +2150,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get locationServiceDisabled => '请先开启系统定位服务，再使用水印相机';
 
   @override
-  String get locationPermissionRequired => '水印相机需要位置权限，位置只会写入照片并保存在本机';
+  String get locationPermissionRequired => '水印相机需要位置权限；系统地理编码服务可能使用位置查询地名。';
 
   @override
   String get locationPermissionPermanentlyDenied => '位置权限已被关闭，请前往系统设置开启后重试';

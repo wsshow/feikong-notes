@@ -254,6 +254,54 @@ abstract class AppLocalizations {
   /// **'主题设置未保存，已恢复之前的外观，请重试。'**
   String get themeSaveFailed;
 
+  /// No description provided for @iosAppDisplayName.
+  ///
+  /// In zh, this message translates to:
+  /// **'非空笔记'**
+  String get iosAppDisplayName;
+
+  /// No description provided for @iosCameraPurpose.
+  ///
+  /// In zh, this message translates to:
+  /// **'用于拍摄并添加笔记图片、视频及水印照片。'**
+  String get iosCameraPurpose;
+
+  /// No description provided for @iosMicrophonePurpose.
+  ///
+  /// In zh, this message translates to:
+  /// **'用于录制语音笔记和实时听写。'**
+  String get iosMicrophonePurpose;
+
+  /// No description provided for @iosPhotoLibraryPurpose.
+  ///
+  /// In zh, this message translates to:
+  /// **'用于选择要添加到笔记或识别文字的图片与视频。'**
+  String get iosPhotoLibraryPurpose;
+
+  /// No description provided for @iosFaceIdPurpose.
+  ///
+  /// In zh, this message translates to:
+  /// **'用于通过系统 Face ID 解锁应用和隐私笔记空间。'**
+  String get iosFaceIdPurpose;
+
+  /// No description provided for @iosLocationPurpose.
+  ///
+  /// In zh, this message translates to:
+  /// **'用于为水印照片添加地点；系统地理编码服务可能接收位置以查询地名。'**
+  String get iosLocationPurpose;
+
+  /// No description provided for @iosLocalNetworkPurpose.
+  ///
+  /// In zh, this message translates to:
+  /// **'用于连接你配置的局域网同步服务器或在线模型服务。'**
+  String get iosLocalNetworkPurpose;
+
+  /// No description provided for @iosReminderPermissionHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'首次设置需允许通知。专注模式与系统通知设置可能影响提醒；最多同时安排 64 个待提醒。'**
+  String get iosReminderPermissionHint;
+
   /// No description provided for @iosReminderTitle.
   ///
   /// In zh, this message translates to:
@@ -4013,7 +4061,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationPermissionRequired.
   ///
   /// In zh, this message translates to:
-  /// **'水印相机需要位置权限，位置只会写入照片并保存在本机'**
+  /// **'水印相机需要位置权限；系统地理编码服务可能使用位置查询地名。'**
   String get locationPermissionRequired;
 
   /// No description provided for @locationPermissionPermanentlyDenied.
