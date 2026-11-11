@@ -96,6 +96,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not save the theme. Your previous appearance has been restored. Please try again.';
 
   @override
+  String get iosReminderTitle => 'Note reminder';
+
+  @override
+  String get iosReminderBody =>
+      'You have a note to revisit. Open Feikong Notes to view it.';
+
+  @override
+  String get iosSharePlaceholder => 'Add a note (optional)';
+
+  @override
+  String get iosShareSaved => 'Saved to inbox';
+
+  @override
+  String get iosShareOpenApp =>
+      'Open Feikong Notes and confirm the import after unlocking.';
+
+  @override
+  String get iosShareFailedTitle => 'Sharing did not complete';
+
+  @override
   String get incomingShareTitle => 'Save shared content';
 
   @override

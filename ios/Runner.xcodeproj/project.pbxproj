@@ -9,13 +9,18 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		191DA3C72C38E019A68569C8 /* NoteReminderBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B336977C907C6904F52EC275 /* NoteReminderBridge.swift */; };
+		1F72D666F4EBE4322E8B0F79 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A66179D8074C6F0592CC6677 /* ShareViewController.swift */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
+		379E494183ED193830C533F8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7BF209691103C11782F5E56 /* Foundation.framework */; };
 		38125C917849F64BEFC36279 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 124A22BC08AB9F096BF83297 /* Pods_RunnerTests.framework */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		6371013A01EF5E9703F396A0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AE71B399DDBB4DFB1E036491 /* Localizable.strings */; };
+		67769200534B6759CC020515 /* IncomingShareBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C9C8226F4A3955CF1DE37E /* IncomingShareBridge.swift */; };
+		6AC34B2F2E81538825F3C0A0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AE71B399DDBB4DFB1E036491 /* Localizable.strings */; };
 		6BDCEE03A0CA86964825E692 /* LiteRtLmBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DBB5F52CD8D21C01667F68 /* LiteRtLmBridge.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
+		7BAF15687D14FB0C7E82A8AA /* ShareInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBDFDD1779E8DEC9F8DB6BE /* ShareInbox.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -25,7 +30,9 @@
 		A11061000000000000000003 /* LiteRTLM in Frameworks */ = {isa = PBXBuildFile; productRef = A11061000000000000000002 /* LiteRTLM */; };
 		A11C0DE10000000000000001 /* fknotes_mnn_bridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A11C0DE10000000000000002 /* fknotes_mnn_bridge.cpp */; };
 		B1BD57F1D3575EA87463C95C /* ReminderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3520E3EB1F3B4C0D529D11 /* ReminderStore.swift */; };
+		B2F24F5EDE95854FF6B82E14 /* ShareInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBDFDD1779E8DEC9F8DB6BE /* ShareInbox.swift */; };
 		C2BB3DF669180A2565631E43 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224D21198C6C785A07AED4A3 /* Pods_Runner.framework */; };
+		D746B4258F8E66D4417E27CD /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 603867E51ECA1DF49E7A404C /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +42,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
+		};
+		B4226B0F1D7019ADC8A30089 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9AE2CD91D63CB0354DAF4A34;
+			remoteInfo = ShareExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -49,6 +63,17 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A645FF677D6868D72F51150A /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D746B4258F8E66D4417E27CD /* ShareExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -61,7 +86,9 @@
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		5B62AB2AB91EF292A6541EEC /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D5396D9B28BFCE821C80C0E /* zh-Hans */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		603867E51ECA1DF49E7A404C /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -73,6 +100,7 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		98C9C8226F4A3955CF1DE37E /* IncomingShareBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingShareBridge.swift; sourceTree = "<group>"; };
 		9C5B68BCB9C44CDD9FA775A6 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		9D6B28117BD8E94473FEAE1E /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A11051000000000000000001 /* AudioFileDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileDecoder.swift; sourceTree = "<group>"; };
@@ -80,15 +108,28 @@
 		A11051000000000000000003 /* FileExportBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExportBridge.swift; sourceTree = "<group>"; };
 		A11053000000000000000001 /* Profile.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Profile.xcconfig; path = Flutter/Profile.xcconfig; sourceTree = "<group>"; };
 		A11C0DE10000000000000002 /* fknotes_mnn_bridge.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fknotes_mnn_bridge.cpp; path = ../../native/mnn/fknotes_mnn_bridge.cpp; sourceTree = "<group>"; };
+		A66179D8074C6F0592CC6677 /* ShareViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		A7BF209691103C11782F5E56 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		B336977C907C6904F52EC275 /* NoteReminderBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteReminderBridge.swift; sourceTree = "<group>"; };
 		B77293A94B0608F81295E007 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
+		C11C9C48E0DB14BC43A5B597 /* Config.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		CE4718D889FE8E0B12658151 /* ShareExtension.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
 		D5DBB5F52CD8D21C01667F68 /* LiteRtLmBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiteRtLmBridge.swift; sourceTree = "<group>"; };
+		DDBDFDD1779E8DEC9F8DB6BE /* ShareInbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareInbox.swift; sourceTree = "<group>"; };
 		E1EA4A5F6F67BC80E1F7EF63 /* en */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EF69AA80D8F5778720431564 /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		FA8DAF330C047AB52A4A62A0 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8D691AEB12B9E4ABAE6A6313 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				379E494183ED193830C533F8 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EB1CF9000F007C117D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -117,6 +158,18 @@
 			path = RunnerTests;
 			sourceTree = "<group>";
 		};
+		6F0D41721E5A2DB18A3A1287 /* ShareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				A66179D8074C6F0592CC6677 /* ShareViewController.swift */,
+				5B62AB2AB91EF292A6541EEC /* Info.plist */,
+				CE4718D889FE8E0B12658151 /* ShareExtension.entitlements */,
+				C11C9C48E0DB14BC43A5B597 /* Config.xcconfig */,
+			);
+			name = ShareExtension;
+			path = ShareExtension;
+			sourceTree = "<group>";
+		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
@@ -138,6 +191,7 @@
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				A28DF9FEF4F902C3B805BF06 /* Pods */,
 				AF939E7905B13BC6304786FE /* Frameworks */,
+				6F0D41721E5A2DB18A3A1287 /* ShareExtension */,
 			);
 			sourceTree = "<group>";
 		};
@@ -146,6 +200,7 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
+				603867E51ECA1DF49E7A404C /* ShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -153,6 +208,8 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				98C9C8226F4A3955CF1DE37E /* IncomingShareBridge.swift */,
+				DDBDFDD1779E8DEC9F8DB6BE /* ShareInbox.swift */,
 				B336977C907C6904F52EC275 /* NoteReminderBridge.swift */,
 				2D3520E3EB1F3B4C0D529D11 /* ReminderStore.swift */,
 				D5DBB5F52CD8D21C01667F68 /* LiteRtLmBridge.swift */,
@@ -193,8 +250,17 @@
 			children = (
 				224D21198C6C785A07AED4A3 /* Pods_Runner.framework */,
 				124A22BC08AB9F096BF83297 /* Pods_RunnerTests.framework */,
+				C9FA415992E6F3A3FD2EB5AC /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C9FA415992E6F3A3FD2EB5AC /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				A7BF209691103C11782F5E56 /* Foundation.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -230,6 +296,7 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				A645FF677D6868D72F51150A /* Embed App Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				5793D95F62517BC8CEFA2473 /* [CP] Embed Pods Frameworks */,
 				4E37B2E4DB74AD1637BEBDFA /* [CP] Copy Pods Resources */,
@@ -237,6 +304,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				4D91A7108BF3559D0A04148D /* PBXTargetDependency */,
 			);
 			name = Runner;
 			packageProductDependencies = (
@@ -245,6 +313,23 @@
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
+		};
+		9AE2CD91D63CB0354DAF4A34 /* ShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7DB9E3E00BA7529BC12198F1 /* Build configuration list for PBXNativeTarget "ShareExtension" */;
+			buildPhases = (
+				9A02B0FC1920871DF04ED2DF /* Sources */,
+				8D691AEB12B9E4ABAE6A6313 /* Frameworks */,
+				8A1F398776D209BD08FEA8FD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ShareExtension;
+			productName = ShareExtension;
+			productReference = 603867E51ECA1DF49E7A404C /* ShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -285,6 +370,7 @@
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
+				9AE2CD91D63CB0354DAF4A34 /* ShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -294,6 +380,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A1F398776D209BD08FEA8FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6AC34B2F2E81538825F3C0A0 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -457,11 +551,22 @@
 				A11052000000000000000002 /* AudioDecodeBridge.swift in Sources */,
 				A11052000000000000000003 /* FileExportBridge.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				67769200534B6759CC020515 /* IncomingShareBridge.swift in Sources */,
+				B2F24F5EDE95854FF6B82E14 /* ShareInbox.swift in Sources */,
 				191DA3C72C38E019A68569C8 /* NoteReminderBridge.swift in Sources */,
 				B1BD57F1D3575EA87463C95C /* ReminderStore.swift in Sources */,
 				6BDCEE03A0CA86964825E692 /* LiteRtLmBridge.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9A02B0FC1920871DF04ED2DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F72D666F4EBE4322E8B0F79 /* ShareViewController.swift in Sources */,
+				7BAF15687D14FB0C7E82A8AA /* ShareInbox.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,6 +577,12 @@
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
+		};
+		4D91A7108BF3559D0A04148D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ShareExtension;
+			target = 9AE2CD91D63CB0354DAF4A34 /* ShareExtension */;
+			targetProxy = B4226B0F1D7019ADC8A30089 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -539,6 +650,8 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FKNOTES_APP_GROUP = "group.$(FKNOTES_BUNDLE_ID)";
+				FKNOTES_BUNDLE_ID = com.fknotes.app;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -570,7 +683,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fknotes.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FKNOTES_BUNDLE_ID)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -628,6 +741,80 @@
 			};
 			name = Profile;
 		};
+		66377DF840F0BC01CDAD74F1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C11C9C48E0DB14BC43A5B597 /* Config.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FKNOTES_BUNDLE_ID).ShareExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		79F2D40B8E7FFA3ADD06F9D1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C11C9C48E0DB14BC43A5B597 /* Config.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FKNOTES_BUNDLE_ID).ShareExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		848B9AEA0A25AE845E96FF6B /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C11C9C48E0DB14BC43A5B597 /* Config.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = ShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FKNOTES_BUNDLE_ID).ShareExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
 		97C147031CF9000F007C117D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -663,6 +850,8 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FKNOTES_APP_GROUP = "group.$(FKNOTES_BUNDLE_ID)";
+				FKNOTES_BUNDLE_ID = com.fknotes.app;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -720,6 +909,8 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FKNOTES_APP_GROUP = "group.$(FKNOTES_BUNDLE_ID)";
+				FKNOTES_BUNDLE_ID = com.fknotes.app;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -753,7 +944,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fknotes.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FKNOTES_BUNDLE_ID)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -776,7 +967,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.fknotes.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FKNOTES_BUNDLE_ID)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -793,6 +984,16 @@
 				331C8088294A63A400263BE5 /* Debug */,
 				331C8089294A63A400263BE5 /* Release */,
 				331C808A294A63A400263BE5 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7DB9E3E00BA7529BC12198F1 /* Build configuration list for PBXNativeTarget "ShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66377DF840F0BC01CDAD74F1 /* Release */,
+				79F2D40B8E7FFA3ADD06F9D1 /* Debug */,
+				848B9AEA0A25AE845E96FF6B /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

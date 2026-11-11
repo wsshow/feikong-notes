@@ -6,6 +6,7 @@ import UserNotifications
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   private var liteRtLmBridge: LiteRtLmBridge?
   private var audioDecodeBridge: AudioDecodeBridge?
+  private var incomingShareBridge: IncomingShareBridge?
   private var fileExportBridge: FileExportBridge?
   override func application(
     _ application: UIApplication,
@@ -21,6 +22,9 @@ import UserNotifications
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     liteRtLmBridge = LiteRtLmBridge(messenger: engineBridge.applicationRegistrar.messenger())
     audioDecodeBridge = AudioDecodeBridge(messenger: engineBridge.applicationRegistrar.messenger())
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "FknotesIncomingShare") {
+      incomingShareBridge = IncomingShareBridge(registrar: registrar)
+    }
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "FknotesFileExport") {
       fileExportBridge = FileExportBridge(registrar: registrar)
     }

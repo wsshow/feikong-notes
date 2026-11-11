@@ -1,0 +1,2 @@
+// Share extension uses the app version without linking Flutter or Pods.
+#include "../Flutter/Generated.xcconfig"

@@ -89,6 +89,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get themeSaveFailed => '主题设置未保存，已恢复之前的外观，请重试。';
 
   @override
+  String get iosReminderTitle => '笔记提醒';
+
+  @override
+  String get iosReminderBody => '你有一条笔记待查看。打开非空笔记查看。';
+
+  @override
+  String get iosSharePlaceholder => '添加说明（可选）';
+
+  @override
+  String get iosShareSaved => '已保存到待导入';
+
+  @override
+  String get iosShareOpenApp => '请打开非空笔记，解锁后确认保存为新笔记。';
+
+  @override
+  String get iosShareFailedTitle => '分享未完成';
+
+  @override
   String get incomingShareTitle => '保存分享内容';
 
   @override

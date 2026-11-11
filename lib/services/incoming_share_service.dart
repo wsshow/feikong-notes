@@ -90,7 +90,9 @@ class IncomingShareService extends ChangeNotifier with WidgetsBindingObserver {
     : _channel = channel ?? const MethodChannel('fknotes/incoming_share'),
       _supported =
           supported ??
-          (!kIsWeb && defaultTargetPlatform == TargetPlatform.android);
+          (!kIsWeb &&
+              (defaultTargetPlatform == TargetPlatform.android ||
+                  defaultTargetPlatform == TargetPlatform.iOS));
 
   final MethodChannel _channel;
   final bool _supported;

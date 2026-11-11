@@ -15,11 +15,23 @@ class IosBundleTest(unittest.TestCase):
         self.addCleanup(self.temporary.cleanup)
         self.app = Path(self.temporary.name)
         info = {
+            "FKNotesAppGroup": "group.test.synthetic", "CFBundleIdentifier": "test.synthetic",
+            "CFBundleVersion": "1", "CFBundleShortVersionString": "1.0.0",
             "DTPlatformName": "iphoneos", "MinimumOSVersion": "15.0", "CFBundleExecutable": "Runner",
             "NSMicrophoneUsageDescription": "Synthetic test", "NSCameraUsageDescription": "Synthetic test",
             "NSPhotoLibraryUsageDescription": "Synthetic test", "NSFaceIDUsageDescription": "Synthetic test",
         }
         (self.app / "Info.plist").write_bytes(plistlib.dumps(info))
+        extension = self.app / "PlugIns/ShareExtension.appex"
+        extension.mkdir(parents=True)
+        (extension / "Info.plist").write_bytes(plistlib.dumps({
+            "NSExtension": {"NSExtensionPointIdentifier": "com.apple.share-services"},
+            "FKNotesAppGroup": "group.test.synthetic", "CFBundleIdentifier": "test.synthetic.ShareExtension",
+            "CFBundleVersion": "1", "CFBundleShortVersionString": "1.0.0",
+        }))
+        for language in ["en", "zh-Hans"]:
+            (extension / f"{language}.lproj").mkdir()
+            (extension / f"{language}.lproj/Localizable.strings").write_text("synthetic")
         (self.app / "ChineseOCRResources.bundle").mkdir()
         self.ocr = self.app / "ChineseOCRResources.bundle/model.bincfg"
         self.ocr.write_bytes(b"synthetic model")
@@ -58,6 +70,14 @@ class IosBundleTest(unittest.TestCase):
     def test_missing_speech_lifecycle_symbol_fails(self):
         self.speech.remove("_SherpaOnnxDestroyOfflineTts")
         with self.assertRaisesRegex(ValueError, "Speech/TTS"):
+            verify_ios_bundle.verify(self.app)
+
+    def test_mismatched_share_group_fails(self):
+        path = self.app / "PlugIns/ShareExtension.appex/Info.plist"
+        info = plistlib.loads(path.read_bytes())
+        info["FKNotesAppGroup"] = "group.other"
+        path.write_bytes(plistlib.dumps(info))
+        with self.assertRaisesRegex(ValueError, "App Group"):
             verify_ios_bundle.verify(self.app)
 
     def test_missing_litert_cancellation_fails(self):

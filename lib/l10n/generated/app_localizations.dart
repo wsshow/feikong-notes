@@ -254,6 +254,42 @@ abstract class AppLocalizations {
   /// **'主题设置未保存，已恢复之前的外观，请重试。'**
   String get themeSaveFailed;
 
+  /// No description provided for @iosReminderTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'笔记提醒'**
+  String get iosReminderTitle;
+
+  /// No description provided for @iosReminderBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'你有一条笔记待查看。打开非空笔记查看。'**
+  String get iosReminderBody;
+
+  /// No description provided for @iosSharePlaceholder.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加说明（可选）'**
+  String get iosSharePlaceholder;
+
+  /// No description provided for @iosShareSaved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存到待导入'**
+  String get iosShareSaved;
+
+  /// No description provided for @iosShareOpenApp.
+  ///
+  /// In zh, this message translates to:
+  /// **'请打开非空笔记，解锁后确认保存为新笔记。'**
+  String get iosShareOpenApp;
+
+  /// No description provided for @iosShareFailedTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享未完成'**
+  String get iosShareFailedTitle;
+
   /// No description provided for @incomingShareTitle.
   ///
   /// In zh, this message translates to:

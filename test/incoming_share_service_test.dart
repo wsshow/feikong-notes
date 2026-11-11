@@ -1,5 +1,6 @@
 import 'package:fknotes/models/note.dart';
 import 'package:fknotes/services/incoming_share_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -46,6 +47,21 @@ void main() {
   tearDown(() {
     service.dispose();
     messenger.setMockMethodCallHandler(channel, null);
+  });
+
+  test('iOS reads the same inbox contract by default', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    final ios = IncomingShareService(channel: channel);
+    try {
+      queue.add(entry('iOS share'));
+      await ios.initialize();
+      expect(ios.pending?.text, 'iOS share');
+      await ios.finish(ios.pending!.id);
+      expect(queue, isEmpty);
+    } finally {
+      ios.dispose();
+      debugDefaultTargetPlatformOverride = null;
+    }
   });
 
   test('cold and warm shares stay queued until acknowledged', () async {

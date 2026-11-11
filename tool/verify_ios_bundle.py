@@ -20,6 +20,21 @@ def verify(app):
         raise ValueError("Expected an iPhone device build, not a simulator build")
     if tuple(map(int, info["MinimumOSVersion"].split("."))) < (15, 0):
         raise ValueError("The app must target iOS 15.0 or later")
+    extension = app / "PlugIns/ShareExtension.appex"
+    with (extension / "Info.plist").open("rb") as stream:
+        share = plistlib.load(stream)
+    if share.get("NSExtension", {}).get("NSExtensionPointIdentifier") != "com.apple.share-services":
+        raise ValueError("Share extension activation is missing")
+    group = info.get("FKNotesAppGroup", "")
+    if not group.startswith("group.") or "$" in group or share.get("FKNotesAppGroup") != group:
+        raise ValueError("Runner and share extension must use the same resolved App Group")
+    if share.get("CFBundleVersion") != info.get("CFBundleVersion") or share.get("CFBundleShortVersionString") != info.get("CFBundleShortVersionString"):
+        raise ValueError("Share extension version must match the app")
+    if share.get("CFBundleIdentifier") != info.get("CFBundleIdentifier", "") + ".ShareExtension":
+        raise ValueError("Share extension identifier must match the app prefix")
+    for language in ["en", "zh-Hans"]:
+        if not (extension / f"{language}.lproj/Localizable.strings").is_file():
+            raise ValueError("Share extension localized UI is missing")
     binary = app / info["CFBundleExecutable"]
     architectures = subprocess.check_output(["xcrun", "lipo", "-archs", str(binary)], text=True)
     if "arm64" not in architectures.split():
