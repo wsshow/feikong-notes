@@ -36,6 +36,8 @@ git push origin v0.1.1
 
 [tag 工作流](../.github/workflows/release.yml)校验版本、发布脚本、格式与静态分析，执行两组分片测试，构建签名通用 APK、ARM64 / ARM32 / x86_64 APK 和 AAB。依赖从 `pub.dev` 下载，保留锁文件哈希校验。APK 和 AAB 检查 Flutter 库中的开发者主目录路径。
 
+在锁定依赖后，先运行 `flutter build apk --release --config-only` 生成 Release 专用插件注册文件，并确认锁文件未变化，再使用 `--no-pub` 构建 APK / AAB；否则 Flutter 会保留包含开发依赖 `integration_test` 的注册文件，导致 Release Java 编译失败。
+
 发布同时调用 iOS 无签名构建与归档检查，全部通过后才公开 Release。此流程无需 Apple 签名账号，检查后额外打包实验性未签名 IPA，附带[自行签名安装教程](ios-installation.md)、权限模板和构建信息；用户仍需自行签名，不能直接安装，也不能把构建检查视为 iPhone 真机验收。
 
 ### 恢复未完成的发布

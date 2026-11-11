@@ -176,6 +176,19 @@ jobs:
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
 
+      - name: Generate release plugin registration
+        run: |
+          # --no-pub also skips mode-specific registrant generation in Flutter.
+          # Generate release tooling first so dev-only integration_test is absent.
+          flutter build apk --release --config-only
+          git diff --exit-code -- pubspec.lock
+          python3 - <<'PYREG'
+          from pathlib import Path
+          registrant = Path("android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java").read_text()
+          if "dev.flutter.plugins.integration_test" in registrant:
+              raise SystemExit("Release registrant still includes the dev-only integration_test plugin")
+          PYREG
+
       - name: Prepare signing key
         shell: bash
         env:
@@ -280,6 +293,19 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
+
+      - name: Generate release plugin registration
+        run: |
+          # --no-pub also skips mode-specific registrant generation in Flutter.
+          # Generate release tooling first so dev-only integration_test is absent.
+          flutter build apk --release --config-only
+          git diff --exit-code -- pubspec.lock
+          python3 - <<'PYREG'
+          from pathlib import Path
+          registrant = Path("android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java").read_text()
+          if "dev.flutter.plugins.integration_test" in registrant:
+              raise SystemExit("Release registrant still includes the dev-only integration_test plugin")
+          PYREG
 
       - name: Prepare signing key
         shell: bash
