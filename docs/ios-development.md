@@ -25,6 +25,23 @@ python3 -m unittest discover -s tool -p 'test_ios_*.py'
 
 当前 ML Kit 固定原生库缺少 Apple Silicon ARM64 模拟器支持；主机音频回归使用 macOS AVFoundation 编译并执行与 Runner 相同的解码代码，不依赖模拟器，也不等于 iPhone 音频验收。
 
+### 本机模拟器预览
+
+Apple Silicon Mac 可使用独立预览工作区查看最新界面。先在 Xcode 安装 iOS Simulator Runtime 并启动一台模拟器，再执行。Xcode 27 的模拟器界面入口是 [Device Hub](https://developer.apple.com/documentation/xcode/device-hub)，工具同时兼容旧版 Simulator：
+
+```bash
+PUB_HOSTED_URL=https://pub.dev flutter pub get --enforce-lockfile
+python3 tool/prepare_ios_preview.py --device booted
+```
+
+也可将 `booted` 换为 `xcrun simctl list devices available` 中已启动模拟器的 UUID。工具复制当前工作区的 Git 跟踪文件到 `build/ios-preview/workspace`，构建 ARM64 Debug 版本，覆盖安装并打开“非空笔记预览”。预览使用独立包名 `com.fknotes.app.preview` 与 App Group，保留其自身数据，不覆盖正式应用。
+
+预览的 OCR 原生适配器明确返回不可用错误，MNN 使用既有的无运行库分支；两者须在真机验收。其他能力仍以实际运行结果为准，模拟器不能代替麦克风、相机、系统认证和模型性能的设备测试。LiteRT-LM 固定 SDK 只有 ARM64 模拟器切片，因此预览不构建 x86_64。
+
+生成的预览适配器带有真机编译阻断，正式 Podfile、锁文件、Pub 缓存与发布工程不变；预览工作区不用于签名发布。仅准备工作区时省略 `--device`。再次运行会复制最新源码并更新同一预览应用。
+
+已在 iOS 27.2 / iPhone 17 模拟器验证 ARM64 构建、安装及启动至中文首页；这不代表下表中的真机项目已验收。
+
 ## 已完成的代码与构建检查
 
 | 能力 | 当前证据 | 仍需验证 |
