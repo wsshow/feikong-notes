@@ -60,6 +60,9 @@ class AppLocaleController extends ChangeNotifier with WidgetsBindingObserver {
     final resolved = platformTag == null
         ? stored
         : _languageFromTag(platformTag);
+    if (Platform.isIOS) {
+      await _platformLocaleWriter(_tagForLanguage(resolved));
+    }
     if (_language != resolved) {
       _language = resolved;
       notifyListeners();

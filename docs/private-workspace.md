@@ -14,6 +14,12 @@
 
 笔记数据库和附件使用应用私有目录，由系统认证保护应用内访问。完整备份保留隐私标记，包含只读对话快照。生成和导出含隐私内容的备份前须认证。恢复 v2 纯笔记备份时保留设备已有对话。详见[备份与手动云同步](cloud-sync.md#备份范围)。
 
+## iOS 适配边界
+
+iOS 的通知仅保存笔记 ID、提醒时间和通用文案；分享扩展只写 App Group 待导入收件箱，主应用解锁后才确认导入。应用切换器使用原生遮挡并等待 Flutter 的认证门禁帧后解除。
+
+受管笔记/模型/附件目录及分享收件箱排除系统备份，跨设备迁移使用应用备份或手动同步；API 凭据保留设备专属 Keychain 策略，不迁移到新设备。上述代码和主机回归已接入，系统认证、Keychain 恢复、截图时序仍需 iPhone 验收。详见 [iOS 适配与验收](ios-development.md)。
+
 ## 验收
 
 重点覆盖首页下拉、应用锁关闭时的独立认证、后台遮蔽、移入和移出笔记、AI 工具的空间隔离，以及备份恢复。对应测试见 `private_notes_page_test.dart`、`private_notes_controller_test.dart`、`local_chat_store_test.dart`、`agent_note_tools_test.dart` 和 `backup_service_cloud_boundary_test.dart`。

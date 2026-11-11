@@ -4,6 +4,7 @@ import UserNotifications
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
+  private var iosPlatformBridge: IosPlatformBridge?
   private var liteRtLmBridge: LiteRtLmBridge?
   private var audioDecodeBridge: AudioDecodeBridge?
   private var externalImageDropBridge: ExternalImageDropBridge?
@@ -19,6 +20,7 @@ import UserNotifications
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+    iosPlatformBridge = IosPlatformBridge(messenger: engineBridge.applicationRegistrar.messenger())
     NoteReminderBridge.shared.attach(messenger: engineBridge.applicationRegistrar.messenger())
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     liteRtLmBridge = LiteRtLmBridge(messenger: engineBridge.applicationRegistrar.messenger())

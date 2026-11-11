@@ -17,8 +17,10 @@
 		6371013A01EF5E9703F396A0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AE71B399DDBB4DFB1E036491 /* Localizable.strings */; };
 		67769200534B6759CC020515 /* IncomingShareBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C9C8226F4A3955CF1DE37E /* IncomingShareBridge.swift */; };
 		6AC34B2F2E81538825F3C0A0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AE71B399DDBB4DFB1E036491 /* Localizable.strings */; };
+		6BD249D412B481F3C6920DDE /* NativeStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93528F8B2D521DC57E22555 /* NativeStrings.swift */; };
 		6BDCEE03A0CA86964825E692 /* LiteRtLmBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DBB5F52CD8D21C01667F68 /* LiteRtLmBridge.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		76F034C95B26F03FD35F252B /* NativeStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93528F8B2D521DC57E22555 /* NativeStrings.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
 		7BAF15687D14FB0C7E82A8AA /* ShareInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBDFDD1779E8DEC9F8DB6BE /* ShareInbox.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -29,11 +31,12 @@
 		A11052000000000000000003 /* FileExportBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11051000000000000000003 /* FileExportBridge.swift */; };
 		A11061000000000000000003 /* LiteRTLM in Frameworks */ = {isa = PBXBuildFile; productRef = A11061000000000000000002 /* LiteRTLM */; };
 		A11C0DE10000000000000001 /* fknotes_mnn_bridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A11C0DE10000000000000002 /* fknotes_mnn_bridge.cpp */; };
+		A787827F04FB34BD5C37ADFC /* IosPlatformBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69FE8EADCFF30DDD9CC38F1 /* IosPlatformBridge.swift */; };
 		B1BD57F1D3575EA87463C95C /* ReminderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3520E3EB1F3B4C0D529D11 /* ReminderStore.swift */; };
 		B2F24F5EDE95854FF6B82E14 /* ShareInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBDFDD1779E8DEC9F8DB6BE /* ShareInbox.swift */; };
 		C2BB3DF669180A2565631E43 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224D21198C6C785A07AED4A3 /* Pods_Runner.framework */; };
 		D746B4258F8E66D4417E27CD /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 603867E51ECA1DF49E7A404C /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		EF63659FE97BE88C00711258 /* ExternalImageDropBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4251F5F75BC7320544F6E9; };
+		EF63659FE97BE88C00711258 /* ExternalImageDropBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4251F5F75BC7320544F6E9 /* ExternalImageDropBridge.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,16 +114,18 @@
 		A11C0DE10000000000000002 /* fknotes_mnn_bridge.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fknotes_mnn_bridge.cpp; path = ../../native/mnn/fknotes_mnn_bridge.cpp; sourceTree = "<group>"; };
 		A66179D8074C6F0592CC6677 /* ShareViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		A7BF209691103C11782F5E56 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		AD4251F5F75BC7320544F6E9 /* ExternalImageDropBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalImageDropBridge.swift; sourceTree = "<group>"; };
 		B336977C907C6904F52EC275 /* NoteReminderBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteReminderBridge.swift; sourceTree = "<group>"; };
 		B77293A94B0608F81295E007 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
+		B93528F8B2D521DC57E22555 /* NativeStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeStrings.swift; sourceTree = "<group>"; };
 		C11C9C48E0DB14BC43A5B597 /* Config.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		C69FE8EADCFF30DDD9CC38F1 /* IosPlatformBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosPlatformBridge.swift; sourceTree = "<group>"; };
 		CE4718D889FE8E0B12658151 /* ShareExtension.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
 		D5DBB5F52CD8D21C01667F68 /* LiteRtLmBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiteRtLmBridge.swift; sourceTree = "<group>"; };
 		DDBDFDD1779E8DEC9F8DB6BE /* ShareInbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareInbox.swift; sourceTree = "<group>"; };
 		E1EA4A5F6F67BC80E1F7EF63 /* en */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EF69AA80D8F5778720431564 /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		FA8DAF330C047AB52A4A62A0 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
-		AD4251F5F75BC7320544F6E9 /* ExternalImageDropBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalImageDropBridge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -210,6 +215,8 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				B93528F8B2D521DC57E22555 /* NativeStrings.swift */,
+				C69FE8EADCFF30DDD9CC38F1 /* IosPlatformBridge.swift */,
 				AD4251F5F75BC7320544F6E9 /* ExternalImageDropBridge.swift */,
 				98C9C8226F4A3955CF1DE37E /* IncomingShareBridge.swift */,
 				DDBDFDD1779E8DEC9F8DB6BE /* ShareInbox.swift */,
@@ -554,6 +561,8 @@
 				A11052000000000000000002 /* AudioDecodeBridge.swift in Sources */,
 				A11052000000000000000003 /* FileExportBridge.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				76F034C95B26F03FD35F252B /* NativeStrings.swift in Sources */,
+				A787827F04FB34BD5C37ADFC /* IosPlatformBridge.swift in Sources */,
 				EF63659FE97BE88C00711258 /* ExternalImageDropBridge.swift in Sources */,
 				67769200534B6759CC020515 /* IncomingShareBridge.swift in Sources */,
 				B2F24F5EDE95854FF6B82E14 /* ShareInbox.swift in Sources */,
@@ -571,6 +580,7 @@
 			files = (
 				1F72D666F4EBE4322E8B0F79 /* ShareViewController.swift in Sources */,
 				7BAF15687D14FB0C7E82A8AA /* ShareInbox.swift in Sources */,
+				6BD249D412B481F3C6920DDE /* NativeStrings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

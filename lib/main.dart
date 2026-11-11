@@ -10,6 +10,7 @@ import 'l10n/l10n.dart';
 import 'providers/app_locale_controller.dart';
 import 'providers/app_theme_controller.dart';
 import 'services/file_storage_service.dart';
+import 'services/ios_platform_service.dart';
 import 'services/backup_service.dart';
 import 'services/model_download_source_policy.dart';
 import 'widgets/brand_mark.dart';
@@ -59,6 +60,7 @@ Future<void> _startApplication() async {
   try {
     // Do all required startup work before Flutter draws its first frame. The
     // native splash remains visible, so there is no second loading screen.
+    await IosPlatformService.instance.initialize();
     await FileStorageService.instance.init();
     await BackupService.instance.recoverInterruptedRestore();
     await ModelDownloadSourcePolicy.instance.load();

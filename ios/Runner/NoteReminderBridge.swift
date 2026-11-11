@@ -68,6 +68,14 @@ final class NoteReminderBridge {
     }
   }
 
+  func refreshLanguage() {
+    let previous = tail
+    tail = Task { @MainActor in
+      await previous?.value
+      try? await synchronize()
+    }
+  }
+
   private func allowed() async -> Bool {
     let settings = await center.notificationSettings()
     return [.authorized, .provisional, .ephemeral].contains(settings.authorizationStatus)
@@ -106,8 +114,8 @@ final class NoteReminderBridge {
 
   private func schedule(_ note: StoredReminder) async throws {
     let content = UNMutableNotificationContent()
-    content.title = NSLocalizedString("reminder.title", comment: "Reminder title")
-    content.body = NSLocalizedString("reminder.body", comment: "Generic reminder, never note content")
+    content.title = NativeStrings.text("reminder.title")
+    content.body = NativeStrings.text("reminder.body")
     content.sound = .default
     content.userInfo = ["id": note.id, "at": note.at]
     let date = Date(timeIntervalSince1970: Double(note.at) / 1000)

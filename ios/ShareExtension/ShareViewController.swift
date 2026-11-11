@@ -7,8 +7,8 @@ final class ShareViewController: SLComposeServiceViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    title = NSLocalizedString("share.title", comment: "Save to inbox")
-    placeholder = NSLocalizedString("share.placeholder", comment: "Optional text")
+    title = NativeStrings.text("share.title")
+    placeholder = NativeStrings.text("share.placeholder")
   }
 
   override func isContentValid() -> Bool { (contentText ?? "").utf16.count <= 100000 && task == nil }
@@ -37,9 +37,9 @@ final class ShareViewController: SLComposeServiceViewController {
         try draft.commit(title: "")
         self.draft = nil
         // No unsupported attempt to launch the containing app from an extension.
-        let alert = UIAlertController(title: NSLocalizedString("share.saved", comment: "Queued"),
-                                      message: NSLocalizedString("share.openApp", comment: "Open app and confirm after unlock"), preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("share.done", comment: "Done"), style: .default) { _ in
+        let alert = UIAlertController(title: NativeStrings.text("share.saved"),
+                                      message: NativeStrings.text("share.openApp"), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NativeStrings.text("share.done"), style: .default) { _ in
           self.extensionContext?.completeRequest(returningItems: nil)
         })
         self.present(alert, animated: true)
@@ -53,9 +53,9 @@ final class ShareViewController: SLComposeServiceViewController {
         case ShareInbox.Failure.tooLarge: key = "share.tooLarge"
         default: key = "share.failed"
         }
-        let alert = UIAlertController(title: NSLocalizedString("share.failedTitle", comment: "Failure"),
-                                      message: NSLocalizedString(key, comment: "Failure reason"), preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("share.done", comment: "Done"), style: .default) { _ in
+        let alert = UIAlertController(title: NativeStrings.text("share.failedTitle"),
+                                      message: NativeStrings.text(key), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NativeStrings.text("share.done"), style: .default) { _ in
           self.extensionContext?.cancelRequest(withError: NSError(domain: "fknotes.share", code: 1))
         })
         self.present(alert, animated: true)
