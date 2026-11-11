@@ -7,7 +7,6 @@ import os
 from pathlib import Path
 import plistlib
 import re
-import shutil
 import stat
 import subprocess
 import tempfile
@@ -56,13 +55,11 @@ def write_ipa(app, output):
             raise ValueError("IPA lost executable permissions")
 
 
-def package(archive, dist, version, build_number, guide, source_commit, tooling_commit):
+def package(archive, dist, version, build_number, source_commit, tooling_commit):
     if not re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?", version) or build_number < 1:
         raise ValueError("Invalid release version/build")
     if not all(re.fullmatch(r"[a-f0-9]{40}", value) for value in [source_commit, tooling_commit]):
         raise ValueError("Full source and tooling commit hashes are required")
-    if not guide.read_text(encoding="utf-8").strip():
-        raise ValueError("Installation guide is required")
     app = archive / "Products/Applications/Runner.app"
     info = validate_unsigned(app, version, build_number)
     verify(app)
@@ -86,12 +83,6 @@ def package(archive, dist, version, build_number, guide, source_commit, tooling_
             "ipa": name, "sha256": digest.hexdigest(),
         }
         (staging / "ios-build-info.json").write_text(json.dumps(metadata, indent=2) + "\n")
-        shutil.copyfile(guide, staging / "ios-installation.md")
-        # This is an entitlement template, not a certificate or profile. Tools
-        # cannot recover these requested capabilities from an unsigned executable.
-        (staging / "ios-signing-entitlements.plist").write_bytes(plistlib.dumps({
-            "com.apple.security.application-groups": [info["FKNotesAppGroup"]],
-        }))
         for path in staging.iterdir():
             os.replace(path, dist / path.name)
     print(f"Packaged {dist / name}; experimental, unsigned, no device validation.")
@@ -103,12 +94,11 @@ def main():
     parser.add_argument("--dist", type=Path, required=True)
     parser.add_argument("--version", required=True)
     parser.add_argument("--build-number", type=int, required=True)
-    parser.add_argument("--guide", type=Path, required=True)
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--tooling-commit", required=True)
     args = parser.parse_args()
     package(args.archive, args.dist, args.version, args.build_number,
-            args.guide, args.source_commit, args.tooling_commit)
+            args.source_commit, args.tooling_commit)
 
 
 if __name__ == "__main__":

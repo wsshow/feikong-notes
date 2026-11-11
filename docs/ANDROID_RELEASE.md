@@ -50,7 +50,7 @@ git push origin v0.1.1
 
 在锁定依赖后，先运行 `flutter build apk --release --config-only` 生成 Release 专用插件注册文件，并确认锁文件未变化，再使用 `--no-pub` 构建 APK / AAB；否则 Flutter 会保留包含开发依赖 `integration_test` 的注册文件，导致 Release Java 编译失败。
 
-发布同时调用 iOS 无签名构建与归档检查，全部通过后才公开 Release。此流程无需 Apple 签名账号，检查后额外打包实验性未签名 IPA，附带[自行签名安装教程](ios-installation.md)、权限模板和构建信息；用户仍需自行签名，不能直接安装，也不能把构建检查视为 iPhone 真机验收。
+发布同时调用 iOS 无签名构建与归档检查，全部通过后才公开 Release。此流程无需 Apple 签名账号，检查后额外打包实验性未签名 IPA，发布说明链接到 `docs/` 中的[自行签名安装教程](ios-installation.md)和[权限模板](ios-signing-entitlements.plist)，构建信息仅保留在 CI 产物中；用户仍需自行签名，不能直接安装，也不能把构建检查视为 iPhone 真机验收。
 
 ### 恢复未完成的发布
 
@@ -60,7 +60,7 @@ git push origin v0.1.1
 gh workflow run release.yml --ref main -f tag=v0.2.0
 ```
 
-此路径保留原 tag：所有平台应用都检出该 tag 的源码，打包脚本和安装教程取本次工作流固定提交。iOS 的 `ios-build-info.json` 记录两者；改动应用代码应使用新版本，不借此替换已发布应用。所有检查通过才发布，已公开的 Release 重跑仍保留原正文和资源。
+此路径保留原 tag：所有平台应用都检出该 tag 的源码，打包脚本和安装教程取本次工作流固定提交。CI 产物中的 `ios-build-info.json` 记录两者；改动应用代码应使用新版本，不借此替换已发布应用。所有检查通过才发布，已公开的 Release 重跑仍保留原正文和资源。
 
 ### 说明来源与兼容路径
 
@@ -87,9 +87,6 @@ fknotes-<版本>+<构建号>-release.aab
 notes.md
 latest.json
 fknotes-<版本>-ios-unsigned.ipa
-ios-installation.md
-ios-build-info.json
-ios-signing-entitlements.plist
 SHA256SUMS.txt
 ```
 

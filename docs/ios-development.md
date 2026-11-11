@@ -122,14 +122,14 @@ make ios-archive IOS_ARCHIVE_ARGS="--unsigned"
 
 产物位于 `build/ios/archive/Runner.xcarchive`，此命令本身不导出 IPA。脚本固定依赖、检查主应用及分享扩展、原生能力和隐私资源，生成 `build/ios/privacy-report.json`。`--dry-run` 可先查看构建参数。
 
-发布流程在归档检查后调用 `tool/package_ios_release.py`，将 `Products/Applications/Runner.app` 包装成标准 `Payload/Runner.app` ZIP，保留扩展、资源和可执行权限，生成 `fknotes-<版本>-ios-unsigned.ipa`。脚本检查版本 / 构建号、真机平台、原生能力、主应用与扩展未签名及无 provisioning profile，不注入证书、不修改供应商 framework 签名；用户安装时仍须重新签名所有嵌入代码。发布同时附带[自行签名安装教程](ios-installation.md)、App Group 权限模板、源码和工具提交记录，并把这些文件纳入 SHA-256 校验。实验性 IPA 不代表签名安装或功能通过真机验收。
+发布流程在归档检查后调用 `tool/package_ios_release.py`，将 `Products/Applications/Runner.app` 包装成标准 `Payload/Runner.app` ZIP，保留扩展、资源和可执行权限，生成 `fknotes-<版本>-ios-unsigned.ipa`。脚本检查版本 / 构建号、真机平台、原生能力、主应用与扩展未签名及无 provisioning profile，不注入证书、不修改供应商 framework 签名；用户安装时仍须重新签名所有嵌入代码。发布说明链接到 `docs/` 中对应构建提交的[自行签名安装教程](ios-installation.md)和[App Group 权限模板](ios-signing-entitlements.plist)。`ios-build-info.json` 记录源码、工具提交与 IPA 校验值，仅保留在 CI 工作流产物中用于发布校验；Release 下载列表仅新增 IPA，公共 SHA-256 文件包含 IPA，不包含内部构建信息。实验性 IPA 不代表签名安装或功能通过真机验收。
 
 本地打包参数示例（版本、构建号和提交须与实际归档一致）：
 
 ```bash
 python3 tool/package_ios_release.py \
   --archive build/ios/archive/Runner.xcarchive --dist dist \
-  --version 0.2.0 --build-number 2 --guide docs/ios-installation.md \
+  --version 0.2.0 --build-number 2 \
   --source-commit "$(git rev-parse 'v0.2.0^{commit}')" \
   --tooling-commit "$(git rev-parse HEAD)"
 ```

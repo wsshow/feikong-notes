@@ -44,7 +44,7 @@ class IosPackageTests(unittest.TestCase):
 
     def package(self):
         with patch("package_ios_release.verify") as verify:
-            package(self.archive, self.dist, "0.2.0", 2, self.guide, "a" * 40, "b" * 40)
+            package(self.archive, self.dist, "0.2.0", 2, "a" * 40, "b" * 40)
             verify.assert_called_once_with(self.app)
 
     def test_payload_keeps_extension_resources_and_executable_mode(self):
@@ -61,6 +61,8 @@ class IosPackageTests(unittest.TestCase):
         self.assertEqual(metadata["toolingCommit"], "b" * 40)
         self.assertFalse(metadata["signed"])
         self.assertFalse(metadata["deviceValidated"])
+        self.assertEqual({p.name for p in self.dist.iterdir()},
+                         {"fknotes-0.2.0-ios-unsigned.ipa", "ios-build-info.json"})
 
     def test_stale_archive_and_simulator_are_rejected(self):
         for key, value in [("CFBundleVersion", "1"), ("CFBundleShortVersionString", "0.1.0"),

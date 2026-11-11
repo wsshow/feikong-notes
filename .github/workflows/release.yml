@@ -445,7 +445,7 @@ jobs:
             dist/*.apk
             dist/*.aab
             dist/*.ipa
-            dist/ios-*
+            dist/ios-build-info.json
             dist/SHA256SUMS.txt
             dist/latest.json
             dist/notes.md
@@ -469,7 +469,7 @@ jobs:
               exit 1
             fi
             gh release upload "$RELEASE_TAG" \
-              dist/*.apk dist/*.aab dist/*.ipa dist/ios-* dist/SHA256SUMS.txt dist/latest.json dist/notes.md \
+              dist/*.apk dist/*.aab dist/*.ipa dist/SHA256SUMS.txt dist/latest.json dist/notes.md \
               --clobber --repo "$GITHUB_REPOSITORY"
             arguments=(release edit "$RELEASE_TAG" --draft=false
               --notes-file dist/notes.md --repo "$GITHUB_REPOSITORY")
@@ -480,7 +480,7 @@ jobs:
           elif [[ "$RELEASE_STATE" == missing ]]; then
             arguments=(
               release create "$RELEASE_TAG"
-              dist/*.apk dist/*.aab dist/*.ipa dist/ios-* dist/SHA256SUMS.txt dist/latest.json dist/notes.md
+              dist/*.apk dist/*.aab dist/*.ipa dist/SHA256SUMS.txt dist/latest.json dist/notes.md
               --verify-tag
               --notes-file dist/notes.md
               --title "FKNotes $RELEASE_TAG"

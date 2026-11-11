@@ -9,10 +9,9 @@ GitHub Release 提供 `fknotes-<版本>-ios-unsigned.ipa`，适用于 **iOS 15.5
 在[项目 Releases](https://github.com/wsshow/feikong-notes/releases)的同一个版本中下载：
 
 - `fknotes-<版本>-ios-unsigned.ipa`：待签名应用，包含分享扩展。
-- `SHA256SUMS.txt`：包含 IPA 与教程的 SHA-256 校验值。
-- `ios-installation.md`：本教程的发布快照。
-- `ios-build-info.json`：应用源码与打包工具提交、版本和验证范围。
-- `ios-signing-entitlements.plist`：高级签名时使用的 App Group 权限模板；不是证书或描述文件，不能直接作为安装凭据。
+- `SHA256SUMS.txt`：包含 IPA 的 SHA-256 校验值。
+
+安装教程统一维护在 `docs/ios-installation.md`，发布说明链接到对应构建的文档提交。[App Group 权限模板](ios-signing-entitlements.plist)也在 `docs/`，仅供高级签名参考，不是证书或描述文件；普通安装无需额外下载。构建来源与校验元数据保留在 CI 工作流产物中，不作为 Release 下载附件。
 
 在 macOS 终端运行 `shasum -a 256 <IPA文件路径>`，或在 Windows PowerShell 运行 `Get-FileHash <IPA文件路径> -Algorithm SHA256`，与校验文件中同名文件对应的值比较。不一致时重新下载，不继续签名。
 
@@ -34,7 +33,7 @@ GitHub Release 提供 `fknotes-<版本>-ios-unsigned.ipa`，适用于 **iOS 15.5
 主应用标识是 `com.fknotes.app`，扩展是 `com.fknotes.app.ShareExtension`，共享组是 `group.com.fknotes.app`。未签名包没有可供工具直接复用的开发者签名权限；第三方工具能否正确创建、映射并签入共享组，**尚未验证**。
 
 - 完整签名需要主应用与扩展归属同一 Team，并在各自描述文件与签名权限中使用同一有效 App Group。若签名工具改写共享组，还须同步修改两个 `Info.plist` 的 `FKNotesAppGroup`；仅修改 Bundle ID 或附加权限模板不够。
-- 随包的权限模板只是原始配置参考，不能把不属于自己账号的组直接签进去。需要自定义组时，有开发环境的用户可按[源码构建文档](https://github.com/wsshow/feikong-notes/blob/main/docs/ios-development.md)配置自己的 Bundle ID、Team 与 App Group 后重新构建。
+- 文档中的[权限模板](ios-signing-entitlements.plist)只是原始配置参考，不能把不属于自己账号的组直接签进去。需要自定义组时，有开发环境的用户可按[源码构建文档](ios-development.md)配置自己的 Bundle ID、Team 与 App Group 后重新构建。
 - 如果安装日志明确报扩展或共享组签名失败，可在工具支持时移除分享扩展后重新尝试。这样会失去从 Safari、照片、文件等应用通过系统分享导入笔记的能力；主应用其他能力仍须实际验证，不能据此承诺安装成功。
 
 ## 续签、更新与备份
@@ -49,6 +48,6 @@ GitHub Release 提供 `fknotes-<版本>-ios-unsigned.ipa`，适用于 **iOS 15.5
 
 已验证无签名 iPhone ARM64 Release 构建、原生依赖及资源打包；ARM64 模拟器验证了中英文 OCR 与 MNN CPU 的加载、流式输出、取消和卸载重载。**这些结果不能替代真机验收。**
 
-尚未验证：第三方工具签名安装、启动与升级；分享扩展 / App Group；麦克风、相机、Face ID / Touch ID、通知投递与点击；真实录音、语音识别与朗读；真机 MNN CPU / Metal、LiteRT-LM、多模态、性能和内存压力；后台切换、跨平台恢复与同步。更多已知差异见 [iOS 适配与验收](https://github.com/wsshow/feikong-notes/blob/main/docs/ios-development.md)。
+尚未验证：第三方工具签名安装、启动与升级；分享扩展 / App Group；麦克风、相机、Face ID / Touch ID、通知投递与点击；真实录音、语音识别与朗读；真机 MNN CPU / Metal、LiteRT-LM、多模态、性能和内存压力；后台切换、跨平台恢复与同步。更多已知差异见 [iOS 适配与验收](ios-development.md)。
 
 反馈时附应用版本、iPhone 型号、iOS 与签名工具版本、是否保留扩展和脱敏后的错误信息，不上传账号、验证码、证书、描述文件或真实笔记。

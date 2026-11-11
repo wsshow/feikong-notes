@@ -92,17 +92,18 @@ class GitHubReleaseTest(unittest.TestCase):
                     "2026-11-10", False, require_ios=True)
         ipa = self.root / "fknotes-0.1.0-ios-unsigned.ipa"
         ipa.write_bytes(b"synthetic IPA")
-        (self.root / "ios-installation.md").write_text("Experimental; sign before installing.")
-        (self.root / "ios-signing-entitlements.plist").write_text("synthetic template")
         metadata = {"version": "0.1.0", "buildNumber": 1, "ipa": ipa.name,
                     "sha256": hashlib.sha256(ipa.read_bytes()).hexdigest(),
-                    "signed": False, "experimental": True, "deviceValidated": False}
+                    "signed": False, "experimental": True, "deviceValidated": False, "toolingCommit": "a" * 40}
         (self.root / "ios-build-info.json").write_text(json.dumps(metadata))
         manifest = self.prepare()
         self.assertTrue(all(key.startswith("android-") for key in manifest["artifacts"]))
         checksums = (self.root / "SHA256SUMS.txt").read_text()
-        for name in [ipa.name, "ios-installation.md", "ios-build-info.json", "ios-signing-entitlements.plist"]:
+        for name in [ipa.name]:
             self.assertIn(f"{hashlib.sha256((self.root / name).read_bytes()).hexdigest()}  {name}\n", checksums)
+        self.assertNotIn("ios-build-info.json", checksums)
+        self.assertIn(f"https://github.com/owner/repo/blob/{'a' * 40}/docs/ios-installation.md",
+                      (self.root / "notes.md").read_text())
         ipa.write_bytes(b"changed IPA")
         with self.assertRaises(ValueError):
             self.prepare()

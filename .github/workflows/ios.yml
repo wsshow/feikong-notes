@@ -71,7 +71,6 @@ jobs:
           sparse-checkout: |
             /tool/package_ios_release.py
             /tool/verify_ios_bundle.py
-            /docs/ios-installation.md
       - name: Package experimental unsigned IPA
         if: inputs.release_tag != ''
         env:
@@ -84,15 +83,14 @@ jobs:
             --version "${RELEASE_TAG#v}" \
             --build-number "$(sed -n 's/^version:.*+//p' pubspec.yaml)" \
             --source-commit "$(git rev-parse HEAD)" \
-            --tooling-commit "$TOOLING_SHA" \
-            --guide .release-tooling/docs/ios-installation.md
-      - name: Upload unsigned IPA and installation guide
+            --tooling-commit "$TOOLING_SHA"
+      - name: Upload unsigned IPA and CI build info
         if: inputs.release_tag != ''
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: fknotes-${{ inputs.release_tag }}-input-ios
           path: |
             dist/*.ipa
-            dist/ios-*
+            dist/ios-build-info.json
           if-no-files-found: error
           retention-days: 14

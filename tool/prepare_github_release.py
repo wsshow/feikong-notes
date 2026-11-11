@@ -41,18 +41,26 @@ def prepare(dist, repository, version, build_number, notes, release_date, mandat
     if not notes_text:
         raise ValueError("Release notes must not be empty.")
     ios_files = [dist / f"fknotes-{version}-ios-unsigned.ipa",
-                 dist / "ios-installation.md", dist / "ios-build-info.json",
-                 dist / "ios-signing-entitlements.plist"]
+                 dist / "ios-build-info.json"]
     if require_ios or any(path.exists() for path in ios_files):
         if any(not path.is_file() or path.stat().st_size == 0 for path in ios_files):
-            raise ValueError("The unsigned IPA, installation guide, build info and entitlement template are required")
-        ios = json.loads(ios_files[2].read_text())
+            raise ValueError("The unsigned IPA and CI build info are required")
+        ios = json.loads(ios_files[1].read_text())
         if (ios.get("version") != version or ios.get("buildNumber") != build_number
                 or ios.get("ipa") != ios_files[0].name
                 or ios.get("sha256") != sha256(ios_files[0])
                 or ios.get("signed") is not False or ios.get("experimental") is not True
                 or ios.get("deviceValidated") is not False):
             raise ValueError("iOS metadata does not match the experimental unsigned release")
+        tooling_commit = ios.get("toolingCommit", "")
+        if not isinstance(tooling_commit, str) or not re.fullmatch(r"[a-f0-9]{40}", tooling_commit):
+            raise ValueError("iOS build info must identify the documentation/tooling commit")
+        guide_url = f"https://github.com/{repository}/blob/{tooling_commit}/docs/ios-installation.md"
+        # Keep one published notes body for the release page and the app. Link
+        # to the exact docs revision used by this build, not a moving branch.
+        if guide_url not in notes_text:
+            notes_text += f"\n\n[iOS 自行签名安装教程（实验性版本）]({guide_url})"
+        ios_files = ios_files[:1]  # Build info is a CI artifact, not a public download.
     else:
         ios_files = []
     base = f"https://github.com/{repository}/releases/download/v{version}"
