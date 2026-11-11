@@ -16,8 +16,8 @@ abstract interface class NoteReminderDriver {
   Future<bool> schedule(NoteId id);
 }
 
-/// Android owns the alarms; no Dart timer or running Flutter engine is needed.
-/// Only IDs cross the bridge. Notification content is read from the live DB.
+/// Native schedulers own reminders; no running Flutter engine is needed.
+/// Only IDs cross the bridge. iOS notifications never contain note content.
 final class NoteReminderService
     with WidgetsBindingObserver
     implements NoteReminderDriver {
@@ -25,7 +25,9 @@ final class NoteReminderService
     : _channel = channel ?? const MethodChannel('fknotes/note_reminders'),
       _supported =
           supported ??
-          (!kIsWeb && defaultTargetPlatform == TargetPlatform.android);
+          (!kIsWeb &&
+              (defaultTargetPlatform == TargetPlatform.android ||
+                  defaultTargetPlatform == TargetPlatform.iOS));
 
   static final instance = NoteReminderService();
   final MethodChannel _channel;

@@ -138,6 +138,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reminderRemoved => '提醒已取消';
 
   @override
+  String get reminderLimitReached => '待提醒数量已达上限，请先移除一个提醒后重试。';
+
+  @override
   String get reminderScheduleFailed => '未能启用系统提醒，请重新设置';
 
   @override

@@ -1204,8 +1204,11 @@ final class _NoteQuillEditorPageState extends State<NoteQuillEditorPage>
       }
       if (selected.at != null) {
         var scheduled = false;
+        var capacityReached = false;
         try {
           scheduled = await reminders.schedule(_note.id);
+        } on PlatformException catch (error) {
+          capacityReached = error.code == 'reminder_limit';
         } catch (_) {
           /* Roll back below. */
         }
@@ -1214,7 +1217,12 @@ final class _NoteQuillEditorPageState extends State<NoteQuillEditorPage>
             (note) => note.copyWith(reminderAt: previous),
           );
           if (mounted) {
-            AppFeedback.error(context, context.l10n.reminderScheduleFailed);
+            AppFeedback.error(
+              context,
+              capacityReached
+                  ? context.l10n.reminderLimitReached
+                  : context.l10n.reminderScheduleFailed,
+            );
           }
           return;
         }

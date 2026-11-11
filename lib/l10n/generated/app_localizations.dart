@@ -350,6 +350,12 @@ abstract class AppLocalizations {
   /// **'提醒已取消'**
   String get reminderRemoved;
 
+  /// No description provided for @reminderLimitReached.
+  ///
+  /// In zh, this message translates to:
+  /// **'待提醒数量已达上限，请先移除一个提醒后重试。'**
+  String get reminderLimitReached;
+
   /// No description provided for @reminderScheduleFailed.
   ///
   /// In zh, this message translates to:

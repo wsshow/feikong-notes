@@ -42,6 +42,7 @@
   "reminderChooseFuture": "请选择未来的提醒时间",
   "reminderSaved": "提醒已设置",
   "reminderRemoved": "提醒已取消",
+  "reminderLimitReached": "待提醒数量已达上限，请先移除一个提醒后重试。",
   "reminderScheduleFailed": "未能启用系统提醒，请重新设置",
   "reminderNotificationsDisabled": "通知未开启，提醒未设置。请开启系统通知后重试。",
   "reminderExactDisabled": "准时提醒权限未开启，提醒未设置。请允许“闹钟和提醒”后重试。",

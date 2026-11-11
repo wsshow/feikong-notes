@@ -42,6 +42,7 @@
   "reminderChooseFuture": "Choose a time in the future",
   "reminderSaved": "Reminder set",
   "reminderRemoved": "Reminder removed",
+  "reminderLimitReached": "The pending reminder limit has been reached. Remove a reminder and try again.",
   "reminderScheduleFailed": "Could not enable the system reminder. Please set it again.",
   "reminderNotificationsDisabled": "Notifications are disabled. Enable them in system settings and try again.",
   "reminderExactDisabled": "Exact reminders are disabled. Allow alarms and reminders in system settings and try again.",

@@ -1,5 +1,6 @@
 import 'package:fknotes/models/note.dart';
 import 'package:fknotes/services/note_reminder_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -90,6 +91,19 @@ void main() {
       expect(calls.map((c) => c.method), ['synchronize', 'takePendingNote']);
     },
   );
+
+  test('iOS uses the native reminder bridge by default', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    final ios = NoteReminderService(channel: channel);
+    try {
+      await ios.initialize('/internal/fknotes.db');
+      expect(await ios.requestAccess(), NoteReminderAccess.ready);
+      expect(await ios.schedule(NoteId.generate()), isTrue);
+    } finally {
+      ios.dispose();
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
 
   test('unsupported hosts neither initialize nor schedule', () async {
     final unsupported = NoteReminderService(channel: channel, supported: false);

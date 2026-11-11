@@ -150,6 +150,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminderRemoved => 'Reminder removed';
 
   @override
+  String get reminderLimitReached =>
+      'The pending reminder limit has been reached. Remove a reminder and try again.';
+
+  @override
   String get reminderScheduleFailed =>
       'Could not enable the system reminder. Please set it again.';
 

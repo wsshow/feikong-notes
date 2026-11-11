@@ -7,6 +7,7 @@ import 'package:fknotes/widgets/note_reminder_indicator.dart';
 import 'package:fknotes/widgets/note_reminder_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -133,6 +134,18 @@ void main() {
     expect(writer.note?.reminderAt, previous);
     expect(find.text('未能启用系统提醒，请重新设置'), findsOneWidget);
     expect(find.text('提醒已设置'), findsNothing);
+  });
+
+  testWidgets('iOS capacity error rolls back and explains the limit', (
+    tester,
+  ) async {
+    reminders.capacityReached = true;
+    await editor(tester);
+    await openPicker(tester);
+    await tester.tap(find.byKey(const Key('confirm-note-reminder')));
+    await tester.pumpAndSettle();
+    expect(writer.note?.reminderAt, isNull);
+    expect(find.text('待提醒数量已达上限，请先移除一个提醒后重试。'), findsOneWidget);
   });
 
   testWidgets('a failed database write never schedules a notification', (
@@ -358,6 +371,7 @@ class _Writer implements NoteEditorWriter {
 class _Reminders implements NoteReminderDriver {
   NoteReminderAccess access = NoteReminderAccess.ready;
   bool succeeds = true;
+  bool capacityReached = false;
   Completer<NoteReminderAccess>? pendingAccess;
   final scheduled = <NoteId>[];
   @override
@@ -366,6 +380,7 @@ class _Reminders implements NoteReminderDriver {
   @override
   Future<bool> schedule(NoteId id) async {
     scheduled.add(id);
+    if (capacityReached) throw PlatformException(code: 'reminder_limit');
     return succeeds;
   }
 }

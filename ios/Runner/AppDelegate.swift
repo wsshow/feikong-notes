@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import UserNotifications
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -10,10 +11,13 @@ import UIKit
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    let started = super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    UNUserNotificationCenter.current().delegate = self
+    return started
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+    NoteReminderBridge.shared.attach(messenger: engineBridge.applicationRegistrar.messenger())
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     liteRtLmBridge = LiteRtLmBridge(messenger: engineBridge.applicationRegistrar.messenger())
     audioDecodeBridge = AudioDecodeBridge(messenger: engineBridge.applicationRegistrar.messenger())
@@ -21,4 +25,22 @@ import UIKit
       fileExportBridge = FileExportBridge(registrar: registrar)
     }
   }
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    if NoteReminderBridge.shared.owns(response.notification) {
+      NoteReminderBridge.shared.opened(response)
+      completionHandler()
+    } else { super.userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler) }
+  }
+
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter, willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+  ) {
+    if NoteReminderBridge.shared.owns(notification) { completionHandler([.banner, .list, .sound]) }
+    else { super.userNotificationCenter(center, willPresent: notification, withCompletionHandler: completionHandler) }
+  }
+
 }
