@@ -50,7 +50,8 @@ class ReleaseNotesTest(unittest.TestCase):
         notes_path.write_text(notes)
         for abi in ("universal", "arm64-v8a"):
             (self.root / f"fknotes-0.2.0+2-{abi}-release.apk").write_bytes(b"apk")
-        prepare(self.root, "owner/repo", "0.2.0", 2, notes_path, "2026-11-10", False)
+        with patch("prepare_github_release.verify_identity"):
+            prepare(self.root, "owner/repo", "0.2.0", 2, notes_path, "2026-11-10", False)
         self.assertEqual((self.root / "notes.md").read_text(), body)
 
     def test_published_body_is_reused_and_empty_published_body_fails(self):
@@ -195,7 +196,7 @@ class ReleaseNotesTest(unittest.TestCase):
     def test_export_preflight_resolves_notes_without_versioned_markdown(self):
         tool_dir = self.root / "tool"
         tool_dir.mkdir()
-        for name in ("export_android_release.sh", "release_notes.py", "prepare_github_release.py"):
+        for name in ("export_android_release.sh", "release_notes.py", "prepare_github_release.py", "check_android_release.py"):
             (tool_dir / name).write_bytes(Path(__file__).with_name(name).read_bytes())
         (self.root / "pubspec.yaml").write_text("version: 0.2.0+2\n")
         binary = self.root / "bin"

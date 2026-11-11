@@ -18,6 +18,9 @@ class GitHubReleaseTest(unittest.TestCase):
         self.root = Path(self.temporary.name)
         self.notes = self.root / "release-notes.md"
         self.notes.write_text("# 本次更新\n\n修复与改进。\n", encoding="utf-8")
+        metadata = patch("prepare_github_release.verify_identity")
+        self.verify_identity = metadata.start()
+        self.addCleanup(metadata.stop)
         for abi in ("universal", "arm64-v8a", "armeabi-v7a", "x86_64"):
             (self.root / f"fknotes-0.1.0+1-{abi}-release.apk").write_bytes(abi.encode())
 
@@ -59,6 +62,29 @@ class GitHubReleaseTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             prepare(self.root, "owner/repo", "0.1.0", 1, self.notes,
                     "20261110", False)
+
+    def test_mismatched_binary_version_aborts_before_writing_feed(self):
+        def reject_offset(path, version, build_number):
+            if "arm64-v8a" in path.name:
+                raise ValueError("APK versionCode 2001 differs from manifest 1")
+        self.verify_identity.side_effect = reject_offset
+        with self.assertRaisesRegex(ValueError, "versionCode 2001"):
+            self.prepare()
+        self.assertFalse((self.root / "latest.json").exists())
+        self.assertFalse((self.root / "SHA256SUMS.txt").exists())
+
+    def test_aab_identity_is_verified_alongside_every_apk(self):
+        aab = self.root / "fknotes-0.1.0+1-release.aab"
+        aab.write_bytes(b"synthetic AAB")
+        self.prepare()
+        self.assertEqual({call.args[0] for call in self.verify_identity.call_args_list},
+                         {*self.root.glob("*.apk"), aab})
+        def reject_aab(path, version, build_number):
+            if path.suffix == ".aab":
+                raise ValueError("Stale AAB version")
+        self.verify_identity.side_effect = reject_aab
+        with self.assertRaisesRegex(ValueError, "Stale AAB"):
+            self.prepare()
 
     def test_ios_assets_are_required_and_checksummed_but_not_android_updates(self):
         with self.assertRaises(ValueError):

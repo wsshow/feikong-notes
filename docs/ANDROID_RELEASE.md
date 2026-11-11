@@ -25,13 +25,15 @@ Actions 根据当前仓库自动生成地址，无需设置 `FKNOTES_UPDATE_MANI
 
 ## 发布版本
 
-### 已发布分包的版本号限制
+### 统一版本号规则
 
-0.2.0 发布后的产物核验发现：Flutter 的 `--split-per-abi` 会给 APK 的实际 `versionCode` 添加 ABI 偏移，而当前更新清单仍使用 `pubspec.yaml` 的构建号。已核对 ARM64 包：0.1.0 为 `2001`，0.2.0 为 `2002`；0.2.0 的 `latest.json` 则为 `2`。二者不能直接用于同一套更新比较和安装校验，因此当前不能将分包的应用内更新视为已验证可用。
+所有新构建的 APK（通用包、ARM64、ARM32、x86_64）、AAB 和更新清单的 `versionCode` 都直接使用 `pubspec.yaml` 的构建号。`android/gradle.properties` 设置 Flutter 官方支持的 `force-version-code-ignoring-abi=true`，关闭 `--split-per-abi` 默认添加的 ABI 偏移；命令行与直接 Gradle 构建沿用同一规则。Google Play 分发使用 AAB，这些同版本号的分包用于 GitHub 下载，不用于 Play 的多 APK 版本排序。
 
-现阶段从 GitHub Release 手动下载与已安装版本**同架构**的 APK 升级。已校验上述两个 ARM64 包的包名、签名证书一致，实际版本号递增；这只是安装条件检查，不代替设备上的升级与数据保留验收。不要卸载旧应用来处理版本号问题，升级前先导出应用内备份。
+构建完成后使用 Android SDK `aapt` 读取 APK 的真实 manifest；AAB 使用固定版本、SHA-256 校验的官方 bundletool 读取 base manifest。校验包名、版本名和实际版本号，生成更新清单前再次检查每个包，任一不一致即终止。检查不以文件名或 Gradle 旁路 metadata 代替实际产物。bundletool 1.18.3 缓存在 `build/release-tools`，首次检查 AAB 需要下载；本地需 Android SDK 和 Java。
 
-下一次 Android 发布前，必须统一 APK / AAB 与更新清单中的实际版本号，并选择高于所有已发布 APK 实际版本号的新构建号，增加产物版本号校验。不能仅把构建号从 `2` 改为 `3`，也不能为修正此问题覆盖已公开的 0.2.0 安装包或校验文件。
+本次修复只统一新构建规则，不迁移 0.1.0 / 0.2.0 已发布的 ABI 偏移版本号，不修改已有 Release。旧分包的实际版本号可能高于按新规则构建的安装包，因此不能据此承诺旧分包可直接覆盖升级。
+
+参考：[Flutter Android 发布说明](https://docs.flutter.dev/deployment/android)、[Android 版本号规则](https://developer.android.com/studio/publish/versioning)。
 
 ### 准备与触发
 

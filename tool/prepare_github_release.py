@@ -8,6 +8,8 @@ from pathlib import Path
 import re
 from urllib.parse import quote
 
+from check_android_release import verify_identity
+
 
 DEFAULT_REPOSITORY = "wsshow/feikong-notes"
 ABIS = ("universal", "arm64-v8a", "armeabi-v7a", "x86_64")
@@ -61,11 +63,14 @@ def prepare(dist, repository, version, build_number, notes, release_date, mandat
             continue
         if apk.stat().st_size == 0:
             raise ValueError(f"Empty APK: {apk.name}")
+        verify_identity(apk, version, build_number)
         artifacts[f"android-{abi}"] = {
             "url": f"{base}/{quote(apk.name, safe='')}",
             "size": apk.stat().st_size,
             "sha256": sha256(apk),
         }
+    for aab in dist.glob("*.aab"):
+        verify_identity(aab, version, build_number)
     manifest = {
         "app": "fknotes",
         "version": version,

@@ -128,7 +128,7 @@ if [ "${1:-}" = "--stage-universal" ]; then
     exit 1
   fi
   verify_metadata "$APK_METADATA" "Universal"
-  python3 "$PROJECT_ROOT/tool/check_android_release.py" "$UNIVERSAL_SOURCE"
+  python3 "$PROJECT_ROOT/tool/check_android_release.py" "$UNIVERSAL_SOURCE" --version "$VERSION" --build-number "$VERSION_CODE"
   mkdir -p "$STAGING_DIR"
   cp "$UNIVERSAL_SOURCE" "$STAGED_UNIVERSAL_APK"
   cp "$APK_METADATA" "$STAGED_UNIVERSAL_METADATA"
@@ -152,7 +152,7 @@ done
 
 verify_metadata "$STAGED_UNIVERSAL_METADATA" "Universal"
 verify_metadata "$APK_METADATA" "arm64-v8a"
-python3 "$PROJECT_ROOT/tool/check_android_release.py" "$STAGED_UNIVERSAL_APK" "$ARM64_SOURCE"
+python3 "$PROJECT_ROOT/tool/check_android_release.py" "$STAGED_UNIVERSAL_APK" "$ARM64_SOURCE" --version "$VERSION" --build-number "$VERSION_CODE"
 
 apk_abis() {
   unzip -Z1 "$1" | sed -n 's#^lib/\([^/]*\)/.*#\1#p' | sort -u

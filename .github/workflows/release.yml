@@ -240,7 +240,7 @@ jobs:
             --dart-define="FKNOTES_BUILD_TIME=$BUILD_TIME" \
             --dart-define="FKNOTES_UPDATE_MANIFEST_URL=$FKNOTES_UPDATE_MANIFEST_URL"
 
-          python3 tool/check_android_release.py "$apk_path"
+          python3 tool/check_android_release.py "$apk_path" --version "$VERSION_NAME" --build-number "$BUILD_NUMBER"
           mkdir -p dist
           cp "$apk_path" \
             "dist/fknotes-$VERSION_NAME+$BUILD_NUMBER-$ABI-release.apk"
@@ -356,7 +356,7 @@ jobs:
         run: rm -f "$ANDROID_KEYSTORE_PATH"
 
       - name: Check AAB for developer paths
-        run: python3 tool/check_android_release.py dist/*.aab
+        run: python3 tool/check_android_release.py dist/*.aab --version "$VERSION_NAME" --build-number "$BUILD_NUMBER"
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -401,6 +401,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tool/prepare_github_release.py
+            /tool/check_android_release.py
 
       - name: Resolve release notes
         id: notes
