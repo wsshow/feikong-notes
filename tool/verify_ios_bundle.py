@@ -52,7 +52,7 @@ def verify(app):
             localized = bundle / f"{language}.lproj/InfoPlist.strings"
             if not localized.is_file():
                 raise ValueError("Localized permission purposes are absent")
-    for sdk in ["MLKitCommon", "MLKitTextRecognitionCommon"]:
+    for sdk in ["MLKitCommon", "MLKitTextRecognitionCommon", "MLKitBarcodeScanning"]:
         if not (app / f"{sdk}_Privacy.bundle/PrivacyInfo.xcprivacy").is_file():
             raise ValueError("Static ML Kit privacy manifests are absent")
     binary = app / info["CFBundleExecutable"]
@@ -92,11 +92,12 @@ def verify(app):
     if missing:
         raise ValueError(f"Speech/TTS native symbols missing: {sorted(missing)}")
 
-    ocr = app / "ChineseOCRResources.bundle"
     if "_OBJC_CLASS_$_MLKChineseTextRecognizerOptions" not in runner_symbols:
         raise ValueError("Chinese OCR native implementation is absent")
-    if not ocr.is_dir() or not any(p.stat().st_size > 0 for p in ocr.rglob("*.bincfg")):
-        raise ValueError("Bundled Chinese OCR resources are absent")
+    for name in ["ChineseOCRResources.bundle", "LatinOCRResources.bundle"]:
+        ocr = app / name
+        if not ocr.is_dir() or not any(p.stat().st_size > 0 for p in ocr.rglob("*.bincfg")):
+            raise ValueError(f"Bundled OCR resources are absent: {name}")
     for key in ["NSMicrophoneUsageDescription", "NSCameraUsageDescription",
                 "NSPhotoLibraryUsageDescription", "NSFaceIDUsageDescription"]:
         if not info.get(key):

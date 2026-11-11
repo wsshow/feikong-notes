@@ -74,7 +74,7 @@ adb install -r -t dist/fknotes-1.2.3+2040-arm64-v8a-diagnostic-debug.apk
 
 其他平台工程用于开发验证。iOS 正在适配，最低部署版本为 iOS 15.0；构建通过不代表功能已经完成设备验收。
 
-iOS 使用 macOS、Xcode 和 CocoaPods。项目将 Flutter 插件统一交给 CocoaPods 管理，保留 ML Kit、sherpa 的原生依赖和 Podfile 中的权限宏；暂不启用 Flutter 的 Swift Package Manager 插件迁移。提交 `ios/Podfile.lock` 固定原生依赖。
+iOS 使用 macOS、Xcode 和 CocoaPods。Flutter 插件启用 Swift Package Manager，sherpa 使用 CocoaPods 回退；ML Kit 中文补丁位于 `third_party/google_mlkit_text_recognition`，依赖由 `Package.resolved`、`ios/Podfile.lock` 与 `pubspec.lock` 固定。SwiftPM 权限插件根据 Runner/Info.plist 开启权限实现，Podfile 宏仅作用于 CocoaPods 回退路径。
 
 ```bash
 # 使用与 pubspec.lock 一致的源，避免本机镜像配置触发重新解析。
@@ -82,6 +82,6 @@ PUB_HOSTED_URL=https://pub.dev flutter pub get --enforce-lockfile
 flutter build ios --release --no-codesign --no-pub
 ```
 
-以上命令生成未签名的 `build/ios/iphoneos/Runner.app`，无需连接设备。`make ios-archive IOS_ARCHIVE_ARGS="--unsigned"` 进一步检查无签名归档。安装设备前须为 Runner 和 ShareExtension 配置同一 Team 和 App Group，再执行签名归档或 `make run-ios DEVICE=<设备 ID>`；不将 Team、证书或 provisioning profile 写入仓库。当前固定的 ML Kit 原生库不支持 Apple Silicon 的 ARM64 模拟器，因此不能用模拟器构建替代 ARM64 真机目标的编译检查。
+以上命令生成未签名的 `build/ios/iphoneos/Runner.app`，无需连接设备。`make ios-archive IOS_ARCHIVE_ARGS="--unsigned"` 进一步检查无签名归档。安装设备前须为 Runner 和 ShareExtension 配置同一 Team 和 App Group，再执行签名归档或 `make run-ios DEVICE=<设备 ID>`；不将 Team、证书或 provisioning profile 写入仓库。ARM64 模拟器可验证 OCR；模拟器构建仍不能代替 iPhone 目标的编译与设备验收。
 
 完整无设备检查使用 `make check-ios`。检查内容、当前证据和后续设备验收清单见 [iOS 适配与验收](ios-development.md)。

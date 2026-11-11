@@ -1,7 +1,6 @@
 """Preview isolation must not silently modify or replace a production build."""
 from contextlib import redirect_stdout
 import io
-import json
 from pathlib import Path
 import plistlib
 import subprocess
@@ -49,13 +48,6 @@ class IosPreviewTest(unittest.TestCase):
             subprocess.run(["git", "init", "-q", str(root)], check=True)
             subprocess.run(["git", "add", "."], cwd=root, check=True)
             (root / "lib/main.dart").write_text("latest working content")
-            plugins = []
-            for name in ["google_mlkit_commons", "google_mlkit_text_recognition"]:
-                plugin = root / "cache" / name
-                plugin.mkdir(parents=True)
-                (plugin / "LICENSE").write_text("Synthetic license")
-                plugins.append({"name": name, "path": str(plugin)})
-            (root / ".flutter-plugins-dependencies").write_text(json.dumps({"plugins": {"ios": plugins}}))
             with redirect_stdout(io.StringIO()):
                 workspace = prepare(root)
             self.assertEqual((workspace / "lib/main.dart").read_text(), "latest working content")
@@ -63,11 +55,9 @@ class IosPreviewTest(unittest.TestCase):
             self.assertEqual((root / "ios/Podfile.lock").read_text(), "synthetic production lock")
             self.assertIn("com.fknotes.app.preview", (workspace / "ios/Runner.xcodeproj/project.pbxproj").read_text())
             self.assertIn("existing_pin: 1.0.0", (workspace / "pubspec.yaml").read_text())
-            self.assertFalse((workspace / "ios/Podfile.lock").exists())
-            adapter = next((workspace / "preview_plugins/google_mlkit_text_recognition/ios/Classes").glob("*.m")).read_text()
-            self.assertIn("#error", adapter)
-            self.assertIn("simulator_preview_unavailable", adapter)
-            self.assertEqual((root / "cache/google_mlkit_commons/LICENSE").read_text(), "Synthetic license")
+            self.assertEqual((workspace / "ios/Podfile.lock").read_text(), "synthetic production lock")
+            self.assertEqual((workspace / "pubspec.yaml").read_text(), source_files["pubspec.yaml"])
+            self.assertFalse((workspace / "preview_plugins").exists())
 
 
 if __name__ == "__main__":

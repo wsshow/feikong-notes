@@ -1,0 +1,17 @@
+{
+  "LICENSE": "6ee9368b072c9e88d5355e806e07c30a95baa8cafffc19556fa03d04daf12bd1",
+  "UPSTREAM_README.md": "96f53cb2e11beea92910ce2d75306f967365180f5de1cfccbc92cb56fbcaf637",
+  "pubspec.yaml": "b5337fc665df0acd51d72a5ebb1719afb3c82ffde737de2f730a3b1ee41628b3",
+  "ios/google_mlkit_text_recognition/Package.swift": "007d0cbfbc406c09d838fab49d1b870e4fafcfa1768d7ae78b2bcdc9f15c5ef0",
+  "ios/google_mlkit_text_recognition/Classes/GoogleMlKitTextRecognitionPlugin.swift": "3690f9f5e64adeaee45e0ee6f0da806ed2f877bac62d04840fa04fd672903a88",
+  "ios/google_mlkit_text_recognition/Sources/google_mlkit_text_recognition/MLKVisionImage+FlutterPlugin.swift": "543c47af494652db4d49b9432cff82b1651c8f3586f1410c26ccac0cc76443a7",
+  "ios/google_mlkit_text_recognition/Sources/google_mlkit_text_recognition/GoogleMlKitTextRecognitionPlugin.swift": "7c3ab8f4d45bf2f6ec0cc6b6038280c63d7828dfb5c22e57e2fd830b60a273ba",
+  "android/build.gradle": "de98d3749532a535d17748868f098cd68e69753286a776a6b6acacd3ecfac398",
+  "android/settings.gradle": "09d18b18441907689ad8c18185f328222aeb9b9015e09fd2e7526b54f487595b",
+  "android/gradle/wrapper/gradle-wrapper.properties": "ca9362b4c92d75f71415b0d9d9307b7f363819e88fd56ade09a3d711fea43062",
+  "android/src/main/AndroidManifest.xml": "8b6f112189523d2f84ae4890f8b650ca3faab59866c64a8b0dbac0c370313a78",
+  "android/src/main/kotlin/com/google_mlkit_text_recognition/TextRecognizer.kt": "dcda36c32077234b8c2be79191cafecb20185f0826e2dd9a033da595f7f07cdf",
+  "android/src/main/kotlin/com/google_mlkit_text_recognition/GoogleMlKitTextRecognitionPlugin.kt": "1a434536b61ecd6b772730b0a664fb0b64415eace691e17480ca26afcc2620f7",
+  "lib/google_mlkit_text_recognition.dart": "55ee22c307c9d1269148de5df8c60360a8e3beb289db536c072c3ed9b1b847ec",
+  "lib/src/text_recognizer.dart": "ca343a1a57d108b08e70144afc812364642bcdfc35f3dc6203ba29d8e9dae7d4"
+}

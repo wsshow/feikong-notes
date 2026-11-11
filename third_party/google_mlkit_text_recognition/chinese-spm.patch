@@ -1,0 +1,36 @@
+--- a/ios/google_mlkit_text_recognition/Package.swift
++++ b/ios/google_mlkit_text_recognition/Package.swift
+@@ -24,7 +24,8 @@
+             name: "google_mlkit_text_recognition",
+             dependencies: [
+                 .product(name: "FlutterFramework", package: "FlutterFramework"),
+-                .product(name: "MLKitTextRecognition", package: "google-mlkit-swiftpm")
++                .product(name: "MLKitTextRecognition", package: "google-mlkit-swiftpm"),
++                .product(name: "MLKitTextRecognitionChinese", package: "google-mlkit-swiftpm")
+             ],
+             path: "Sources/google_mlkit_text_recognition"
+         )
+--- a/ios/google_mlkit_text_recognition/Sources/google_mlkit_text_recognition/GoogleMlKitTextRecognitionPlugin.swift
++++ b/ios/google_mlkit_text_recognition/Sources/google_mlkit_text_recognition/GoogleMlKitTextRecognitionPlugin.swift
+@@ -2,9 +2,7 @@
+ import MLKitVision
+ import MLKitTextRecognition
+ import MLKitTextRecognitionCommon
+-#if canImport(MLKitTextRecognitionChinese)
+ import MLKitTextRecognitionChinese
+-#endif
+ #if canImport(MLKitTextRecognitionDevanagari)
+ import MLKitTextRecognitionDevanagari
+ #endif
+@@ -48,11 +46,7 @@
+     case 0:
+       return TextRecognizer.textRecognizer(options: TextRecognizerOptions())
+     case 1:
+-      #if canImport(MLKitTextRecognitionChinese)
+       return TextRecognizer.textRecognizer(options: ChineseTextRecognizerOptions())
+-      #else
+-      return TextRecognizer.textRecognizer(options: TextRecognizerOptions())
+-      #endif
+     case 2:
+       #if canImport(MLKitTextRecognitionDevanagari)
+       return TextRecognizer.textRecognizer(options: DevanagariTextRecognizerOptions())

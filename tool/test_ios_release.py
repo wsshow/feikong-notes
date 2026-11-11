@@ -39,7 +39,7 @@ class IosArchiveTests(unittest.TestCase):
             pods, app = root / "Pods", root / "Runner.app"
             payload = plistlib.dumps({"NSPrivacyTracking": False, "NSPrivacyCollectedDataTypes": [{"NSPrivacyCollectedDataType": "synthetic-type"}]})
             for name in SDK_NAMES:
-                path = pods / name / "Frameworks" / f"{name}.framework/PrivacyInfo.xcprivacy"
+                path = pods / name / f"{name}.xcframework/ios-arm64/{name}.framework/PrivacyInfo.xcprivacy"
                 path.parent.mkdir(parents=True)
                 path.write_bytes(payload)
             copy_manifests(pods, app)
@@ -48,7 +48,7 @@ class IosArchiveTests(unittest.TestCase):
             missing = app / "Frameworks/Synthetic.framework"
             missing.mkdir(parents=True)
             inventory = report(app)
-            self.assertEqual(len(inventory["manifests"]), 2)
+            self.assertEqual(len(inventory["manifests"]), len(SDK_NAMES))
             self.assertIn("Frameworks/Synthetic.framework", inventory["frameworksWithoutBundledManifest"])
 
 

@@ -50,10 +50,12 @@ class IosBundleTest(unittest.TestCase):
             for language in ["en", "zh-Hans"]:
                 (bundle / f"{language}.lproj").mkdir(exist_ok=True)
                 (bundle / f"{language}.lproj/InfoPlist.strings").write_text("synthetic")
-        for sdk in ["MLKitCommon", "MLKitTextRecognitionCommon"]:
+        for sdk in ["MLKitCommon", "MLKitTextRecognitionCommon", "MLKitBarcodeScanning"]:
             folder = self.app / f"{sdk}_Privacy.bundle"
             folder.mkdir()
             (folder / "PrivacyInfo.xcprivacy").write_bytes(plistlib.dumps({}))
+        (self.app / "LatinOCRResources.bundle").mkdir()
+        (self.app / "LatinOCRResources.bundle/model.bincfg").write_bytes(b"synthetic latin model")
         (self.app / "ChineseOCRResources.bundle").mkdir()
         self.ocr = self.app / "ChineseOCRResources.bundle/model.bincfg"
         self.ocr.write_bytes(b"synthetic model")

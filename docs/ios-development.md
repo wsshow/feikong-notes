@@ -4,7 +4,7 @@ iOS 当前处于适配阶段，尚未作为正式支持平台发布。本阶段�
 
 ## 本地检查
 
-需要 macOS、Xcode（含 iOS SDK）、Flutter 3.47.2、CocoaPods 和 Python 3。最低部署目标为 iOS 15.0。插件采用 CocoaPods，Dart 与原生依赖分别锁定在 `pubspec.lock` 和 `ios/Podfile.lock`。LiteRT-LM 使用 `third_party/litert_lm` 中固定 0.14.0 的官方 Swift 包装层与校验和锁定的 iOS 二进制；插件仍由 CocoaPods 管理。不要通过升级依赖或修改 Pub 缓存绕过构建错误。
+需要 macOS、Xcode（含 iOS SDK）、Flutter 3.47.2、CocoaPods 和 Python 3。最低部署目标为 iOS 15.0。插件采用 Flutter Swift Package Manager，sherpa 保留 CocoaPods 回退；依赖锁定在 `pubspec.lock`、`ios/Podfile.lock` 和 Xcode 工作区的 `Package.resolved`。LiteRT-LM 使用 `third_party/litert_lm` 中固定 0.14.0 的官方 Swift 包装层与校验和锁定的 iOS 二进制。不要通过升级依赖或修改 Pub 缓存绕过构建错误。
 
 ```bash
 make check-ios
@@ -23,7 +23,7 @@ python3 -m unittest discover -s tool -p 'test_ios_*.py'
 
 打包检查确认 iPhone ARM64、MNN 实际 LLM 实现及 FFI 导出、sherpa 离线/流式识别与 TTS 创建/销毁导出、中文 OCR 资源和权限用途声明。符号检查使用 dyld 加载器导出表，避免将 dSYM 中存在但运行时不可查找的接口误判为可用；归档保留全局导出名供 Dart FFI 查找。它不能证明模型能加载、权限弹窗正常或推理质量合格。
 
-当前 ML Kit 固定原生库缺少 Apple Silicon ARM64 模拟器支持；主机音频回归使用 macOS AVFoundation 编译并执行与 Runner 相同的解码代码，不依赖模拟器，也不等于 iPhone 音频验收。
+OCR 使用 ML Kit Flutter 1.0.2 与固定 9.0.2 的社区 SwiftPM 重打包库，支持 ARM64 模拟器；中文链接补丁、来源与许可见 `third_party/google_mlkit_text_recognition/README.md`。模型资源单独校验 SHA-256 后打包，缺失中文模块时构建失败，不静默回退拉丁文字。主机音频回归使用 macOS AVFoundation 编译并执行与 Runner 相同的解码代码，不依赖模拟器，也不等于 iPhone 音频验收。
 
 ### 本机模拟器预览
 
@@ -36,9 +36,20 @@ python3 tool/prepare_ios_preview.py --device booted
 
 也可将 `booted` 换为 `xcrun simctl list devices available` 中已启动模拟器的 UUID。工具复制当前工作区的 Git 跟踪文件到 `build/ios-preview/workspace`，构建 ARM64 Debug 版本，覆盖安装并打开“非空笔记预览”。预览使用独立包名 `com.fknotes.app.preview` 与 App Group，保留其自身数据，不覆盖正式应用。
 
-预览的 OCR 原生适配器明确返回不可用错误，MNN 使用既有的无运行库分支；两者须在真机验收。其他能力仍以实际运行结果为准，模拟器不能代替麦克风、相机、系统认证和模型性能的设备测试。LiteRT-LM 固定 SDK 只有 ARM64 模拟器切片，因此预览不构建 x86_64。
+预览与正式工程使用同一 OCR 实现，已通过模拟器中文/英文、空图片、损坏图片及识别器重复使用测试。MNN 暂时使用无运行库分支。其他能力仍以实际运行结果为准，模拟器不能代替麦克风、相机、系统认证和模型性能的设备测试。LiteRT-LM 固定 SDK 只有 ARM64 模拟器切片，因此预览不构建 x86_64。
 
-生成的预览适配器带有真机编译阻断，正式 Podfile、锁文件、Pub 缓存与发布工程不变；预览工作区不用于签名发布。仅准备工作区时省略 `--device`。再次运行会复制最新源码并更新同一预览应用。
+预览只修改复制工作区的应用标识与显示名称，并暂时跳过 MNN 真机库准备；预览工作区不用于签名发布。仅准备工作区时省略 `--device`。再次运行会复制最新源码并更新同一预览应用。
+
+真实 OCR 回归使用合成图片，不读取用户笔记：
+
+```bash
+FLUTTER_XCODE_ARCHS=arm64 \
+FLUTTER_XCODE_FKNOTES_BUNDLE_ID=com.fknotes.app.validation \
+FLUTTER_XCODE_FKNOTES_APP_GROUP=group.com.fknotes.app.validation \
+flutter test integration_test/ios_ocr_smoke_test.dart -d <模拟器 ID> --no-pub --no-uninstall
+```
+
+SwiftPM 的 permission_handler 根据 Runner/Info.plist 配置权限实现，麦克风用途声明须保留；CocoaPods 中的宏只用于回退路径。定位只声明使用期间权限，不增加后台定位用途。
 
 已在 iOS 27.2 / iPhone 17 模拟器验证 ARM64 构建、安装及启动至中文首页；这不代表下表中的真机项目已验收。
 
@@ -46,11 +57,11 @@ python3 tool/prepare_ios_preview.py --device booted
 
 | 能力 | 当前证据 | 仍需验证 |
 | --- | --- | --- |
-| iOS 构建 | 未签名 ARM64 Release 构建通过，原生 Pod 锁定 | 签名安装、冷启动与升级安装 |
+| iOS 构建 | 未签名 ARM64 Release 构建通过，SwiftPM / Pod 依赖锁定 | 签名安装、冷启动与升级安装 |
 | 录音转写输入 | 两端保留 M4A / AAC；iOS AVFoundation 转 16 kHz、16 bit、单声道 WAV；合成 M4A 单/双声道、失败、取消、原文件保留测试 | 麦克风、真实编码、来电/蓝牙中断、长音频及取消中途解码 |
 | 模型与备份导入 | 文件类型满足 iOS 插件契约，保留校验及取消流程 | Files / iCloud Drive 下载中的文件、大模型文件、多文件选择 |
 | 文件与备份另存 | iOS Files 导出，成功/取消独立返回；临时副本清理；Flutter 通道回归 | 原生选择器交互、后台切换、失败磁盘、隐私认证后的导出 |
-| OCR | 中文识别 Pod 与模型资源已打包 | 中文照片/截图、方向、错误反馈及离线识别 |
+| OCR | 中文模块、中文/拉丁资源与 SDK 隐私声明已打包；ARM64 模拟器真实识别及异常/重复调用测试通过 | 中文照片/截图、方向、错误反馈及离线识别 |
 | 语音识别与朗读 | sherpa iOS 原生库及创建/销毁符号已打包；麦克风权限宏开启 | SenseVoice、Zipformer、Kokoro 的真实加载、识别/合成和音频路由 |
 | LiteRT-LM | 0.14.0 Swift SDK、Metal/CPU、文本/图像/音频、流式输出、取消、卸载及指标接入；未签名构建和运行库生命周期符号检查通过 | 模型实际加载、多模态输出、GPU 回退、长上下文、内存压力 |
 | MNN | LLM 实现及 FFI 已链接，通用引擎测试保留 | CPU/Metal、文本/图像、取消、内存压力和后台释放 |
@@ -113,7 +124,7 @@ make ios-archive IOS_ARCHIVE_ARGS="--team TEAMID1234 --bundle-id com.example.not
 
 主应用与分享扩展包含自身代码的隐私清单，声明偏好与共享组、受管/用户选择的文件元数据，以及主应用的本地耗时计量。理由对应 Apple 的[必需理由 API 定义](https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacyaccessedapitypes/nsprivacyaccessedapitype)。主应用的空采集列表仅描述本项目代码，不能代表全部 SDK。
 
-静态链接的 ML Kit SDK 原始隐私清单会原样保存在独立资源 bundle 中，避免 CocoaPods 链接时丢失。其声明包含设备标识、诊断等类别，发布前须根据实际 SDK 行为核对商店隐私回答。`privacy-report.json` 汇总所有打包声明并列出无内嵌清单的 framework（目前包括 LiteRT-LM、sherpa、PDFium 等）；该清单是审查输入，不能替代 SDK 行为核实或 Apple 审核。部分原生库使用文件/时间 API，仍需与上游核实适用理由和 SDK 隐私打包要求，完成后才能认定具备上架条件；不伪造供应商声明或修改其二进制签名。
+静态链接的 ML Kit SDK 原始隐私清单会原样保存在独立资源 bundle 中，避免静态链接时丢失。其声明包含设备标识、诊断等类别，发布前须根据实际 SDK 行为核对商店隐私回答。`privacy-report.json` 汇总所有打包声明并列出无内嵌清单的 framework（目前包括 LiteRT-LM、sherpa、PDFium 等）；该清单是审查输入，不能替代 SDK 行为核实或 Apple 审核。部分原生库使用文件/时间 API，仍需与上游核实适用理由和 SDK 隐私打包要求，完成后才能认定具备上架条件；不伪造供应商声明或修改其二进制签名。
 
 各功能已分别提交。未经设备实测的能力继续标为待验收，不把打包检查写成“已完整支持”。
 
