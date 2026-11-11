@@ -4,7 +4,7 @@ iOS 当前处于适配阶段，尚未作为正式支持平台发布。本阶段�
 
 ## 本地检查
 
-需要 macOS、Xcode（含 iOS SDK）、Flutter 3.47.2、CocoaPods 和 Python 3。最低部署目标为 iOS 15.0。插件采用 CocoaPods，Dart 与原生依赖分别锁定在 `pubspec.lock` 和 `ios/Podfile.lock`；不要通过升级依赖或修改 Pub 缓存绕过构建错误。
+需要 macOS、Xcode（含 iOS SDK）、Flutter 3.47.2、CocoaPods 和 Python 3。最低部署目标为 iOS 15.0。插件采用 CocoaPods，Dart 与原生依赖分别锁定在 `pubspec.lock` 和 `ios/Podfile.lock`。LiteRT-LM 使用 `third_party/litert_lm` 中固定 0.14.0 的官方 Swift 包装层与校验和锁定的 iOS 二进制；插件仍由 CocoaPods 管理。不要通过升级依赖或修改 Pub 缓存绕过构建错误。
 
 ```bash
 make check-ios
@@ -35,12 +35,14 @@ python3 -m unittest discover -s tool -p 'test_ios_*.py'
 | 文件与备份另存 | iOS Files 导出，成功/取消独立返回；临时副本清理；Flutter 通道回归 | 原生选择器交互、后台切换、失败磁盘、隐私认证后的导出 |
 | OCR | 中文识别 Pod 与模型资源已打包 | 中文照片/截图、方向、错误反馈及离线识别 |
 | 语音识别与朗读 | sherpa iOS 原生库及创建/销毁符号已打包；麦克风权限宏开启 | SenseVoice、Zipformer、Kokoro 的真实加载、识别/合成和音频路由 |
+| LiteRT-LM | 0.14.0 Swift SDK、Metal/CPU、文本/图像/音频、流式输出、取消、卸载及指标接入；未签名构建和运行库生命周期符号检查通过 | 模型实际加载、多模态输出、GPU 回退、长上下文、内存压力 |
 | MNN | LLM 实现及 FFI 已链接，通用引擎测试保留 | CPU/Metal、文本/图像、取消、内存压力和后台释放 |
 | 数据与在线助手 | 共用数据、权限和协议层测试 | Android ↔ iOS 备份、同步冲突、Keychain、系统认证与联网 |
 
+LiteRT-LM 在 iOS 中为进程内运行，不能像 Android 独立服务一样隔离原生崩溃。SDK 0.14.0 的 Swift 对话 API 未公开逐请求 `maxNewTokens` 设置；目前与现有 Android 接入一样由引擎上下文容量、EOS 与请求超时约束，不声称严格逐请求 token 上限。
+
 ## 下一批独立功能
 
-1. LiteRT-LM iOS Swift 接入：先验证与 Android 固定版本的 API 和模型兼容，再接入已有引擎接口；覆盖流式输出、多模态、取消、释放与进程内故障处理。当前 UI 的模型目录不代表 iOS 已可运行 LiteRT-LM。
 2. Share Extension 与 App Group 暂存：保留导入额度、完整复制、幂等、取消和解锁后确认；扩展不直接读取隐私笔记库。
 3. iOS 本地通知：保留每篇笔记一个提醒及认证后跳转，处理修改、删除、恢复、通知内容隐私和调度上限；不复用 Android AlarmManager 假设。
 4. 生命周期与数据策略：分别定义下载、转写、听写、朗读和推理的后台行为；明确系统备份、缓存排除及 Keychain 恢复策略。

@@ -45,6 +45,16 @@ void main() {
     expect(engine.activeBackend, LocalLlmBackend.cpu);
   });
 
+  test('preserves the native Metal backend on iOS', () async {
+    final engine = LiteRtLmEngine(transport: _FakeTransport());
+    await engine.loadModel(
+      _descriptor(modelFile.path),
+      options: const LocalLlmLoadOptions(backend: LocalLlmBackend.metal),
+    );
+    expect(engine.activeBackend, LocalLlmBackend.metal);
+    await engine.unload();
+  });
+
   test('reports an isolated worker death without hanging', () async {
     final transport = _FakeTransport(crashOnGenerate: true);
     final engine = LiteRtLmEngine(transport: transport);
@@ -328,6 +338,8 @@ class _FakeTransport implements LiteRtLmTransport {
               ? 'GPU unavailable'
               : options.backend == LocalLlmBackend.cpu
               ? 'cpu'
+              : options.backend == LocalLlmBackend.metal
+              ? 'metal'
               : 'gpu',
         ),
       ),

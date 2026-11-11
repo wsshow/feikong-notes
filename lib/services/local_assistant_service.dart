@@ -21,6 +21,7 @@ class LocalAssistantBackendPolicy {
     required bool isAndroid,
     required bool isIOS,
   }) => switch (engine) {
+    LocalLlmEngineKind.liteRtLm when isIOS => LocalLlmBackend.metal,
     LocalLlmEngineKind.liteRtLm => LocalLlmBackend.openCl,
     LocalLlmEngineKind.mnn when isAndroid => LocalLlmBackend.openCl,
     LocalLlmEngineKind.mnn when isIOS => LocalLlmBackend.metal,

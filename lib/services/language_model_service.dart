@@ -409,7 +409,11 @@ class LanguageModelService {
       capabilities: LocalLlmCapabilities(
         imageInput: true,
         audioInput: true,
-        backends: {LocalLlmBackend.cpu, LocalLlmBackend.openCl},
+        backends: {
+          LocalLlmBackend.cpu,
+          LocalLlmBackend.openCl,
+          LocalLlmBackend.metal,
+        },
       ),
       generationOptions: LocalLlmGenerationOptions(
         temperature: 1,
@@ -436,7 +440,11 @@ class LanguageModelService {
       capabilities: LocalLlmCapabilities(
         imageInput: true,
         audioInput: true,
-        backends: {LocalLlmBackend.cpu, LocalLlmBackend.openCl},
+        backends: {
+          LocalLlmBackend.cpu,
+          LocalLlmBackend.openCl,
+          LocalLlmBackend.metal,
+        },
       ),
       generationOptions: LocalLlmGenerationOptions(
         temperature: 1,

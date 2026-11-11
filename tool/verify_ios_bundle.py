@@ -37,6 +37,16 @@ def verify(app):
     if not any("MNN" in name and "createLLM" in name for name in runner_symbols):
         raise ValueError("MNN LLM implementation is absent; the bridge alone is insufficient")
 
+    litert = app / "Frameworks/CLiteRTLM.framework/CLiteRTLM"
+    litert_functions = {
+        "_litert_lm_engine_create", "_litert_lm_engine_delete",
+        "_litert_lm_conversation_create", "_litert_lm_conversation_delete",
+        "_litert_lm_conversation_cancel_process",
+    }
+    missing = litert_functions - symbols(litert)
+    if missing:
+        raise ValueError(f"LiteRT-LM lifecycle symbols missing: {sorted(missing)}")
+
     speech = app / "Frameworks/sherpa_onnx.framework/sherpa_onnx"
     speech_functions = {
         "_SherpaOnnxCreateOfflineRecognizer", "_SherpaOnnxCreateOnlineRecognizer",
@@ -64,7 +74,7 @@ def main():
                         default=Path(__file__).resolve().parents[1] / "build/ios/iphoneos/Runner.app")
     arguments = parser.parse_args()
     verify(arguments.app)
-    print("PASS: iPhone ARM64 bundle, MNN LLM/FFI, sherpa ASR/TTS, Chinese OCR and permission purposes.")
+    print("PASS: iPhone ARM64 bundle, MNN LLM/FFI, LiteRT-LM, sherpa ASR/TTS, Chinese OCR and permission purposes.")
     print("This verifies packaging only; device inference, permissions and UI remain unverified.")
 
 

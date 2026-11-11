@@ -64,11 +64,17 @@ class LiteRtLmEngine
         version: _transport.version,
         unavailableReason: _transport.available
             ? null
-            : 'LiteRT-LM 当前仅支持 Android arm64 设备',
-        capabilities: const LocalLlmCapabilities(
+            : 'LiteRT-LM 当前仅支持 Android 与 iOS arm64 设备',
+        capabilities: LocalLlmCapabilities(
           imageInput: true,
           audioInput: true,
-          backends: {LocalLlmBackend.cpu, LocalLlmBackend.openCl},
+          backends: {
+            LocalLlmBackend.cpu,
+            if (Platform.isIOS)
+              LocalLlmBackend.metal
+            else
+              LocalLlmBackend.openCl,
+          },
         ),
       );
 
@@ -81,7 +87,7 @@ class LiteRtLmEngine
       throw const LocalLlmException('该模型不是 LiteRT-LM 模型');
     }
     if (!_transport.available) {
-      throw const LocalLlmException('LiteRT-LM 当前仅支持 Android arm64 设备');
+      throw const LocalLlmException('LiteRT-LM 当前仅支持 Android 与 iOS arm64 设备');
     }
     if (options.contextTokens > model.nativeContextTokens) {
       throw LocalLlmException(
@@ -181,6 +187,7 @@ class LiteRtLmEngine
     return switch (backendName) {
       'cpu' => LocalLlmBackend.cpu,
       'gpu' => LocalLlmBackend.openCl,
+      'metal' => LocalLlmBackend.metal,
       _ => options.backend,
     };
   }

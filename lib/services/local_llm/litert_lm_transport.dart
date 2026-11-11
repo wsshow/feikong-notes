@@ -81,7 +81,7 @@ class MethodChannelLiteRtLmTransport implements LiteRtLmTransport {
       .asBroadcastStream();
 
   @override
-  bool get available => Platform.isAndroid;
+  bool get available => Platform.isAndroid || Platform.isIOS;
 
   @override
   String get version => available ? '0.14.0' : '';

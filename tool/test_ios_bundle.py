@@ -29,6 +29,11 @@ class IosBundleTest(unittest.TestCase):
             "__ZN3MNN11Transformer3Llm9createLLM_test",
             "_OBJC_CLASS_$_MLKChineseTextRecognizerOptions",
         }
+        self.litert = {
+            "_litert_lm_engine_create", "_litert_lm_engine_delete",
+            "_litert_lm_conversation_create", "_litert_lm_conversation_delete",
+            "_litert_lm_conversation_cancel_process",
+        }
         self.speech = {
             "_SherpaOnnxCreateOfflineRecognizer", "_SherpaOnnxCreateOnlineRecognizer",
             "_SherpaOnnxCreateOfflineTts", "_SherpaOnnxDestroyOfflineRecognizer",
@@ -38,7 +43,7 @@ class IosBundleTest(unittest.TestCase):
         tool.start()
         self.addCleanup(tool.stop)
         symbol_reader = patch.object(verify_ios_bundle, "symbols", side_effect=
-                                    lambda path: self.runner if path.name == "Runner" else self.speech)
+                                    lambda path: self.runner if path.name == "Runner" else self.litert if path.name == "CLiteRTLM" else self.speech)
         symbol_reader.start()
         self.addCleanup(symbol_reader.stop)
 
@@ -53,6 +58,11 @@ class IosBundleTest(unittest.TestCase):
     def test_missing_speech_lifecycle_symbol_fails(self):
         self.speech.remove("_SherpaOnnxDestroyOfflineTts")
         with self.assertRaisesRegex(ValueError, "Speech/TTS"):
+            verify_ios_bundle.verify(self.app)
+
+    def test_missing_litert_cancellation_fails(self):
+        self.litert.remove("_litert_lm_conversation_cancel_process")
+        with self.assertRaisesRegex(ValueError, "LiteRT-LM"):
             verify_ios_bundle.verify(self.app)
 
     def test_missing_ocr_model_fails(self):

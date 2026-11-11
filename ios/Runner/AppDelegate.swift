@@ -3,6 +3,7 @@ import UIKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
+  private var liteRtLmBridge: LiteRtLmBridge?
   private var audioDecodeBridge: AudioDecodeBridge?
   private var fileExportBridge: FileExportBridge?
   override func application(
@@ -14,6 +15,7 @@ import UIKit
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    liteRtLmBridge = LiteRtLmBridge(messenger: engineBridge.applicationRegistrar.messenger())
     audioDecodeBridge = AudioDecodeBridge(messenger: engineBridge.applicationRegistrar.messenger())
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "FknotesFileExport") {
       fileExportBridge = FileExportBridge(registrar: registrar)

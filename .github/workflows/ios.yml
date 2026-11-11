@@ -11,6 +11,7 @@ on:
       - 'test/**'
       - 'packages/**'
       - 'third_party/flutter_quill/**'
+      - 'third_party/litert_lm/**'
       - 'assets/**'
       - 'tool/**'
       - 'pubspec.*'

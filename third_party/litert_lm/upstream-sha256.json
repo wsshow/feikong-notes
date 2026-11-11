@@ -1,0 +1,13 @@
+{
+  "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+  "swift/Benchmark.swift": "33f131245456ceef8a2b8eaf8a5ea1ec310cec6124e3227f5e7a3ed35e0a3199",
+  "swift/Capabilities.swift": "30bc7cd1057f9100ef19249863266481a61e4c80d2a28ccb6098236318dee020",
+  "swift/Config.swift": "3f1c93449c679736b4e487376805161673b440c74244b07bb15c3c288e6aa929",
+  "swift/Conversation.swift": "178a722d7727febd319f9852b33f7094d1e6d251541f9e0f3ad210ae6694eadf",
+  "swift/Engine.swift": "aae9f14109d8cc6aeec34c6c67e6b49f096bad4d54b81813e5901a0efd8eab2c",
+  "swift/ExperimentalFlags.swift": "bc2d554c686a0db84d553174d1acffbcd38e151a8f10f3f0b78e747a11400621",
+  "swift/LiteRTLMError.swift": "0ab54191c0f0a01ce03b69b411b968400bee295d4672fb51519713f3f275dc85",
+  "swift/Message.swift": "c9f3bcaa02897e406b8e3208c9c9657c8035d4830ee61dd0c5a2a6536f814d55",
+  "swift/Tool.swift": "d9698c6c7f8425cfa1f479cec5070fe94d9ca732b3e20b171e3dd90ca1545422",
+  "swift/ToolManager.swift": "7fed45d66e562a153dd61e57a8cc67cbd89fa063d1c09d9d20626ea48574d3f7"
+}

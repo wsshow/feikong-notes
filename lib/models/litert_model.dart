@@ -132,7 +132,11 @@ class LiteRtModelSpec {
       capabilities: LocalLlmCapabilities(
         imageInput: capabilities['imageInput'] == true,
         audioInput: capabilities['audioInput'] == true,
-        backends: const {LocalLlmBackend.cpu, LocalLlmBackend.openCl},
+        backends: const {
+          LocalLlmBackend.cpu,
+          LocalLlmBackend.openCl,
+          LocalLlmBackend.metal,
+        },
       ),
       generationOptions: LocalLlmGenerationOptions(
         temperature: (generation['temperature'] as num?)?.toDouble() ?? .7,

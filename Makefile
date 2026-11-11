@@ -72,6 +72,7 @@ check-ios: ## iOS 无设备检查：锁定依赖、测试、未签名构建与�
 	$(FLUTTER) analyze --no-pub
 	$(FLUTTER) test --no-pub
 	cd packages/fknotes_harness && $(DART) analyze && $(DART) test
+	python3 tool/verify_litert_wrapper.py
 	python3 -m unittest discover -s tool -p 'test_ios_*.py'
 	cd ios && pod install --deployment
 	$(FLUTTER) build ios --release --no-codesign --no-pub
