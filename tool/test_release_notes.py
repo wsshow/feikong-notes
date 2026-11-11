@@ -254,9 +254,11 @@ class ReleaseNotesTest(unittest.TestCase):
                 (case / "dist").mkdir(parents=True)
                 body = "# 更新\n包含 `$()` 和中文。\n"
                 (case / "dist/notes.md").write_text(body)
+                (case / "dist/fknotes-0.2.0-ios-unsigned.ipa").write_bytes(b"synthetic IPA")
+                (case / "dist/ios-installation.md").write_text("Experimental install guide")
                 env = {**os.environ, "PATH": f"{binary}:{os.environ['PATH']}",
                        "RELEASE_STATE": state, "CURRENT_DRAFT": current, "VIEW_ERROR": error,
-                       "GITHUB_REF_NAME": "v0.2.0", "GITHUB_REPOSITORY": "owner/repo",
+                       "GITHUB_REF_NAME": "main", "RELEASE_TAG": "v0.2.0", "GITHUB_REPOSITORY": "owner/repo",
                        "VERSION_NAME": "0.2.0", "BUILD_NUMBER": "2"}
                 result = subprocess.run(["bash", "-c", script], cwd=case, env=env,
                                         capture_output=True, text=True)
@@ -276,6 +278,10 @@ class ReleaseNotesTest(unittest.TestCase):
                     self.assertEqual((case / "published-body.md").read_text(), body)
                     mutation = next(call for call in calls if call[1] in ("edit", "create"))
                     self.assertIn("--prerelease", mutation)
+                    self.assertEqual(mutation[2], "v0.2.0")
+                    upload = next(call for call in calls if call[1] in ("upload", "create"))
+                    self.assertIn("dist/fknotes-0.2.0-ios-unsigned.ipa", upload)
+                    self.assertIn("dist/ios-installation.md", upload)
 
 
 if __name__ == "__main__":

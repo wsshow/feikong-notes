@@ -120,7 +120,19 @@ iOS 提醒始终显示通用内容，不把标题、正文或隐私空间信息�
 make ios-archive IOS_ARCHIVE_ARGS="--unsigned"
 ```
 
-产物位于 `build/ios/archive/Runner.xcarchive`，不导出可安装 IPA。脚本固定依赖、检查主应用及分享扩展、原生能力和隐私资源，生成 `build/ios/privacy-report.json`。`--dry-run` 可先查看构建参数。
+产物位于 `build/ios/archive/Runner.xcarchive`，此命令本身不导出 IPA。脚本固定依赖、检查主应用及分享扩展、原生能力和隐私资源，生成 `build/ios/privacy-report.json`。`--dry-run` 可先查看构建参数。
+
+发布流程在归档检查后调用 `tool/package_ios_release.py`，将 `Products/Applications/Runner.app` 包装成标准 `Payload/Runner.app` ZIP，保留扩展、资源和可执行权限，生成 `fknotes-<版本>-ios-unsigned.ipa`。脚本检查版本 / 构建号、真机平台、原生能力、主应用与扩展未签名及无 provisioning profile，不注入证书、不修改供应商 framework 签名；用户安装时仍须重新签名所有嵌入代码。发布同时附带[自行签名安装教程](ios-installation.md)、App Group 权限模板、源码和工具提交记录，并把这些文件纳入 SHA-256 校验。实验性 IPA 不代表签名安装或功能通过真机验收。
+
+本地打包参数示例（版本、构建号和提交须与实际归档一致）：
+
+```bash
+python3 tool/package_ios_release.py \
+  --archive build/ios/archive/Runner.xcarchive --dist dist \
+  --version 0.2.0 --build-number 2 --guide docs/ios-installation.md \
+  --source-commit "$(git rev-parse 'v0.2.0^{commit}')" \
+  --tooling-commit "$(git rev-parse HEAD)"
+```
 
 后续具备签名账号时，可本地导出签名 IPA；以下 ID 均为占位示例，应替换为账号中实际注册的值：
 

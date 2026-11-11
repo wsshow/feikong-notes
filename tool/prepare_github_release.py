@@ -27,7 +27,7 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def prepare(dist, repository, version, build_number, notes, release_date, mandatory):
+def prepare(dist, repository, version, build_number, notes, release_date, mandatory, require_ios=False):
     repository_name(repository)
     if not re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?", version):
         raise ValueError("Invalid release version.")
@@ -38,6 +38,21 @@ def prepare(dist, repository, version, build_number, notes, release_date, mandat
     notes_text = notes.read_text(encoding="utf-8").strip()
     if not notes_text:
         raise ValueError("Release notes must not be empty.")
+    ios_files = [dist / f"fknotes-{version}-ios-unsigned.ipa",
+                 dist / "ios-installation.md", dist / "ios-build-info.json",
+                 dist / "ios-signing-entitlements.plist"]
+    if require_ios or any(path.exists() for path in ios_files):
+        if any(not path.is_file() or path.stat().st_size == 0 for path in ios_files):
+            raise ValueError("The unsigned IPA, installation guide, build info and entitlement template are required")
+        ios = json.loads(ios_files[2].read_text())
+        if (ios.get("version") != version or ios.get("buildNumber") != build_number
+                or ios.get("ipa") != ios_files[0].name
+                or ios.get("sha256") != sha256(ios_files[0])
+                or ios.get("signed") is not False or ios.get("experimental") is not True
+                or ios.get("deviceValidated") is not False):
+            raise ValueError("iOS metadata does not match the experimental unsigned release")
+    else:
+        ios_files = []
     base = f"https://github.com/{repository}/releases/download/v{version}"
     artifacts = {}
     for abi in ABIS:
@@ -65,7 +80,7 @@ def prepare(dist, repository, version, build_number, notes, release_date, mandat
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     files = sorted([*dist.glob("*.apk"), *dist.glob("*.aab")])
-    files += [dist / "latest.json", dist / "notes.md"]
+    files += ios_files + [dist / "latest.json", dist / "notes.md"]
     (dist / "SHA256SUMS.txt").write_text(
         "".join(f"{sha256(path)}  {path.name}\n" for path in files), encoding="utf-8"
     )
@@ -81,9 +96,10 @@ def main():
     parser.add_argument("--notes", type=Path, required=True)
     parser.add_argument("--date", default=date.today().isoformat())
     parser.add_argument("--mandatory", choices=("true", "false"), default="false")
+    parser.add_argument("--require-ios", action="store_true")
     args = parser.parse_args()
     prepare(args.dist, args.repository, args.version, args.build_number,
-            args.notes, args.date, args.mandatory == "true")
+            args.notes, args.date, args.mandatory == "true", args.require_ios)
 
 
 if __name__ == "__main__":

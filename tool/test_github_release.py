@@ -60,6 +60,27 @@ class GitHubReleaseTest(unittest.TestCase):
             prepare(self.root, "owner/repo", "0.1.0", 1, self.notes,
                     "20261110", False)
 
+    def test_ios_assets_are_required_and_checksummed_but_not_android_updates(self):
+        with self.assertRaises(ValueError):
+            prepare(self.root, "owner/repo", "0.1.0", 1, self.notes,
+                    "2026-11-10", False, require_ios=True)
+        ipa = self.root / "fknotes-0.1.0-ios-unsigned.ipa"
+        ipa.write_bytes(b"synthetic IPA")
+        (self.root / "ios-installation.md").write_text("Experimental; sign before installing.")
+        (self.root / "ios-signing-entitlements.plist").write_text("synthetic template")
+        metadata = {"version": "0.1.0", "buildNumber": 1, "ipa": ipa.name,
+                    "sha256": hashlib.sha256(ipa.read_bytes()).hexdigest(),
+                    "signed": False, "experimental": True, "deviceValidated": False}
+        (self.root / "ios-build-info.json").write_text(json.dumps(metadata))
+        manifest = self.prepare()
+        self.assertTrue(all(key.startswith("android-") for key in manifest["artifacts"]))
+        checksums = (self.root / "SHA256SUMS.txt").read_text()
+        for name in [ipa.name, "ios-installation.md", "ios-build-info.json", "ios-signing-entitlements.plist"]:
+            self.assertIn(f"{hashlib.sha256((self.root / name).read_bytes()).hexdigest()}  {name}\n", checksums)
+        ipa.write_bytes(b"changed IPA")
+        with self.assertRaises(ValueError):
+            self.prepare()
+
     def test_feed_publication_is_atomic_monotonic_and_preserves_checkout(self):
         self.prepare()
         remote = self.root / "remote.git"

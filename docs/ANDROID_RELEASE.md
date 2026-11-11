@@ -36,7 +36,17 @@ git push origin v0.1.1
 
 [tag 工作流](../.github/workflows/release.yml)校验版本、发布脚本、格式与静态分析，执行两组分片测试，构建签名通用 APK、ARM64 / ARM32 / x86_64 APK 和 AAB。依赖从 `pub.dev` 下载，保留锁文件哈希校验。APK 和 AAB 检查 Flutter 库中的开发者主目录路径。
 
-发布同时调用 iOS 无签名构建与归档检查，全部通过后才公开 Release。此检查无需 Apple 签名账号，不生成可安装 IPA，也不能代替 iPhone 真机验收。
+发布同时调用 iOS 无签名构建与归档检查，全部通过后才公开 Release。此流程无需 Apple 签名账号，检查后额外打包实验性未签名 IPA，附带[自行签名安装教程](ios-installation.md)、权限模板和构建信息；用户仍需自行签名，不能直接安装，也不能把构建检查视为 iPhone 真机验收。
+
+### 恢复未完成的发布
+
+已有 tag 的发布被取消或需要修正打包流程时，可从最新 `main` 手动运行 `release.yml`，输入原 tag：
+
+```bash
+gh workflow run release.yml --ref main -f tag=v0.2.0
+```
+
+此路径保留原 tag：所有平台应用都检出该 tag 的源码，打包脚本和安装教程取本次工作流固定提交。iOS 的 `ios-build-info.json` 记录两者；改动应用代码应使用新版本，不借此替换已发布应用。所有检查通过才发布，已公开的 Release 重跑仍保留原正文和资源。
 
 ### 说明来源与兼容路径
 
@@ -62,6 +72,10 @@ fknotes-<版本>+<构建号>-x86_64-release.apk
 fknotes-<版本>+<构建号>-release.aab
 notes.md
 latest.json
+fknotes-<版本>-ios-unsigned.ipa
+ios-installation.md
+ios-build-info.json
+ios-signing-entitlements.plist
 SHA256SUMS.txt
 ```
 

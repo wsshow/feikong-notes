@@ -62,7 +62,7 @@ OCR 的图片与识别结果在设备端处理，但 ML Kit SDK 会发送性能�
 
 Android 测试版可从 [GitHub Releases](https://github.com/wsshow/feikong-notes/releases) 下载安装，附带 SHA-256 校验文件；也可通过[源码运行](#从源码运行)体验。Android 应用内更新通过 GitHub 获取清单、安装包和更新说明，发布流程见[Android 发布指南](docs/ANDROID_RELEASE.md)。
 
-- **主要平台：Android 手机；0.2.0 新增 iOS 适配预览。** iOS 最低版本为 15.5，已接入功能适配及无签名构建/归档流程，并通过 ARM64 模拟器 OCR 与 MNN CPU 推理验证。尚未完成签名与真机验收，不提供可直接安装的 IPA，详见 [iOS 适配与验收](docs/ios-development.md)。macOS、Windows、Linux 和 Web 工程用于开发验证。
+- **主要平台：Android 手机；0.2.0 新增 iOS 适配预览。** iOS 最低版本为 15.5，已接入功能适配及无签名构建/归档流程，并通过 ARM64 模拟器 OCR 与 MNN CPU 推理验证。提供实验性未签名 IPA，需用户自行签名、安装并定期续签；签名安装、分享扩展 / App Group 及真机功能尚未验收。见 [iOS 自行签名安装教程](docs/ios-installation.md)与 [iOS 适配与验收](docs/ios-development.md)。macOS、Windows、Linux 和 Web 工程用于开发验证。
 - **本地 AI：优先使用 Android ARM64 设备。** 语言模型需要额外下载，存储和内存要求因模型而异；应用内提供模型体积和内存建议。
 - **基础记录无需配置 AI。** 可以先记录和整理笔记，再选择本地模型、在线模型或云同步。
 - **同步由你控制。** S3 / WebDAV 需要自行配置并手动触发；双端修改冲突时，由你选择保留的数据版本。

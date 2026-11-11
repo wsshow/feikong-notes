@@ -1,6 +1,12 @@
-name: Release Android
+name: Release Android and iOS
 
 on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to build and publish (never moved)
+        required: true
+        type: string
   push:
     tags:
       - "v*"
@@ -9,13 +15,19 @@ permissions:
   contents: read
 
 concurrency:
-  group: release-android
+  group: release-mobile
   cancel-in-progress: false
+
+env:
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 
 jobs:
   verify-ios:
     name: Verify iOS release build
     uses: ./.github/workflows/ios.yml
+    with:
+      source_ref: refs/tags/${{ inputs.tag || github.ref_name }}
+      release_tag: ${{ inputs.tag || github.ref_name }}
 
   verify:
     name: Verify release source
@@ -25,6 +37,7 @@ jobs:
       version_name: ${{ steps.release.outputs.version_name }}
       build_number: ${{ steps.release.outputs.build_number }}
       build_time: ${{ steps.release.outputs.build_time }}
+      source_sha: ${{ steps.release.outputs.source_sha }}
     env:
       FLUTTER_VERSION: "3.47.2"
       PUB_HOSTED_URL: "https://pub.dev"
@@ -32,6 +45,8 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
 
       - name: Validate release tag
         id: release
@@ -39,7 +54,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$ ]]; then
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$ ]]; then
             echo "::error::Tag must use SemVer, for example v1.2.3 or v1.2.3-beta.1"
             exit 1
           fi
@@ -51,13 +66,14 @@ jobs:
           fi
           version_name="${BASH_REMATCH[1]}"
           build_number="${BASH_REMATCH[4]}"
-          if [[ "${GITHUB_REF_NAME#v}" != "$version_name" ]]; then
+          if [[ "${RELEASE_TAG#v}" != "$version_name" ]]; then
             echo "::error::Release tag must match pubspec.yaml version: v$version_name"
             exit 1
           fi
 
           python3 -m unittest discover -s tool -p 'test_*release*.py'
 
+          echo "source_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "version_name=$version_name" >> "$GITHUB_OUTPUT"
           echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
           echo "build_time=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
@@ -95,6 +111,8 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
@@ -138,6 +156,8 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
 
       - name: Set up Java
         uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
@@ -219,7 +239,7 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: fknotes-${{ github.ref_name }}-input-apk-${{ matrix.abi }}
+          name: fknotes-${{ env.RELEASE_TAG }}-input-apk-${{ matrix.abi }}
           path: dist/*.apk
           if-no-files-found: error
           retention-days: 14
@@ -241,6 +261,8 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
 
       - name: Set up Java
         uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
@@ -313,7 +335,7 @@ jobs:
       - name: Upload AAB artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: fknotes-${{ github.ref_name }}-input-aab
+          name: fknotes-${{ env.RELEASE_TAG }}-input-aab
           path: dist/*.aab
           if-no-files-found: error
           retention-days: 14
@@ -335,13 +357,24 @@ jobs:
       VERSION_NAME: ${{ needs.verify.outputs.version_name }}
       BUILD_NUMBER: ${{ needs.verify.outputs.build_number }}
       BUILD_TIME: ${{ needs.verify.outputs.build_time }}
+      SOURCE_SHA: ${{ needs.verify.outputs.source_sha }}
       FKNOTES_UPDATE_MANDATORY: ${{ vars.FKNOTES_UPDATE_MANDATORY || 'false' }}
 
     steps:
       - name: Check out source
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
           fetch-depth: 0
+
+      - name: Check out release tools from the workflow revision
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .release-tooling
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tool/prepare_github_release.py
 
       - name: Resolve release notes
         id: notes
@@ -350,8 +383,8 @@ jobs:
         run: |
           python3 tool/release_notes.py \
             --repository "$GITHUB_REPOSITORY" \
-            --tag "$GITHUB_REF_NAME" \
-            --target "$GITHUB_SHA" \
+            --tag "$RELEASE_TAG" \
+            --target "$SOURCE_SHA" \
             --output "$RUNNER_TEMP/release-notes.md" \
             --github-output "$GITHUB_OUTPUT"
 
@@ -359,30 +392,33 @@ jobs:
         if: steps.notes.outputs.state != 'published'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          pattern: fknotes-${{ github.ref_name }}-input-*
+          pattern: fknotes-${{ env.RELEASE_TAG }}-input-*
           path: dist
           merge-multiple: true
 
       - name: Generate update manifest and checksums
         if: steps.notes.outputs.state != 'published'
         run: |
-          python3 tool/prepare_github_release.py \
+          python3 .release-tooling/tool/prepare_github_release.py \
             --dist dist \
             --repository "$GITHUB_REPOSITORY" \
             --version "$VERSION_NAME" \
             --build-number "$BUILD_NUMBER" \
             --notes "$RUNNER_TEMP/release-notes.md" \
             --date "${BUILD_TIME%%T*}" \
-            --mandatory "$FKNOTES_UPDATE_MANDATORY"
+            --mandatory "$FKNOTES_UPDATE_MANDATORY" \
+            --require-ios
 
       - name: Upload combined workflow artifact
         if: steps.notes.outputs.state != 'published'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: fknotes-${{ github.ref_name }}-android
+          name: fknotes-${{ env.RELEASE_TAG }}-mobile
           path: |
             dist/*.apk
             dist/*.aab
+            dist/*.ipa
+            dist/ios-*
             dist/SHA256SUMS.txt
             dist/latest.json
             dist/notes.md
@@ -400,30 +436,30 @@ jobs:
           # Never replace a published release's body or assets on retries.
           if [[ "$RELEASE_STATE" == draft ]]; then
             # Abort if someone published the draft after notes were resolved.
-            current_draft=$(gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)
+            current_draft=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)
             if [[ "$current_draft" != true ]]; then
               echo "::error::Release was published during this run; retry to reuse its assets."
               exit 1
             fi
-            gh release upload "$GITHUB_REF_NAME" \
-              dist/*.apk dist/*.aab dist/SHA256SUMS.txt dist/latest.json dist/notes.md \
+            gh release upload "$RELEASE_TAG" \
+              dist/*.apk dist/*.aab dist/*.ipa dist/ios-* dist/SHA256SUMS.txt dist/latest.json dist/notes.md \
               --clobber --repo "$GITHUB_REPOSITORY"
-            arguments=(release edit "$GITHUB_REF_NAME" --draft=false
+            arguments=(release edit "$RELEASE_TAG" --draft=false
               --notes-file dist/notes.md --repo "$GITHUB_REPOSITORY")
-            if [[ "$GITHUB_REF_NAME" == v0.* || "$GITHUB_REF_NAME" == *-* ]]; then
+            if [[ "$RELEASE_TAG" == v0.* || "$RELEASE_TAG" == *-* ]]; then
               arguments+=(--prerelease)
             fi
             gh "${arguments[@]}"
           elif [[ "$RELEASE_STATE" == missing ]]; then
             arguments=(
-              release create "$GITHUB_REF_NAME"
-              dist/*.apk dist/*.aab dist/SHA256SUMS.txt dist/latest.json dist/notes.md
+              release create "$RELEASE_TAG"
+              dist/*.apk dist/*.aab dist/*.ipa dist/ios-* dist/SHA256SUMS.txt dist/latest.json dist/notes.md
               --verify-tag
               --notes-file dist/notes.md
-              --title "FKNotes $GITHUB_REF_NAME"
+              --title "FKNotes $RELEASE_TAG"
               --repo "$GITHUB_REPOSITORY"
             )
-            if [[ "$GITHUB_REF_NAME" == v0.* || "$GITHUB_REF_NAME" == *-* ]]; then
+            if [[ "$RELEASE_TAG" == v0.* || "$RELEASE_TAG" == *-* ]]; then
               arguments+=(--prerelease)
             fi
             gh "${arguments[@]}"
@@ -431,7 +467,7 @@ jobs:
 
           # Always use the published manifest, including when retrying a completed release.
           mkdir -p published
-          gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
             --pattern latest.json --dir published
           python3 - <<'PY'
           import json
