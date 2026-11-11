@@ -1,0 +1,30 @@
+{
+  "app": "fknotes",
+  "version": "0.2.0",
+  "versionCode": 2,
+  "releaseDate": "2026-11-11",
+  "mandatory": false,
+  "changelog": "https://github.com/wsshow/feikong-notes/releases/download/v0.2.0/notes.md",
+  "artifacts": {
+    "android-universal": {
+      "url": "https://github.com/wsshow/feikong-notes/releases/download/v0.2.0/fknotes-0.2.0%2B2-universal-release.apk",
+      "size": 307963810,
+      "sha256": "7655f2824cc9c1e47a9e418d02052a93cb9f20001be17684f0b14a7af0769aef"
+    },
+    "android-arm64-v8a": {
+      "url": "https://github.com/wsshow/feikong-notes/releases/download/v0.2.0/fknotes-0.2.0%2B2-arm64-v8a-release.apk",
+      "size": 132422228,
+      "sha256": "e842eb584d0678d850fa05771e7f293f945f07e63ac4289570c5e403568792f4"
+    },
+    "android-armeabi-v7a": {
+      "url": "https://github.com/wsshow/feikong-notes/releases/download/v0.2.0/fknotes-0.2.0%2B2-armeabi-v7a-release.apk",
+      "size": 85222239,
+      "sha256": "ef3fe6a26ffb37eef6bf45d304c016912944263221cbc1388cf944b225a92417"
+    },
+    "android-x86_64": {
+      "url": "https://github.com/wsshow/feikong-notes/releases/download/v0.2.0/fknotes-0.2.0%2B2-x86_64-release.apk",
+      "size": 134635309,
+      "sha256": "1f381bfd0ccf7de52782cd0ed9cab6d847e18baa4fcb35fd0288aebd415b5ba5"
+    }
+  }
+}
