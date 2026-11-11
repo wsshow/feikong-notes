@@ -33,6 +33,7 @@ class MnnNativeEvent {
 abstract interface class MnnNativeTransport {
   bool get available;
   String get version;
+  Set<LocalLlmBackend> get supportedBackends;
   Stream<MnnNativeEvent> get events;
 
   bool load({
@@ -151,6 +152,17 @@ class FfiMnnNativeTransport implements MnnNativeTransport {
 
   @override
   bool get available => _bindings?.isAvailable() == 1;
+
+  @override
+  Set<LocalLlmBackend> get supportedBackends {
+    final mask = _bindings?.backendMask() ?? 0;
+    return {
+      if (mask & 1 != 0) LocalLlmBackend.cpu,
+      if (mask & 2 != 0) LocalLlmBackend.openCl,
+      if (mask & 4 != 0) LocalLlmBackend.vulkan,
+      if (mask & 8 != 0) LocalLlmBackend.metal,
+    };
+  }
 
   @override
   String get version {
@@ -474,6 +486,7 @@ class MnnUtf8StreamDecoder {
 
 class _MnnBindings {
   late final _IsAvailableDart isAvailable;
+  late final _IsAvailableDart backendMask;
   late final _RuntimeVersionDart runtimeVersion;
   late final _LoadDart load;
   late final _GenerateDart generate;
@@ -484,6 +497,9 @@ class _MnnBindings {
   _MnnBindings(DynamicLibrary library) {
     isAvailable = library.lookupFunction<_IsAvailableNative, _IsAvailableDart>(
       'fk_mnn_is_available',
+    );
+    backendMask = library.lookupFunction<_IsAvailableNative, _IsAvailableDart>(
+      'fk_mnn_backend_mask',
     );
     runtimeVersion = library
         .lookupFunction<_RuntimeVersionNative, _RuntimeVersionDart>(

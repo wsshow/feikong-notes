@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 import unittest
 
-from prepare_ios_preview import prepare, replace_once, simulator_app
+from prepare_ios_preview import prepare, simulator_app
 
 
 class IosPreviewTest(unittest.TestCase):
@@ -21,18 +21,14 @@ class IosPreviewTest(unittest.TestCase):
             current.mkdir(parents=True)
             self.assertEqual(simulator_app(developer), current)
 
-    def test_recipe_fails_when_source_layout_has_changed(self):
-        with self.assertRaises(ValueError):
-            replace_once("unrelated", "expected", "replacement")
-
     def test_preview_uses_working_files_and_preserves_source(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             source_files = {
                 "pubspec.yaml": "name: synthetic\ndependency_overrides:\n  existing_pin: 1.0.0\n",
-                "ios/Podfile": "  pod 'GoogleMLKit/TextRecognitionChinese', '~> 6.0.0'\n",
+                "ios/Podfile": "synthetic CocoaPods fallback\n",
                 "ios/Podfile.lock": "synthetic production lock",
-                "ios/Runner.xcodeproj/project.pbxproj": "FKNOTES_BUNDLE_ID = com.fknotes.app;\n\t\t\t\t76536BA2D647F7874F32FEFE /* Preserve Static SDK Privacy Manifests */,\n\t\t\t\tA11C0DE10000000000000003 /* Prepare MNN Runtime */,\n",
+                "ios/Runner.xcodeproj/project.pbxproj": "FKNOTES_BUNDLE_ID = com.fknotes.app;\n\t\t\t\t76536BA2D647F7874F32FEFE /* Prepare ML Kit Resources */,\n\t\t\t\tA11C0DE10000000000000003 /* Prepare MNN Runtime */,\n",
                 "ios/Runner/en.lproj/InfoPlist.strings": '"CFBundleDisplayName" = "Synthetic";',
                 "ios/Runner/zh-Hans.lproj/InfoPlist.strings": '"CFBundleDisplayName" = "合成";',
                 "lib/main.dart": "old content",
@@ -58,6 +54,8 @@ class IosPreviewTest(unittest.TestCase):
             self.assertEqual((workspace / "ios/Podfile.lock").read_text(), "synthetic production lock")
             self.assertEqual((workspace / "pubspec.yaml").read_text(), source_files["pubspec.yaml"])
             self.assertFalse((workspace / "preview_plugins").exists())
+            self.assertIn("Prepare MNN Runtime", (workspace / "ios/Runner.xcodeproj/project.pbxproj").read_text())
+            self.assertEqual((workspace / "build/mnn-ios-simulator").resolve(), (root / "build/mnn-ios-simulator").resolve())
 
 
 if __name__ == "__main__":

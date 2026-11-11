@@ -6,12 +6,12 @@
 
 | 引擎 | 运行环境 | 内置模型示例 |
 | --- | --- | --- |
-| MNN 3.6.0 | Android ARM64、iOS ARM64 | MiniCPM5 1B、Qwen3.5 2B、Qwen3-VL 4B / 8B、MiniCPM-V 4 |
-| LiteRT-LM 0.14 | Android ARM64，使用应用内独立进程 | Gemma 4 E2B IT、Gemma 4 E4B IT |
+| MNN 3.6.0 | Android ARM64、iOS ARM64；ARM64 iOS 模拟器使用 CPU | MiniCPM5 1B、Qwen3.5 2B、Qwen3-VL 4B / 8B、MiniCPM-V 4 |
+| LiteRT-LM 0.14 | Android ARM64 独立进程；iOS 进程内 Swift SDK（待真机验收） | Gemma 4 E2B IT、Gemma 4 E4B IT |
 
 内置模型固定仓库版本、文件长度和 SHA-256。下载按配置选择官方源或镜像，支持续传。文件全部校验后才切换到可用版本。模型列表、体积、内存建议、输入能力和采样配置以[模型定义](../lib/services/language_model_service.dart)及应用内模型详情为准。
 
-iOS 模型导入为系统文件选择器提供类型标识。ONNX、MNN、权重和模型归档等格式使用 `public.data`，允许选择未注册类型的文件；真正的模型完整性仍由导入时的文件名、长度与哈希校验决定。iOS MNN 目前已通过 ARM64 未签名构建与链接检查，模型推理尚待设备验收；LiteRT-LM 的应用接入仍仅限 Android。
+iOS 模型导入为系统文件选择器提供类型标识。ONNX、MNN、权重和模型归档等格式使用 `public.data`，允许选择未注册类型的文件；真正的模型完整性仍由导入时的文件名、长度与哈希校验决定。iOS MNN 与 LiteRT-LM 已接入原生运行库，具体模拟器证据与真机待验收范围见 [iOS 适配与验收](ios-development.md)。
 
 ## 调用与资源
 
@@ -21,11 +21,11 @@ iOS 模型导入为系统文件选择器提供类型标识。ONNX、MNN、权重
   → LocalLlmCoordinator
   → RoutingLocalLlmEngine
     ├── MnnLocalLlmEngine → FFI → C++ bridge
-    └── LiteRtLmEngine → Android 通道 → 独立推理进程
+    └── LiteRtLmEngine → 平台通道 → Android 独立进程 / iOS Swift SDK
 ```
 
 - `LocalAssistantService` 协调模型加载、取消和卸载。同一时间运行一个生成任务，并与听写、转写、朗读协调资源。生成结束后空闲两分钟卸载，后台或内存压力下提前释放。
-- 服务默认加载参数为 4096 token、2–4 个线程，思考模式关闭。Android 优先选用 OpenCL，iOS 上 MNN 优先选用 Metal。引擎能力和运行时探测决定实际可用后端。
+- 服务默认加载参数为 4096 token、2–4 个线程，思考模式关闭。Android 优先选用 OpenCL，iOS 真机上 MNN 优先选用 Metal，模拟器根据原生运行库返回的能力跳过 GPU、使用 CPU。引擎能力和运行时探测决定实际可用后端。
 - 图片导入校验格式与分辨率、修正方向并缩放到最长边 2048，保存为 JPEG。单图上限 20 MB、4000 万像素。会话每次生成最多携带最近四张图片和一个音频附件。
 - 附件从应用私有目录解析，原生端复核文件与输入能力。多模态预填充按模型处理实际图像或音频。编辑器插入结果可以一次撤销。
 - 模型及推理缓存独立于笔记备份。对话快照的导出规则见[备份与手动云同步](cloud-sync.md#备份范围)。
@@ -39,7 +39,9 @@ iOS 模型导入为系统文件选择器提供类型标识。ONNX、MNN、权重
 
 ## 原生运行库
 
-Android Gradle / CMake 与 iOS Xcode 使用 [prepare_mnn_runtime.sh](../tool/prepare_mnn_runtime.sh) 下载固定版本的 MNN 压缩包，校验 SHA-256 后解压到构建缓存。更新 MNN 时同步更新两端校验值，检查桥接头文件和 ABI，再重新构建。LiteRT-LM 依赖版本维护在 [Android Gradle 配置](../android/app/build.gradle.kts)。
+Android Gradle / CMake 与 iPhone Xcode 构建使用 [prepare_mnn_runtime.sh](../tool/prepare_mnn_runtime.sh) 下载固定版本的 MNN 压缩包，校验 SHA-256 后解压到构建缓存。更新 MNN 时同步更新两端校验值，检查桥接头文件和 ABI，再重新构建。
+
+ARM64 iOS 模拟器使用 [prepare_mnn_ios_simulator.py](../tool/prepare_mnn_ios_simulator.py) 从校验和固定的同版本官方源码编译 CPU 静态库，启用 LLM、图像和音频模块；与真机库分别缓存，不能交换切片。首次需要 CMake 和联网，后续验证缓存后复用。模拟器不用于评价 GPU、真机速度或内存上限。LiteRT-LM 依赖维护在 [Android Gradle 配置](../android/app/build.gradle.kts) 与 `third_party/litert_lm`。
 
 ## 验收
 

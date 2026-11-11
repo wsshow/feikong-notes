@@ -33,7 +33,7 @@ UPDATE_ARGS := $(if $(strip $(FKNOTES_UPDATE_MANIFEST_URL)),--dart-define="FKNOT
 DEVICE_ARG := $(if $(DEVICE),-d $(DEVICE))
 
 .DEFAULT_GOAL := help
-.PHONY: help doctor get upgrade outdated format analyze test check check-ios ios-archive \
+.PHONY: help doctor get upgrade outdated format analyze test check check-ios check-ios-simulator ios-archive \
 	devices emulators run run-android run-ios run-macos clean clean-all \
 	debug debug-overlay package release android-release apk-debug apk-debug-split apk apk-split aab ios macos linux windows web
 
@@ -79,6 +79,9 @@ check-ios: ## iOS 无设备检查：锁定依赖、测试、未签名构建与�
 	$(FLUTTER) build ios --release --no-codesign --no-pub
 	python3 tool/verify_ios_bundle.py
 	python3 tool/ios_privacy_report.py build/ios/iphoneos/Runner.app --output build/ios/privacy-report.json
+
+check-ios-simulator: ## ARM64 模拟器真实 OCR 与 MNN CPU 验证（独立应用、公开测试模型）
+	python3 tool/run_ios_simulator_checks.py --device $(if $(DEVICE),$(DEVICE),booted) --flutter $(FLUTTER)
 
 devices: ## 列出可用设备
 	$(FLUTTER) devices

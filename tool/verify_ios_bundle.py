@@ -62,7 +62,7 @@ def verify(app):
 
     runner_symbols = symbols(binary)
     mnn_functions = {
-        "_fk_mnn_is_available", "_fk_mnn_runtime_version", "_fk_mnn_load_async",
+        "_fk_mnn_is_available", "_fk_mnn_backend_mask", "_fk_mnn_runtime_version", "_fk_mnn_load_async",
         "_fk_mnn_generate_async", "_fk_mnn_cancel", "_fk_mnn_unload_async", "_fk_mnn_free",
     }
     missing = mnn_functions - runner_symbols

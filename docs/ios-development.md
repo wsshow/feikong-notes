@@ -4,7 +4,7 @@ iOS 当前处于适配阶段，尚未作为正式支持平台发布。本阶段�
 
 ## 本地检查
 
-需要 macOS、Xcode（含 iOS SDK）、Flutter 3.47.2、CocoaPods 和 Python 3。最低部署目标为 iOS 15.0。插件采用 Flutter Swift Package Manager，sherpa 保留 CocoaPods 回退；依赖锁定在 `pubspec.lock`、`ios/Podfile.lock` 和 Xcode 工作区的 `Package.resolved`。LiteRT-LM 使用 `third_party/litert_lm` 中固定 0.14.0 的官方 Swift 包装层与校验和锁定的 iOS 二进制。不要通过升级依赖或修改 Pub 缓存绕过构建错误。
+需要 macOS、Xcode（含 iOS SDK）、Flutter 3.47.2、CocoaPods 和 Python 3；构建 MNN 模拟器版本还需 CMake（`brew install cmake`）。最低部署目标为 iOS 15.0。插件采用 Flutter Swift Package Manager，sherpa 保留 CocoaPods 回退；依赖锁定在 `pubspec.lock`、`ios/Podfile.lock` 和 Xcode 工作区的 `Package.resolved`。LiteRT-LM 使用 `third_party/litert_lm` 中固定 0.14.0 的官方 Swift 包装层与校验和锁定的 iOS 二进制。不要通过升级依赖或修改 Pub 缓存绕过构建错误。
 
 ```bash
 make check-ios
@@ -36,9 +36,9 @@ python3 tool/prepare_ios_preview.py --device booted
 
 也可将 `booted` 换为 `xcrun simctl list devices available` 中已启动模拟器的 UUID。工具复制当前工作区的 Git 跟踪文件到 `build/ios-preview/workspace`，构建 ARM64 Debug 版本，覆盖安装并打开“非空笔记预览”。预览使用独立包名 `com.fknotes.app.preview` 与 App Group，保留其自身数据，不覆盖正式应用。
 
-预览与正式工程使用同一 OCR 实现，已通过模拟器中文/英文、空图片、损坏图片及识别器重复使用测试。MNN 暂时使用无运行库分支。其他能力仍以实际运行结果为准，模拟器不能代替麦克风、相机、系统认证和模型性能的设备测试。LiteRT-LM 固定 SDK 只有 ARM64 模拟器切片，因此预览不构建 x86_64。
+预览与正式工程使用同一 OCR 实现，已通过模拟器中文/英文、空图片、损坏图片及识别器重复使用测试。MNN 从固定 3.6.0 官方源码编译 ARM64 模拟器静态库，启用 LLM、图像和音频模块，使用 CPU；保留真机的 Metal/CPU 路径。其他能力仍以实际运行结果为准，模拟器不能代替麦克风、相机、系统认证和模型性能的设备测试。LiteRT-LM 固定 SDK 只有 ARM64 模拟器切片，因此预览不构建 x86_64。
 
-预览只修改复制工作区的应用标识与显示名称，并暂时跳过 MNN 真机库准备；预览工作区不用于签名发布。仅准备工作区时省略 `--device`。再次运行会复制最新源码并更新同一预览应用。
+预览只修改复制工作区的应用标识与显示名称，MNN 模拟器运行库通过构建缓存链接复用；预览工作区不用于签名发布。仅准备工作区时省略 `--device`。再次运行会复制最新源码并更新同一预览应用。
 
 真实 OCR 回归使用合成图片，不读取用户笔记：
 
@@ -50,6 +50,16 @@ flutter test integration_test/ios_ocr_smoke_test.dart -d <模拟器 ID> --no-pub
 ```
 
 SwiftPM 的 permission_handler 根据 Runner/Info.plist 配置权限实现，麦克风用途声明须保留；CocoaPods 中的宏只用于回退路径。定位只声明使用期间权限，不增加后台定位用途。
+
+同时运行真实 OCR 和 MNN 回归：
+
+```bash
+make check-ios-simulator DEVICE=<模拟器 UUID>
+```
+
+该流程先构建、检查并安装独立 `com.fknotes.app.validation` 应用，再下载约 142 MB 的 [SmolLM2-135M 测试模型](https://huggingface.co/taobao-mnn/SmolLM2-135M-Instruct-MNN) 并仅写入验证应用容器。模型固定提交 `b4fabed0f3925d4158fe470da88a179cfd31d8bc` 与逐文件 SHA-256；只将验证容器中的配置改为 greedy 采样，下载缓存保留原样，生成请求只包含合成文本。测试检查 CPU 能力、从 Metal 偏好回退、实际流式输出、取消、卸载后再次加载；它不下载模型到用户的正式/预览应用，也不调用在线推理服务。
+
+MNN 构建脚本校验官方源码归档、ARM64 架构和 iOS Simulator 平台，记录工具链、编译参数及产物校验和；缓存位于 `build/mnn-ios-simulator`。同版本同时启用图像/音频模块只代表已编译，相关模型、多模态输入和内存压力仍需另行运行验收。
 
 已在 iOS 27.2 / iPhone 17 模拟器验证 ARM64 构建、安装及启动至中文首页；这不代表下表中的真机项目已验收。
 
@@ -64,7 +74,7 @@ SwiftPM 的 permission_handler 根据 Runner/Info.plist 配置权限实现，麦
 | OCR | 中文模块、中文/拉丁资源与 SDK 隐私声明已打包；ARM64 模拟器真实识别及异常/重复调用测试通过 | 中文照片/截图、方向、错误反馈及离线识别 |
 | 语音识别与朗读 | sherpa iOS 原生库及创建/销毁符号已打包；麦克风权限宏开启 | SenseVoice、Zipformer、Kokoro 的真实加载、识别/合成和音频路由 |
 | LiteRT-LM | 0.14.0 Swift SDK、Metal/CPU、文本/图像/音频、流式输出、取消、卸载及指标接入；未签名构建和运行库生命周期符号检查通过 | 模型实际加载、多模态输出、GPU 回退、长上下文、内存压力 |
-| MNN | LLM 实现及 FFI 已链接，通用引擎测试保留 | CPU/Metal、文本/图像、取消、内存压力和后台释放 |
+| MNN | LLM 实现及 FFI 已链接；ARM64 模拟器中 SmolLM2-135M 的 CPU 加载、流式文本、取消后恢复、卸载重载通过 | 真机 CPU/Metal、图像/音频模型、内存压力和后台释放 |
 | 编辑器图片拖入 | iOS UIDropInteraction 复用 Delta 插入协议；10 张 / 单张 20 MB；流式复制、回收临时文件、锁定/遮挡/非当前路由拒绝导入 | 跨应用拖拽、拖入位置、iPad 多窗口手势与安全区 |
 | 系统分享接收 | 独立 Share Extension + App Group 收件箱；文字、链接和附件；原子入队、限额、取消、损坏项可丢弃；复用解锁后确认导入 | 签名后的 App Group、Safari/照片/Files 分享、扩展被系统终止、磁盘不足 |
 | 笔记提醒 | UserNotifications 权限、每篇一条、修改/删除、恢复暂停及重新调度、冷/热启动待跳转；只读 SQLite 与路由回归通过 | 通知投递、点击、拒绝权限、时区/系统时间变化、64 条容量 |

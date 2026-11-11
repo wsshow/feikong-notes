@@ -530,6 +530,20 @@ int32_t fk_mnn_is_available(void) {
 #endif
 }
 
+int32_t fk_mnn_backend_mask(void) {
+#if !defined(FKNOTES_MNN_RUNTIME)
+    return 0;
+#elif defined(FKNOTES_MNN_CPU_ONLY)
+    return 1;
+#elif defined(__ANDROID__)
+    return 1 | 2 | 4;
+#elif defined(__APPLE__)
+    return 1 | 8;
+#else
+    return 1;
+#endif
+}
+
 const char* fk_mnn_runtime_version(void) {
     return kRuntimeVersion;
 }

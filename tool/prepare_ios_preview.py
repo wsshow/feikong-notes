@@ -2,7 +2,7 @@
 
 Run flutter pub get at the repository root first. The generated workspace uses
 the current tracked working files, not an older Git commit. OCR uses the same Chinese ML Kit runtime as the device build.
-MNN retains its existing unavailable-runtime implementation on the simulator.
+MNN uses the pinned source-built ARM64 CPU runtime on the simulator.
 """
 import argparse
 import datetime
@@ -15,12 +15,6 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 PREVIEW_ID = "com.fknotes.app.preview"
-
-
-def replace_once(text, old, new):
-    if text.count(old) != 1:
-        raise ValueError(f"Preview recipe no longer matches source: {old}")
-    return text.replace(old, new, 1)
 
 
 def simulator_app(developer):
@@ -48,7 +42,6 @@ def prepare(root=ROOT):
     if "FKNOTES_BUNDLE_ID = com.fknotes.app;" not in text:
         raise ValueError("Preview recipe cannot locate the production bundle identifier")
     text = text.replace("FKNOTES_BUNDLE_ID = com.fknotes.app;", f"FKNOTES_BUNDLE_ID = {PREVIEW_ID};")
-    text = replace_once(text, "\t\t\t\tA11C0DE10000000000000003 /* Prepare MNN Runtime */,\n", "")
     project.write_text(text)
     for path in [workspace / "ios/Runner/Info.plist", workspace / "ios/ShareExtension/Info.plist"]:
         data = plistlib.loads(path.read_bytes())
@@ -59,7 +52,15 @@ def prepare(root=ROOT):
         path.write_text(re.sub(r'"CFBundleDisplayName" = "[^"]*";', f'"CFBundleDisplayName" = "{title}";', path.read_text()))
     print(workspace)
     print(f"Build only with --simulator and FLUTTER_XCODE_FKNOTES_BUNDLE_ID={PREVIEW_ID}")
-    print("MNN is unavailable. This is not a device acceptance build.")
+    # Reuse the verified source build across preview copies; no SDK binaries
+    # or absolute host paths are committed. The builder resolves this symlink.
+    cache = root / "build/mnn-ios-simulator"
+    cache.mkdir(parents=True, exist_ok=True)
+    preview_cache = workspace / "build/mnn-ios-simulator"
+    preview_cache.parent.mkdir(parents=True, exist_ok=True)
+    if not preview_cache.exists() and not preview_cache.is_symlink():
+        preview_cache.symlink_to(cache.resolve(), target_is_directory=True)
+    print("OCR and MNN CPU are enabled. This is not a device acceptance build.")
     return workspace
 
 

@@ -5,4 +5,11 @@ CLANG_CXX_LANGUAGE_STANDARD = c++17
 // Dart resolves FFI entry points dynamically. Archive's default "all" strip
 // removes their exported names even though -u keeps the implementation linked.
 STRIP_STYLE[sdk=iphoneos*] = non-global
-OTHER_LDFLAGS[sdk=iphoneos*] = $(inherited) -framework MNN -framework Foundation -framework UIKit -framework Metal -framework CoreML -framework Accelerate -lc++ -Wl,-u,_fk_mnn_is_available -Wl,-u,_fk_mnn_runtime_version -Wl,-u,_fk_mnn_load_async -Wl,-u,_fk_mnn_generate_async -Wl,-u,_fk_mnn_cancel -Wl,-u,_fk_mnn_unload_async -Wl,-u,_fk_mnn_free
+OTHER_LDFLAGS[sdk=iphoneos*] = $(inherited) -framework MNN -framework Foundation -framework UIKit -framework Metal -framework CoreML -framework Accelerate -lc++ -Wl,-u,_fk_mnn_backend_mask -Wl,-u,_fk_mnn_is_available -Wl,-u,_fk_mnn_runtime_version -Wl,-u,_fk_mnn_load_async -Wl,-u,_fk_mnn_generate_async -Wl,-u,_fk_mnn_cancel -Wl,-u,_fk_mnn_unload_async -Wl,-u,_fk_mnn_free
+
+// The simulator uses a separately compiled ARM64 CPU runtime, never an iPhone slice.
+MNN_SIMULATOR_DIR = $(PROJECT_DIR)/../build/mnn-ios-simulator
+FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*] = $(inherited) "$(MNN_SIMULATOR_DIR)"
+GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*] = $(inherited) FKNOTES_MNN_RUNTIME=1 FKNOTES_MNN_CPU_ONLY=1
+STRIP_STYLE[sdk=iphonesimulator*] = non-global
+OTHER_LDFLAGS[sdk=iphonesimulator*] = $(inherited) -framework MNN -framework Foundation -framework UIKit -framework Accelerate -lc++ -Wl,-u,_fk_mnn_backend_mask -Wl,-u,_fk_mnn_is_available -Wl,-u,_fk_mnn_runtime_version -Wl,-u,_fk_mnn_load_async -Wl,-u,_fk_mnn_generate_async -Wl,-u,_fk_mnn_cancel -Wl,-u,_fk_mnn_unload_async -Wl,-u,_fk_mnn_free

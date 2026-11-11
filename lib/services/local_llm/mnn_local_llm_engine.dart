@@ -84,15 +84,7 @@ class MnnLocalLlmEngine
         toolCalling: true,
         imageInput: true,
         audioInput: true,
-        backends: Platform.isAndroid
-            ? const {
-                LocalLlmBackend.cpu,
-                LocalLlmBackend.openCl,
-                LocalLlmBackend.vulkan,
-              }
-            : Platform.isIOS
-            ? const {LocalLlmBackend.cpu, LocalLlmBackend.metal}
-            : const {},
+        backends: _transport.supportedBackends,
       ),
     );
   }
@@ -131,7 +123,9 @@ class MnnLocalLlmEngine
       ),
     );
     try {
-      final candidates = _backendCandidates(options.backend);
+      final candidates = _backendCandidates(
+        options.backend,
+      ).where(_transport.supportedBackends.contains).toList();
       Object? lastError;
       StackTrace? lastStackTrace;
       for (var index = 0; index < candidates.length; index++) {

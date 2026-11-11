@@ -35,6 +35,25 @@ void main() {
     generationOptions: generationOptions,
   );
 
+  test('CPU-only runtime skips unavailable GPU preferences', () async {
+    final transport = _FakeMnnTransport(
+      supportedBackends: const {LocalLlmBackend.cpu},
+    );
+    final engine = MnnLocalLlmEngine(
+      transport: transport,
+      supportDirectoryProvider: () async => temporaryDirectory,
+    );
+    expect((await engine.probe()).capabilities.backends, {LocalLlmBackend.cpu});
+    await engine.loadModel(
+      model(),
+      options: const LocalLlmLoadOptions(backend: LocalLlmBackend.metal),
+    );
+    expect(transport.loadBackends, [LocalLlmBackend.cpu]);
+    expect(engine.activeBackend, LocalLlmBackend.cpu);
+    await engine.unload();
+    expect(engine.state, LocalLlmEngineState.idle);
+  });
+
   test('loads model and maps native generation metrics', () async {
     final transport = _FakeMnnTransport();
     final engine = MnnLocalLlmEngine(
@@ -345,6 +364,8 @@ void main() {
 }
 
 class _FakeMnnTransport implements MnnNativeTransport {
+  @override
+  final Set<LocalLlmBackend> supportedBackends;
   final bool blockGeneration;
   final bool failAcceleratedLoad;
   final Set<LocalLlmBackend> failedBackends;
@@ -356,6 +377,12 @@ class _FakeMnnTransport implements MnnNativeTransport {
   LocalLlmGenerationRequest? lastRequest;
 
   _FakeMnnTransport({
+    this.supportedBackends = const {
+      LocalLlmBackend.cpu,
+      LocalLlmBackend.openCl,
+      LocalLlmBackend.vulkan,
+      LocalLlmBackend.metal,
+    },
     this.blockGeneration = false,
     this.failAcceleratedLoad = false,
     this.failedBackends = const {},

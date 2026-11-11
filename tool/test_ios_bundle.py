@@ -60,7 +60,7 @@ class IosBundleTest(unittest.TestCase):
         self.ocr = self.app / "ChineseOCRResources.bundle/model.bincfg"
         self.ocr.write_bytes(b"synthetic model")
         self.runner = {
-            "_fk_mnn_is_available", "_fk_mnn_runtime_version", "_fk_mnn_load_async",
+            "_fk_mnn_is_available", "_fk_mnn_backend_mask", "_fk_mnn_runtime_version", "_fk_mnn_load_async",
             "_fk_mnn_generate_async", "_fk_mnn_cancel", "_fk_mnn_unload_async", "_fk_mnn_free",
             "__ZN3MNN11Transformer3Llm9createLLM_test",
             "_OBJC_CLASS_$_MLKChineseTextRecognizerOptions",

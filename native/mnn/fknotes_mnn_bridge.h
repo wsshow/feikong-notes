@@ -29,6 +29,8 @@ enum FkMnnEventType {
 };
 
 FKNOTES_MNN_EXPORT int32_t fk_mnn_is_available(void);
+// Bit mask: CPU=1, OpenCL=2, Vulkan=4, Metal=8.
+FKNOTES_MNN_EXPORT int32_t fk_mnn_backend_mask(void);
 FKNOTES_MNN_EXPORT const char* fk_mnn_runtime_version(void);
 FKNOTES_MNN_EXPORT int32_t fk_mnn_load_async(
     int64_t request_id,

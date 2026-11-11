@@ -556,19 +556,21 @@
 		};
 		A11C0DE10000000000000003 /* Prepare MNN Runtime */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 				"$(PROJECT_DIR)/../tool/prepare_mnn_runtime.sh",
+				"$(PROJECT_DIR)/../tool/prepare_mnn_ios_simulator.py",
 			);
 			name = "Prepare MNN Runtime";
 			outputPaths = (
-				"$(PROJECT_DIR)/../build/mnn-ios-runtime/.ready-3.6.0-split-v4",
+				"$(DERIVED_FILE_DIR)/mnn-$(PLATFORM_NAME).ready",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$PROJECT_DIR/../tool/prepare_mnn_runtime.sh\" \"$PROJECT_DIR/../build/mnn-ios-runtime\"";
+			shellScript = "set -eu\nif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then\n  python3 \"$PROJECT_DIR/../tool/prepare_mnn_ios_simulator.py\" \"$MNN_SIMULATOR_DIR\"\nelse\n  \"$PROJECT_DIR/../tool/prepare_mnn_runtime.sh\" \"$PROJECT_DIR/../build/mnn-ios-runtime\"\nfi\ntouch \"$DERIVED_FILE_DIR/mnn-$PLATFORM_NAME.ready\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
