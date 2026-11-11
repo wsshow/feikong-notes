@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 enum AndroidExternalDropEventType { entered, updated, exited, done }
@@ -31,8 +34,9 @@ final class AndroidExternalDropEvent {
 }
 
 typedef AndroidExternalDropListener =
-    void Function(AndroidExternalDropEvent event);
+    bool Function(AndroidExternalDropEvent event);
 
+/// Historical Android name; iOS implements the same owned-file protocol.
 final class AndroidExternalDropService {
   AndroidExternalDropService._();
 
@@ -44,6 +48,7 @@ final class AndroidExternalDropService {
 
   void addListener(AndroidExternalDropListener listener) {
     _listeners.add(listener);
+    _updateNativeEnabled();
     if (_initialized) return;
     _initialized = true;
     _channel.setMethodCallHandler(_handleMethodCall);
@@ -51,6 +56,20 @@ final class AndroidExternalDropService {
 
   void removeListener(AndroidExternalDropListener listener) {
     _listeners.remove(listener);
+    _updateNativeEnabled();
+  }
+
+  void _updateNativeEnabled() {
+    if (defaultTargetPlatform != TargetPlatform.iOS) return;
+    unawaited(_setEnabled());
+  }
+
+  Future<void> _setEnabled() async {
+    try {
+      await _channel.invokeMethod<void>('setEnabled', _listeners.isNotEmpty);
+    } on MissingPluginException {
+      // Widget tests and hosts without the optional native drop bridge.
+    }
   }
 
   Future<void> deleteTemporaryFiles(Iterable<String> paths) async {
@@ -88,8 +107,15 @@ final class AndroidExternalDropService {
       _ => null,
     };
     if (event == null) return;
-    for (final listener in List.of(_listeners)) {
-      listener(event);
+    var claimed = false;
+    for (final listener in List.of(_listeners).reversed) {
+      if (listener(event)) {
+        claimed = true;
+        break;
+      }
+    }
+    if (!claimed && event.type == AndroidExternalDropEventType.done) {
+      await deleteTemporaryFiles(event.files.map((file) => file.path));
     }
   }
 

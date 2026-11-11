@@ -37,6 +37,7 @@ python3 -m unittest discover -s tool -p 'test_ios_*.py'
 | 语音识别与朗读 | sherpa iOS 原生库及创建/销毁符号已打包；麦克风权限宏开启 | SenseVoice、Zipformer、Kokoro 的真实加载、识别/合成和音频路由 |
 | LiteRT-LM | 0.14.0 Swift SDK、Metal/CPU、文本/图像/音频、流式输出、取消、卸载及指标接入；未签名构建和运行库生命周期符号检查通过 | 模型实际加载、多模态输出、GPU 回退、长上下文、内存压力 |
 | MNN | LLM 实现及 FFI 已链接，通用引擎测试保留 | CPU/Metal、文本/图像、取消、内存压力和后台释放 |
+| 编辑器图片拖入 | iOS UIDropInteraction 复用 Delta 插入协议；10 张 / 单张 20 MB；流式复制、回收临时文件、锁定/遮挡/非当前路由拒绝导入 | 跨应用拖拽、拖入位置、iPad 多窗口手势与安全区 |
 | 系统分享接收 | 独立 Share Extension + App Group 收件箱；文字、链接和附件；原子入队、限额、取消、损坏项可丢弃；复用解锁后确认导入 | 签名后的 App Group、Safari/照片/Files 分享、扩展被系统终止、磁盘不足 |
 | 笔记提醒 | UserNotifications 权限、每篇一条、修改/删除、恢复暂停及重新调度、冷/热启动待跳转；只读 SQLite 与路由回归通过 | 通知投递、点击、拒绝权限、时区/系统时间变化、64 条容量 |
 | 数据与在线助手 | 共用数据、权限和协议层测试 | Android ↔ iOS 备份、同步冲突、Keychain、系统认证与联网 |

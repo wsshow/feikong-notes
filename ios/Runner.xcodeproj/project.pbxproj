@@ -33,6 +33,7 @@
 		B2F24F5EDE95854FF6B82E14 /* ShareInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBDFDD1779E8DEC9F8DB6BE /* ShareInbox.swift */; };
 		C2BB3DF669180A2565631E43 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224D21198C6C785A07AED4A3 /* Pods_Runner.framework */; };
 		D746B4258F8E66D4417E27CD /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 603867E51ECA1DF49E7A404C /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		EF63659FE97BE88C00711258 /* ExternalImageDropBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4251F5F75BC7320544F6E9; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,6 +120,7 @@
 		E1EA4A5F6F67BC80E1F7EF63 /* en */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EF69AA80D8F5778720431564 /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		FA8DAF330C047AB52A4A62A0 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		AD4251F5F75BC7320544F6E9 /* ExternalImageDropBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalImageDropBridge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +210,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				AD4251F5F75BC7320544F6E9 /* ExternalImageDropBridge.swift */,
 				98C9C8226F4A3955CF1DE37E /* IncomingShareBridge.swift */,
 				DDBDFDD1779E8DEC9F8DB6BE /* ShareInbox.swift */,
 				B336977C907C6904F52EC275 /* NoteReminderBridge.swift */,
@@ -551,6 +554,7 @@
 				A11052000000000000000002 /* AudioDecodeBridge.swift in Sources */,
 				A11052000000000000000003 /* FileExportBridge.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				EF63659FE97BE88C00711258 /* ExternalImageDropBridge.swift in Sources */,
 				67769200534B6759CC020515 /* IncomingShareBridge.swift in Sources */,
 				B2F24F5EDE95854FF6B82E14 /* ShareInbox.swift in Sources */,
 				191DA3C72C38E019A68569C8 /* NoteReminderBridge.swift in Sources */,

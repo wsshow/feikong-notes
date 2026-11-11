@@ -40,8 +40,8 @@ typedef NoteExternalImageDropHandler =
 
 /// Cross-application file drop target for the note editor.
 ///
-/// Android drops are copied into app-owned cache files by the activity before
-/// URI permissions expire. Other platforms use [DropTarget]'s [XFile] values.
+/// Mobile drops are copied into app-owned cache files by the activity before
+/// provider permissions expire. Other platforms use [DropTarget]'s [XFile] values.
 final class NoteExternalImageDropRegion extends StatefulWidget {
   const NoteExternalImageDropRegion({
     required this.enabled,
@@ -65,21 +65,23 @@ final class NoteExternalImageDropRegion extends StatefulWidget {
 
 final class _NoteExternalImageDropRegionState
     extends State<NoteExternalImageDropRegion> {
-  bool get _usesAndroidBridge =>
-      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+  bool get _usesNativeBridge =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
 
   @override
   void initState() {
     super.initState();
-    if (_usesAndroidBridge) {
-      AndroidExternalDropService.instance.addListener(_handleAndroidDrop);
+    if (_usesNativeBridge) {
+      AndroidExternalDropService.instance.addListener(_handleNativeDrop);
     }
   }
 
   @override
   void dispose() {
-    if (_usesAndroidBridge) {
-      AndroidExternalDropService.instance.removeListener(_handleAndroidDrop);
+    if (_usesNativeBridge) {
+      AndroidExternalDropService.instance.removeListener(_handleNativeDrop);
     }
     super.dispose();
   }
@@ -87,7 +89,7 @@ final class _NoteExternalImageDropRegionState
   @override
   Widget build(BuildContext context) => DropTarget(
     key: const Key('note-external-image-drop-region'),
-    enable: widget.enabled && !_usesAndroidBridge,
+    enable: widget.enabled && !_usesNativeBridge,
     onDragEntered: (details) => _updateDrag(details.globalPosition),
     onDragUpdated: (details) => _updateDrag(details.globalPosition),
     onDragExited: (_) => widget.onDropActiveChanged(false),
@@ -114,8 +116,27 @@ final class _NoteExternalImageDropRegionState
     widget.onDropActiveChanged(documentOffset != null);
   }
 
-  void _handleAndroidDrop(AndroidExternalDropEvent event) {
-    if (!mounted || !widget.enabled) return;
+  bool get _canReceive {
+    if (!mounted ||
+        !widget.enabled ||
+        ModalRoute.of(context)?.isCurrent == false) {
+      return false;
+    }
+    var blocked = false;
+    context.visitAncestorElements((element) {
+      final widget = element.widget;
+      if ((widget is AbsorbPointer && widget.absorbing) ||
+          (widget is IgnorePointer && widget.ignoring)) {
+        blocked = true;
+        return false;
+      }
+      return true;
+    });
+    return !blocked;
+  }
+
+  bool _handleNativeDrop(AndroidExternalDropEvent event) {
+    if (!_canReceive) return false;
     final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     final globalPosition = event.physicalPosition / devicePixelRatio;
     switch (event.type) {
@@ -127,14 +148,7 @@ final class _NoteExternalImageDropRegionState
       case AndroidExternalDropEventType.done:
         final documentOffset = widget.captureDocumentOffset(globalPosition);
         widget.onDropActiveChanged(false);
-        if (documentOffset == null) {
-          unawaited(
-            AndroidExternalDropService.instance.deleteTemporaryFiles(
-              event.files.map((file) => file.path),
-            ),
-          );
-          return;
-        }
+        if (documentOffset == null) return false;
         final files = event.files
             .map(
               (file) => _DroppedFileSource(
@@ -157,6 +171,7 @@ final class _NoteExternalImageDropRegionState
           ),
         );
     }
+    return true;
   }
 
   Future<void> _readAndDeliver(
@@ -170,6 +185,7 @@ final class _NoteExternalImageDropRegionState
       final images = values.whereType<NoteDroppedImage>().toList(
         growable: false,
       );
+      if (!_canReceive) return;
       await widget.onDropImages(
         NoteDroppedImageBatch(
           images: images,
