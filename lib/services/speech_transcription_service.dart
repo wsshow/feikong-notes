@@ -11,6 +11,7 @@ import '../debug/app_diagnostics.dart';
 import '../models/note.dart';
 import '../models/note_document.dart';
 import 'audio_decode_service.dart';
+import 'ios_foreground_work.dart';
 import 'file_storage_service.dart';
 import 'local_inference_coordinator.dart';
 import 'note_database_service.dart';
@@ -299,7 +300,12 @@ class SpeechTranscriptionService extends ChangeNotifier
     String? temporaryWave;
     LocalInferenceLease? inferenceLease;
     final stopwatch = Stopwatch()..start();
+    final foreground = IosForegroundWork(onSuspend: () => cancel(job.filePath));
     try {
+      if (foreground.interrupted) {
+        cancel(job.filePath);
+        return;
+      }
       inferenceLease = _inference.acquire(
         type: LocalInferenceTaskType.transcription,
         ownerId: job.key,
@@ -398,6 +404,7 @@ class SpeechTranscriptionService extends ChangeNotifier
         }
       }
     } finally {
+      foreground.dispose();
       inferenceLease?.release();
       job.worker = null;
       job.cancelWorker = null;
@@ -509,42 +516,52 @@ class SpeechTranscriptionService extends ChangeNotifier
       }
     });
 
-    worker = await Isolate.spawn<Map<String, Object>>(
-      _transcriptionWorker,
-      {
-        'sendPort': messages.sendPort,
-        'wavePath': wavePath,
-        'modelPath': modelPath,
-        'tokensPath': tokensPath,
-        'vadModelPath': vadModelPath,
-        'segmentationModelPath': segmentationModelPath,
-        'embeddingModelPath': embeddingModelPath,
-        'speakerCount': speakerCount ?? 0,
-        'nativeLibDir': nativeLibDir,
-      },
-      onError: errors.sendPort,
-      onExit: exits.sendPort,
-    );
-    if (job != null) {
-      job.worker = worker;
-      job.cancelWorker = () {
+    unawaited(completer.future.catchError((_) => ''));
+    final foreground = IosForegroundWork(
+      onSuspend: () {
         worker?.kill(priority: Isolate.immediate);
-        if (!completer.isCompleted) {
-          completer.completeError(const _TranscriptionCanceled());
-        }
-      };
-      if (job.status == TranscriptionStatus.canceled) job.cancelWorker!();
-    }
+        completeError(const _TranscriptionCanceled());
+      },
+    );
     try {
+      if (foreground.interrupted) throw const _TranscriptionCanceled();
+      worker = await Isolate.spawn<Map<String, Object>>(
+        _transcriptionWorker,
+        {
+          'sendPort': messages.sendPort,
+          'wavePath': wavePath,
+          'modelPath': modelPath,
+          'tokensPath': tokensPath,
+          'vadModelPath': vadModelPath,
+          'segmentationModelPath': segmentationModelPath,
+          'embeddingModelPath': embeddingModelPath,
+          'speakerCount': speakerCount ?? 0,
+          'nativeLibDir': nativeLibDir,
+        },
+        onError: errors.sendPort,
+        onExit: exits.sendPort,
+      );
+      if (foreground.interrupted) throw const _TranscriptionCanceled();
+      if (job != null) {
+        job.worker = worker;
+        job.cancelWorker = () {
+          worker?.kill(priority: Isolate.immediate);
+          if (!completer.isCompleted) {
+            completer.completeError(const _TranscriptionCanceled());
+          }
+        };
+        if (job.status == TranscriptionStatus.canceled) job.cancelWorker!();
+      }
       return await completer.future;
     } finally {
+      foreground.dispose();
       await messageSubscription.cancel();
       await errorSubscription.cancel();
       await exitSubscription.cancel();
       messages.close();
       errors.close();
       exits.close();
-      worker.kill(priority: Isolate.immediate);
+      worker?.kill(priority: Isolate.immediate);
     }
   }
 

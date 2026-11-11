@@ -18,6 +18,7 @@ import 'realtime_dictation_text_policy.dart';
 import 'local_inference_coordinator.dart';
 import 'speech_denoiser_model_service.dart';
 import 'speech_transcription_service.dart';
+import 'ios_foreground_work.dart';
 import 'streaming_speech_model_service.dart';
 
 enum RealtimeDictationStatus { idle, preparing, listening, stopping, failed }
@@ -89,6 +90,8 @@ class RealtimeDictationService extends ChangeNotifier {
   Completer<String>? _resultCompleter;
   Future<void>? _cleanupFuture;
   int _sessionGeneration = 0;
+  IosForegroundWork? _foreground;
+  Future<void>? _starting;
   Timer? _timer;
   int _debugSamples = 0;
   int _debugNonZeroSamples = 0;
@@ -247,12 +250,32 @@ class RealtimeDictationService extends ChangeNotifier {
   }
 
   Future<void> start() async {
+    final pending = _starting;
+    if (pending != null) await pending;
+    if (isActive) return;
+    final operation = _startSession();
+    _starting = operation;
+    try {
+      await operation;
+    } finally {
+      if (identical(_starting, operation)) _starting = null;
+    }
+  }
+
+  Future<void> _startSession() async {
     if (isActive) return;
     final pendingCleanup = _cleanupFuture;
     if (pendingCleanup != null) await pendingCleanup;
     if (isActive) return;
     final sessionGeneration = ++_sessionGeneration;
     status = RealtimeDictationStatus.preparing;
+    _foreground = IosForegroundWork(
+      onSuspend: () => unawaited(suspendForBackground()),
+    );
+    if (_foreground!.interrupted) {
+      await suspendForBackground();
+      return;
+    }
     committedText = '';
     partialText = '';
     errorMessage = null;
@@ -305,6 +328,7 @@ class RealtimeDictationService extends ChangeNotifier {
         ownerId: 'live-dictation',
       );
       final model = await _models.inspect(verifyIntegrity: true);
+      if (sessionGeneration != _sessionGeneration) return;
       _debugModelId = model.modelId;
       _debugModelName = model.displayName;
       _debugEvent(
@@ -315,6 +339,7 @@ class RealtimeDictationService extends ChangeNotifier {
         throw StateError(model.problem ?? '请先下载实时语音输入模型');
       }
       final preferences = await _preferences.load();
+      if (sessionGeneration != _sessionGeneration) return;
       _debugHotwordsCount = preferences.hotwords.length;
       _debugHotwordsScore = preferences.hotwordsScore;
       _debugEvent(
@@ -326,6 +351,7 @@ class RealtimeDictationService extends ChangeNotifier {
       var denoiserModelPath = '';
       if (preferences.noiseSuppressionEnabled) {
         final denoiser = await _denoiserModels.inspect(verifyIntegrity: true);
+        if (sessionGeneration != _sessionGeneration) return;
         if (!denoiser.installed) {
           throw StateError(denoiser.problem ?? '请先下载实时降噪模型');
         }
@@ -339,7 +365,8 @@ class RealtimeDictationService extends ChangeNotifier {
       if (preferences.twoPassEnabled &&
           await _transcription.realtimeRefinementAvailable()) {
         try {
-          await _prepareRefinementCapture();
+          await _prepareRefinementCapture(sessionGeneration);
+          if (sessionGeneration != _sessionGeneration) return;
           _debugTwoPassStatus = '等待录音完成';
           _debugEvent('结束后精修: 已启用，SenseVoice 可用');
         } catch (error) {
@@ -351,8 +378,10 @@ class RealtimeDictationService extends ChangeNotifier {
         _debugEvent('结束后精修: $_debugTwoPassStatus');
       }
       var permission = await Permission.microphone.status;
+      if (sessionGeneration != _sessionGeneration) return;
       if (!permission.isGranted) {
         permission = await Permission.microphone.request();
+        if (sessionGeneration != _sessionGeneration) return;
       }
       if (!permission.isGranted) throw StateError('需要麦克风权限才能实时听写');
       _debugEvent('麦克风权限: granted');
@@ -362,11 +391,13 @@ class RealtimeDictationService extends ChangeNotifier {
         denoiserModelPath,
         sessionGeneration,
       );
+      if (sessionGeneration != _sessionGeneration) return;
       final recorder = AudioRecorder();
       _recorder = recorder;
       final supported = await recorder.isEncoderSupported(
         AudioEncoder.pcm16bits,
       );
+      if (sessionGeneration != _sessionGeneration) return;
       if (!supported) throw UnsupportedError('当前设备不支持 PCM 实时录音');
       _debugEvent('PCM16 编码支持: true');
       final audio = await recorder.startStream(
@@ -389,6 +420,10 @@ class RealtimeDictationService extends ChangeNotifier {
           streamBufferSize: 3200,
         ),
       );
+      if (sessionGeneration != _sessionGeneration) {
+        await recorder.dispose();
+        return;
+      }
       _audioSubscription = audio.listen(
         _sendAudio,
         onError: (Object error) => _fail(error, sessionGeneration),
@@ -402,6 +437,7 @@ class RealtimeDictationService extends ChangeNotifier {
       });
       notifyListeners();
     } catch (error) {
+      if (sessionGeneration != _sessionGeneration) return;
       _debugEvent('启动失败: $error');
       await _cleanup(killWorker: true);
       status = RealtimeDictationStatus.failed;
@@ -413,12 +449,14 @@ class RealtimeDictationService extends ChangeNotifier {
 
   Future<String> stop() async {
     if (!isActive) return text;
+    final sessionGeneration = _sessionGeneration;
     status = RealtimeDictationStatus.stopping;
     _debugEvent('用户请求完成，进入 stopping');
     _timer?.cancel();
     notifyListeners();
     try {
       await _recorder?.stop();
+      if (sessionGeneration != _sessionGeneration) return text;
       await _audioSubscription?.cancel();
       _audioSubscription = null;
       _commandPort?.send(const {'type': 'stop'});
@@ -426,9 +464,11 @@ class RealtimeDictationService extends ChangeNotifier {
           await (_resultCompleter?.future ?? Future.value(text)).timeout(
             const Duration(seconds: 12),
           );
+      if (sessionGeneration != _sessionGeneration) return text;
       committedText = streamingResult.trim();
       partialText = '';
       final refinementWave = await _finalizeRefinementCapture();
+      if (sessionGeneration != _sessionGeneration) return text;
       if (refinementWave != null) {
         _debugTwoPassStatus = '正在精修';
         _debugEvent('开始 SenseVoice 结束后精修');
@@ -437,6 +477,7 @@ class RealtimeDictationService extends ChangeNotifier {
           final refined = await _transcription.refineRealtimeWave(
             refinementWave,
           );
+          if (sessionGeneration != _sessionGeneration) return text;
           if (refined != null) {
             final decision = chooseRealtimeRefinement(
               streamingText: streamingResult,
@@ -461,6 +502,7 @@ class RealtimeDictationService extends ChangeNotifier {
             _debugEvent('结束后精修未产生文本，保留流式结果');
           }
         } catch (error) {
+          if (sessionGeneration != _sessionGeneration) return text;
           _debugTwoPassStatus = '失败，已保留流式结果';
           _debugEvent('结束后精修失败，保留流式结果: $error');
         }
@@ -476,12 +518,37 @@ class RealtimeDictationService extends ChangeNotifier {
       _debugEvent('识别完成: ${committedText.isEmpty ? "无文本" : committedText}');
       return committedText;
     } catch (error) {
+      if (sessionGeneration != _sessionGeneration) return text;
       _debugEvent('停止失败: $error');
       status = RealtimeDictationStatus.failed;
       errorMessage = _friendlyError(error);
       rethrow;
     } finally {
+      if (sessionGeneration == _sessionGeneration) {
+        await _cleanup(killWorker: true);
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> suspendForBackground() async {
+    if (!isActive) return;
+    final preserved = text;
+    ++_sessionGeneration;
+    status = RealtimeDictationStatus.stopping;
+    _timer?.cancel();
+    if (!(_readyCompleter?.isCompleted ?? true)) _readyCompleter!.complete();
+    if (!(_resultCompleter?.isCompleted ?? true)) {
+      _resultCompleter!.complete(preserved);
+    }
+    try {
+      await _recorder?.stop();
+    } finally {
       await _cleanup(killWorker: true);
+      committedText = preserved;
+      partialText = '';
+      inputLevel = 0;
+      status = RealtimeDictationStatus.idle;
       notifyListeners();
     }
   }
@@ -532,7 +599,7 @@ class RealtimeDictationService extends ChangeNotifier {
         _fail(StateError('实时语音识别进程意外结束'), sessionGeneration);
       }
     });
-    _worker = await Isolate.spawn<Map<String, Object>>(
+    final worker = await Isolate.spawn<Map<String, Object>>(
       _realtimeRecognitionWorker,
       {
         'sendPort': _messages!.sendPort,
@@ -552,6 +619,11 @@ class RealtimeDictationService extends ChangeNotifier {
       onError: _errors!.sendPort,
       onExit: _exits!.sendPort,
     );
+    if (sessionGeneration != _sessionGeneration) {
+      worker.kill(priority: Isolate.immediate);
+      return;
+    }
+    _worker = worker;
     await _readyCompleter!.future.timeout(const Duration(seconds: 20));
   }
 
@@ -710,7 +782,7 @@ class RealtimeDictationService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _prepareRefinementCapture() async {
+  Future<void> _prepareRefinementCapture(int sessionGeneration) async {
     await _discardRefinementCapture();
     final directory = Directory(
       p.join((await getTemporaryDirectory()).path, 'fknotes_asr_refinement'),
@@ -722,6 +794,11 @@ class RealtimeDictationService extends ChangeNotifier {
     );
     final output = await File(path).open(mode: FileMode.write);
     await output.writeFrom(_pcm16WaveHeader(0));
+    if (sessionGeneration != _sessionGeneration) {
+      await output.close();
+      await File(path).delete();
+      return;
+    }
     _refinementWaveOutput = output;
     _refinementWavePath = path;
     _refinementWrites = Future<void>.value();
@@ -847,6 +924,8 @@ class RealtimeDictationService extends ChangeNotifier {
   }
 
   Future<void> _performCleanup({required bool killWorker}) async {
+    _foreground?.dispose();
+    _foreground = null;
     _sessionGeneration++;
     _timer?.cancel();
     _timer = null;

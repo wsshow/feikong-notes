@@ -239,6 +239,42 @@ void main() {
     },
   );
 
+  test(
+    'iOS backgrounding cancels generation and releases the model lease',
+    () async {
+      final engine = _BlockingUnloadEngine()..blockNextGeneration = true;
+      final coordinator = LocalLlmCoordinator(engine);
+      final service = LocalAssistantService.forTesting(
+        coordinator: coordinator,
+        selectedModelId: () async => model.id,
+        descriptor: (_) async => model,
+        inference: inference,
+        suspendInBackground: true,
+      );
+      await service.loadSelectedModel();
+      final generation = service
+          .generate(
+            LocalLlmGenerationRequest(
+              messages: const [
+                LocalLlmMessage(role: LocalLlmRole.user, content: 'synthetic'),
+              ],
+            ),
+          )
+          .toList();
+      await engine.generationStarted.future;
+      service.didChangeAppLifecycleState(AppLifecycleState.inactive);
+      expect(engine.operations, isNot(contains('cancel:assistant-model')));
+      service.didChangeAppLifecycleState(AppLifecycleState.hidden);
+      await generation;
+      await engine.unloadStarted.future;
+      await Future<void>.delayed(Duration.zero);
+      expect(engine.operations, contains('cancel:assistant-model'));
+      expect(coordinator.snapshot.state, LocalLlmEngineState.idle);
+      expect(inference.activity, isNull);
+      await coordinator.dispose();
+    },
+  );
+
   test('detaching still releases the loaded model immediately', () async {
     final engine = _BlockingUnloadEngine();
     final coordinator = LocalLlmCoordinator(engine);

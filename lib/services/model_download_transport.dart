@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import '../debug/app_diagnostics.dart';
+import 'ios_foreground_work.dart';
 
 class ModelDownloadCanceled implements Exception {
   const ModelDownloadCanceled();
@@ -166,6 +167,13 @@ class ModelDownloadTransport {
     HttpClientRequest? request;
     RandomAccessFile? output;
     var canceled = false;
+    final foreground = IosForegroundWork(
+      onSuspend: () {
+        canceled = true;
+        request?.abort(const ModelDownloadCanceled());
+        client.close(force: true);
+      },
+    );
     final cancellationTimer = shouldCancel == null
         ? null
         : Timer.periodic(cancellationPollInterval, (_) {
@@ -175,6 +183,7 @@ class ModelDownloadTransport {
             client.close(force: true);
           });
     try {
+      if (foreground.interrupted) throw const ModelDownloadCanceled();
       request = await client.getUrl(source.uri).timeout(responseTimeout);
       if (existing > 0) {
         request.headers.set(HttpHeaders.rangeHeader, 'bytes=$existing-');
@@ -197,7 +206,9 @@ class ModelDownloadTransport {
       );
       var received = existing;
       await for (final chunk in response.timeout(idleTimeout)) {
-        if (shouldCancel?.call() == true) {
+        if (foreground.interrupted ||
+            canceled ||
+            shouldCancel?.call() == true) {
           throw const ModelDownloadCanceled();
         }
         await output.writeFrom(chunk);
@@ -220,11 +231,12 @@ class ModelDownloadTransport {
         throw const FormatException('模型下载不完整，将在下次继续');
       }
     } catch (_) {
-      if (canceled || shouldCancel?.call() == true) {
+      if (foreground.interrupted || canceled || shouldCancel?.call() == true) {
         throw const ModelDownloadCanceled();
       }
       rethrow;
     } finally {
+      foreground.dispose();
       cancellationTimer?.cancel();
       await output?.close();
       client.close(force: true);

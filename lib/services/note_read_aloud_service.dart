@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sherpa_onnx/sherpa_onnx.dart' as sherpa;
 
 import 'kokoro_tts_model_service.dart';
+import 'ios_foreground_work.dart';
 import 'local_inference_coordinator.dart';
 
 enum ReadAloudStatus { idle, generating, playing, paused, failed }
@@ -52,6 +53,7 @@ class NoteReadAloudService extends ChangeNotifier
   Completer<String>? _generation;
   String? _temporaryWavePath;
   int _requestGeneration = 0;
+  IosForegroundWork? _foreground;
   Future<void> _transition = Future.value();
   Future<void>? _workerCleanupFuture;
 
@@ -74,6 +76,12 @@ class NoteReadAloudService extends ChangeNotifier
     try {
       await _serializeTransition(() async {
         await _stopInternal();
+        _foreground = IosForegroundWork(onSuspend: () => unawaited(stop()));
+        if (_foreground!.interrupted) {
+          _foreground!.dispose();
+          _foreground = null;
+          throw const _ReadAloudCanceled();
+        }
         requestGeneration = ++_requestGeneration;
         status = ReadAloudStatus.generating;
         errorMessage = null;
@@ -121,6 +129,8 @@ class NoteReadAloudService extends ChangeNotifier
       }
       await _serializeTransition(() async {
         if (requestGeneration != _requestGeneration) return;
+        _foreground?.dispose();
+        _foreground = null;
         await _cleanupWorker();
         await _deleteTemporaryWave();
         _releaseRequestLease(requestLease);
@@ -161,6 +171,8 @@ class NoteReadAloudService extends ChangeNotifier
   Future<void> stop() => _serializeTransition(_stopInternal);
 
   Future<void> _stopInternal() async {
+    _foreground?.dispose();
+    _foreground = null;
     _requestGeneration++;
     await _player.stop();
     if (!(_generation?.isCompleted ?? true)) {

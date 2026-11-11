@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 
+import 'ios_foreground_work.dart';
+
 enum NoteAudioPlaybackStatus { idle, loading, playing, paused, failed }
 
 abstract interface class NoteAudioPlaybackDriver implements Listenable {
@@ -33,6 +35,7 @@ final class LocalNoteAudioPlaybackDriver extends ChangeNotifier
   StreamSubscription<Duration?>? _durationSubscription;
   var _generation = 0;
   bool _disposed = false;
+  IosForegroundWork? _foreground;
 
   @override
   String? activeAssetId;
@@ -76,6 +79,12 @@ final class LocalNoteAudioPlaybackDriver extends ChangeNotifier
     required String filePath,
   }) async {
     if (_disposed) return;
+    _foreground?.dispose();
+    _foreground = IosForegroundWork(onSuspend: () => unawaited(stop()));
+    if (_foreground!.interrupted) {
+      await stop();
+      return;
+    }
     final player = _activePlayer;
     if (activeAssetId == assetId && status != NoteAudioPlaybackStatus.failed) {
       if (status == NoteAudioPlaybackStatus.playing) {
@@ -162,6 +171,8 @@ final class LocalNoteAudioPlaybackDriver extends ChangeNotifier
   @override
   Future<void> stop() async {
     if (_disposed) return;
+    _foreground?.dispose();
+    _foreground = null;
     _generation++;
     await _player?.stop();
     activeAssetId = null;
@@ -176,6 +187,8 @@ final class LocalNoteAudioPlaybackDriver extends ChangeNotifier
   void dispose() {
     if (_disposed) return;
     _disposed = true;
+    _foreground?.dispose();
+    _foreground = null;
     _generation++;
     unawaited(_stateSubscription?.cancel());
     unawaited(_positionSubscription?.cancel());

@@ -1391,7 +1391,11 @@ class _LocalChatPageState extends State<LocalChatPage>
             _dictation.errorMessage ?? context.l10n.voiceInputFailed;
       });
     } else {
-      setState(() {});
+      setState(() {
+        if (_dictation.status == RealtimeDictationStatus.idle) {
+          _chatDictating = false;
+        }
+      });
     }
   }
 

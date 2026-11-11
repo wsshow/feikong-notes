@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../models/local_llm.dart';
 import 'language_model_service.dart';
+import 'ios_foreground_work.dart';
 import 'local_inference_coordinator.dart';
 import 'local_llm/local_llm_coordinator.dart';
 import 'local_llm/litert_lm_engine.dart';
@@ -38,6 +40,7 @@ class LocalAssistantService with WidgetsBindingObserver {
     this._idleTimeout = const Duration(minutes: 2),
     DateTime Function()? clock,
     bool observeLifecycle = true,
+    bool? suspendInBackground,
   }) : _coordinator =
            coordinator ??
            LocalLlmCoordinator(
@@ -50,7 +53,9 @@ class LocalAssistantService with WidgetsBindingObserver {
            selectedModelId ?? LanguageModelService.instance.selectedModelId,
        _descriptor = descriptor ?? LanguageModelService.instance.descriptor,
        _inference = inference ?? LocalInferenceCoordinator.instance,
-       _clock = clock ?? DateTime.now {
+       _clock = clock ?? DateTime.now,
+       _suspendInBackground =
+           suspendInBackground ?? defaultTargetPlatform == TargetPlatform.iOS {
     if (observeLifecycle) WidgetsBinding.instance.addObserver(this);
   }
 
@@ -64,6 +69,7 @@ class LocalAssistantService with WidgetsBindingObserver {
     LocalInferenceCoordinator? inference,
     Duration idleTimeout = const Duration(minutes: 2),
     DateTime Function()? clock,
+    bool? suspendInBackground,
   }) => LocalAssistantService._(
     coordinator: coordinator,
     selectedModelId: selectedModelId,
@@ -72,8 +78,10 @@ class LocalAssistantService with WidgetsBindingObserver {
     idleTimeout: idleTimeout,
     clock: clock,
     observeLifecycle: false,
+    suspendInBackground: suspendInBackground,
   );
 
+  final bool _suspendInBackground;
   final LocalLlmCoordinator _coordinator;
   final Future<String> Function() _selectedModelId;
   final Future<LocalLlmModelDescriptor> Function(String id) _descriptor;
@@ -187,7 +195,8 @@ class LocalAssistantService with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.detached) {
+    if (state == AppLifecycleState.detached ||
+        (_suspendInBackground && IosForegroundWork.shouldSuspend(state))) {
       unawaited(unload());
       return;
     }
