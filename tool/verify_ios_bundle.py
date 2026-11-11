@@ -23,8 +23,8 @@ def verify(app):
         info = plistlib.load(stream)
     if info.get("DTPlatformName") != "iphoneos":
         raise ValueError("Expected an iPhone device build, not a simulator build")
-    if tuple(map(int, info["MinimumOSVersion"].split("."))) < (15, 0):
-        raise ValueError("The app must target iOS 15.0 or later")
+    if tuple(map(int, info["MinimumOSVersion"].split("."))) < (15, 5):
+        raise ValueError("The app must target iOS 15.5 or later (ML Kit requirement)")
     extension = app / "PlugIns/ShareExtension.appex"
     with (extension / "Info.plist").open("rb") as stream:
         share = plistlib.load(stream)

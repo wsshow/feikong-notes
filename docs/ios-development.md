@@ -4,7 +4,7 @@ iOS 当前处于适配阶段，尚未作为正式支持平台发布。本阶段�
 
 ## 本地检查
 
-需要 macOS、Xcode（含 iOS SDK）、Flutter 3.47.2、CocoaPods 和 Python 3；构建 MNN 模拟器版本还需 CMake（`brew install cmake`）。最低部署目标为 iOS 15.0。插件采用 Flutter Swift Package Manager，sherpa 保留 CocoaPods 回退；依赖锁定在 `pubspec.lock`、`ios/Podfile.lock` 和 Xcode 工作区的 `Package.resolved`。LiteRT-LM 使用 `third_party/litert_lm` 中固定 0.14.0 的官方 Swift 包装层与校验和锁定的 iOS 二进制。不要通过升级依赖或修改 Pub 缓存绕过构建错误。
+需要 macOS、Xcode（含 iOS SDK）、Flutter 3.47.2、CocoaPods 和 Python 3；构建 MNN 模拟器版本还需 CMake（`brew install cmake`）。最低部署目标为 iOS 15.5。插件采用 Flutter Swift Package Manager，sherpa 保留 CocoaPods 回退；依赖锁定在 `pubspec.lock`、`ios/Podfile.lock` 和 Xcode 工作区的 `Package.resolved`。LiteRT-LM 使用 `third_party/litert_lm` 中固定 0.14.0 的官方 Swift 包装层与校验和锁定的 iOS 二进制。不要通过升级依赖或修改 Pub 缓存绕过构建错误。
 
 ```bash
 make check-ios

@@ -26,7 +26,7 @@ class IosBundleTest(unittest.TestCase):
         info = {
             "FKNotesAppGroup": "group.test.synthetic", "CFBundleIdentifier": "test.synthetic",
             "CFBundleVersion": "1", "CFBundleShortVersionString": "1.0.0",
-            "DTPlatformName": "iphoneos", "MinimumOSVersion": "15.0", "CFBundleExecutable": "Runner",
+            "DTPlatformName": "iphoneos", "MinimumOSVersion": "15.5", "CFBundleExecutable": "Runner",
             "NSMicrophoneUsageDescription": "Synthetic test", "NSCameraUsageDescription": "Synthetic test",
             "NSPhotoLibraryUsageDescription": "Synthetic test", "NSFaceIDUsageDescription": "Synthetic test",
         }
@@ -85,6 +85,14 @@ class IosBundleTest(unittest.TestCase):
 
     def test_complete_capabilities_pass(self):
         verify_ios_bundle.verify(self.app)
+
+    def test_deployment_target_cannot_understate_mlkit_requirement(self):
+        path = self.app / "Info.plist"
+        info = plistlib.loads(path.read_bytes())
+        info["MinimumOSVersion"] = "15.0"
+        path.write_bytes(plistlib.dumps(info))
+        with self.assertRaisesRegex(ValueError, "15.5"):
+            verify_ios_bundle.verify(self.app)
 
     def test_bridge_without_mnn_implementation_fails(self):
         self.runner.remove("__ZN3MNN11Transformer3Llm9createLLM_test")

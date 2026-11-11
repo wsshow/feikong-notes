@@ -72,7 +72,7 @@ adb install -r -t dist/fknotes-1.2.3+2040-arm64-v8a-diagnostic-debug.apk
 | `lib/theme/`、`lib/experience/` | 主题语义和主题专属渲染 |
 | `android/`、`native/`、`test/` | Android 原生接入、共享原生代码和测试 |
 
-其他平台工程用于开发验证。iOS 正在适配，最低部署版本为 iOS 15.0；构建通过不代表功能已经完成设备验收。
+其他平台工程用于开发验证。iOS 正在适配，最低部署版本为 iOS 15.5；构建通过不代表功能已经完成设备验收。
 
 iOS 使用 macOS、Xcode 和 CocoaPods。Flutter 插件启用 Swift Package Manager，sherpa 使用 CocoaPods 回退；ML Kit 中文补丁位于 `third_party/google_mlkit_text_recognition`，依赖由 `Package.resolved`、`ios/Podfile.lock` 与 `pubspec.lock` 固定。SwiftPM 权限插件根据 Runner/Info.plist 开启权限实现，Podfile 宏仅作用于 CocoaPods 回退路径。
 

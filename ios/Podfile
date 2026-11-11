@@ -1,5 +1,5 @@
 # Shared baseline for the iOS app and the native inference SDKs.
-platform :ios, '15.0'
+platform :ios, '15.5'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
